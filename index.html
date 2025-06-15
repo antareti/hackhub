@@ -20,35 +20,9 @@
       align-items: center;
       justify-content: space-between;
       box-shadow: 0 0 20px rgba(255, 153, 0, 0.8);
-      animation: fadeInDown 1s ease forwards;
       position: sticky;
       top: 0;
       z-index: 100;
-    }
-
-    @keyframes fadeInDown {
-      0% { opacity: 0; transform: translateY(-15px); }
-      100% { opacity: 1; transform: translateY(0); }
-    }
-
-    @keyframes glowPulse {
-      0%, 100% {
-        text-shadow: 0 0 8px #ff9900, 0 0 20px #ff6600, 0 0 30px #ff6600;
-        box-shadow: 0 0 8px #ff6600, 0 0 20px #ff6600;
-      }
-      50% {
-        text-shadow: 0 0 16px #ffd24d, 0 0 40px #ffb84d, 0 0 60px #ffb84d;
-        box-shadow: 0 0 16px #ffb84d, 0 0 40px #ffb84d;
-      }
-    }
-
-    @keyframes pulse {
-      0%, 100% { transform: scale(1); box-shadow: 0 0 8px #ff9900; }
-      50% { transform: scale(1.05); box-shadow: 0 0 15px #ffd24d; }
-    }
-
-    .logo, .logo span {
-      animation: glowPulse 3s ease-in-out infinite;
     }
 
     .logo {
@@ -56,53 +30,38 @@
       font-weight: 900;
       color: #ff9900;
       font-family: 'Courier New', Courier, monospace;
-      letter-spacing: 2px;
-      cursor: default;
-      transition: color 0.3s ease;
+      animation: glowPulse 3s ease-in-out infinite;
     }
-
-    .logo:hover { color: #ffd24d; }
 
     .logo span {
       background-color: #ff6600;
       padding: 0 8px;
       color: #111;
       border-radius: 6px;
-      transition: background-color 0.3s ease;
-      box-shadow: 0 0 8px #ff6600, 0 0 20px #ff6600;
+      animation: glowPulse 3s ease-in-out infinite;
     }
 
-    .logo span:hover {
-      background-color: #ff9933;
-      box-shadow: 0 0 12px #ff9933, 0 0 28px #ff9933;
+    @keyframes glowPulse {
+      0%, 100% {
+        text-shadow: 0 0 8px #ff9900, 0 0 20px #ff6600;
+        box-shadow: 0 0 8px #ff6600;
+      }
+      50% {
+        text-shadow: 0 0 16px #ffd24d, 0 0 40px #ffb84d;
+        box-shadow: 0 0 16px #ffb84d;
+      }
     }
 
     .search input {
       padding: 8px 12px;
-      width: 320px;
+      width: 300px;
       border-radius: 25px;
       border: 2px solid #ff9900;
       background-color: #222;
-      color: #fff;
+      color: white;
       font-size: 16px;
-      outline: none;
       box-shadow: inset 0 0 6px #ff9900;
-      transition: border-color 0.3s ease, box-shadow 0.3s ease;
     }
-
-    .search input::placeholder {
-      color: #bbb;
-      font-style: italic;
-      opacity: 0.7;
-      transition: opacity 0.3s ease;
-    }
-
-    .search input:focus {
-      border-color: #ffd24d;
-      box-shadow: 0 0 12px #ffd24d;
-    }
-
-    .search input:focus::placeholder { opacity: 0.3; }
 
     .gallery {
       display: grid;
@@ -115,44 +74,22 @@
       background-color: #222;
       padding: 10px;
       border-radius: 10px;
-      transition: 0.3s;
     }
-
-    .card:hover { background-color: #333; }
 
     .card img {
       width: 100%;
       border-radius: 6px;
       cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .card img:hover {
+      filter: brightness(1.1);
     }
 
     .card h3 {
       font-size: 16px;
       margin: 10px 0 5px;
-      word-break: break-word;
-    }
-
-    .buttons {
-      display: flex;
-      gap: 10px;
-    }
-
-    .buttons a {
-      background-color: #ff9900;
-      color: black;
-      border: none;
-      padding: 5px 10px;
-      border-radius: 4px;
-      cursor: pointer;
-      text-decoration: none;
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      transition: background-color 0.3s ease;
-    }
-
-    .buttons a:hover {
-      animation: pulse 1.5s infinite;
     }
 
     footer {
@@ -160,6 +97,49 @@
       padding: 20px;
       font-size: 14px;
       color: #888;
+    }
+
+    /* Модальное окно */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 9999;
+      padding-top: 60px;
+      left: 0;
+      top: 0;
+      width: 100vw;
+      height: 100vh;
+      overflow: auto;
+      background-color: rgba(0, 0, 0, 0.9);
+    }
+
+    .modal-content {
+      margin: auto;
+      display: block;
+      max-width: 90%;
+      max-height: 80vh;
+      border-radius: 10px;
+      box-shadow: 0 0 20px #ff9900;
+      animation: zoomIn 0.3s;
+    }
+
+    @keyframes zoomIn {
+      from { transform: scale(0.7); opacity: 0 }
+      to { transform: scale(1); opacity: 1 }
+    }
+
+    .close {
+      position: absolute;
+      top: 20px;
+      right: 35px;
+      color: #ff9900;
+      font-size: 40px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .close:hover {
+      color: #ffd24d;
     }
   </style>
 </head>
@@ -171,13 +151,15 @@
     </div>
   </header>
 
-  <section class="gallery" id="gallery">
-    <!-- Картинки будут подгружены JavaScript-ом -->
-  </section>
+  <section class="gallery" id="gallery"></section>
 
-  <footer>
-    © 2025 HackHub. Все права защищены. Контент для демонстрации.
-  </footer>
+  <footer>© 2025 HackHub. Все права защищены. Контент для демонстрации.</footer>
+
+  <!-- Модальное окно -->
+  <div id="imageModal" class="modal">
+    <span class="close" onclick="closeModal()">&times;</span>
+    <img class="modal-content" id="modalImg" alt="Просмотр изображения">
+  </div>
 
   <script>
     const repoOwner = "antareti";
@@ -186,6 +168,9 @@
 
     const gallery = document.getElementById("gallery");
     const searchInput = document.getElementById("searchInput");
+    const modal = document.getElementById("imageModal");
+    const modalImg = document.getElementById("modalImg");
+
     let cards = [];
 
     function createCard(file) {
@@ -195,21 +180,32 @@
       card.setAttribute('data-title', title);
       const imageUrl = `https://raw.githubusercontent.com/${repoOwner}/${repoName}/main/${folderPath}/${file.name}`;
       card.innerHTML = `
-        <img loading="lazy" src="${imageUrl}" alt="${file.name}" onclick="window.open('${imageUrl}', '_blank')">
+        <img loading="lazy" src="${imageUrl}" alt="${file.name}" onclick="openModal('${imageUrl}')">
         <h3>${file.name.replace('загружено - ', '').split('.')[0]}</h3>
-        <div class="buttons">
-          <a href="${imageUrl}" target="_blank" rel="noopener noreferrer">
-            <i class="fa fa-play"></i> Смотреть
-          </a>
-        </div>
       `;
       return card;
     }
 
+    function openModal(src) {
+      modal.style.display = "block";
+      modalImg.src = src;
+    }
+
+    function closeModal() {
+      modal.style.display = "none";
+      modalImg.src = "";
+    }
+
+    // Закрытие по ESC
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") closeModal();
+    });
+
     fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/contents/${folderPath}`)
-      .then(response => response.json())
+      .then(res => res.json())
       .then(data => {
         if (!Array.isArray(data)) throw new Error("Неверный формат данных");
+
         data.forEach(file => {
           if (/\.(png|jpe?g|gif)$/i.test(file.name)) {
             const card = createCard(file);
@@ -218,15 +214,15 @@
           }
         });
       })
-      .catch(error => {
-        console.error("Ошибка загрузки изображений:", error);
-        gallery.innerHTML = "<p>Не удалось загрузить изображения.</p>";
+      .catch(err => {
+        console.error("Ошибка загрузки:", err);
+        gallery.innerHTML = "<p>Ошибка загрузки изображений.</p>";
       });
 
-    searchInput.addEventListener('input', () => {
+    searchInput.addEventListener("input", () => {
       const query = searchInput.value.toLowerCase().trim();
       cards.forEach(card => {
-        const title = card.getAttribute('data-title');
+        const title = card.getAttribute("data-title");
         card.style.display = title.includes(query) ? "" : "none";
       });
     });
