@@ -38,6 +38,7 @@
       width: 300px;
       border-radius: 3px;
       border: none;
+      font-size: 16px;
     }
 
     .gallery {
@@ -66,6 +67,7 @@
     .card h3 {
       font-size: 16px;
       margin: 10px 0 5px;
+      word-break: break-word;
     }
 
     .buttons {
@@ -95,7 +97,7 @@
   <header>
     <div class="logo">Hack<span>Hub</span></div>
     <div class="search">
-      <input type="text" placeholder="Поиск...">
+      <input id="searchInput" type="text" placeholder="Поиск...">
     </div>
   </header>
 
@@ -112,31 +114,59 @@
     const repoName = "hackhub";
     const folderPath = "images";
 
+    const gallery = document.getElementById("gallery");
+    const searchInput = document.getElementById("searchInput");
+    let cards = [];
+
+    // Функция для создания карточки с картинкой
+    function createCard(file) {
+      const card = document.createElement("div");
+      card.className = "card";
+      const title = file.name.replace('загружено - ', '').split('.')[0].toLowerCase();
+      card.setAttribute('data-title', title);
+      card.innerHTML = `
+        <img loading="lazy" src="https://raw.githubusercontent.com/${repoOwner}/${repoName}/main/${folderPath}/${file.name}" alt="${file.name}">
+        <h3>${file.name.replace('загружено - ', '').split('.')[0]}</h3>
+        <div class="buttons">
+          <a href="https://raw.githubusercontent.com/${repoOwner}/${repoName}/main/${folderPath}/${file.name}" target="_blank">
+            <i class="fa fa-play"></i> Смотреть
+          </a>
+        </div>
+      `;
+      return card;
+    }
+
+    // Загрузка изображений с GitHub
     fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/contents/${folderPath}`)
       .then(response => response.json())
       .then(data => {
-        const gallery = document.getElementById("gallery");
+        if (!Array.isArray(data)) throw new Error("Неверный формат данных");
+
         data.forEach(file => {
           if (file.name.endsWith(".png") || file.name.endsWith(".jpg")) {
-            const card = document.createElement("div");
-            card.className = "card";
-            card.innerHTML = `
-              <img src="https://raw.githubusercontent.com/${repoOwner}/${repoName}/main/${folderPath}/${file.name}" alt="${file.name}">
-              <h3>${file.name.replace('загружено - ', '').split('.')[0]}</h3>
-              <div class="buttons">
-                <a href="https://raw.githubusercontent.com/${repoOwner}/${repoName}/main/${folderPath}/${file.name}" target="_blank">
-                  <i class="fa fa-play"></i> Смотреть
-                </a>
-              </div>
-            `;
+            const card = createCard(file);
             gallery.appendChild(card);
+            cards.push(card);
           }
         });
       })
       .catch(error => {
         console.error("Ошибка загрузки изображений:", error);
-        document.getElementById("gallery").innerHTML = "<p>Не удалось загрузить изображения.</p>";
+        gallery.innerHTML = "<p>Не удалось загрузить изображения.</p>";
       });
+
+    // Фильтрация по поиску
+    searchInput.addEventListener('input', () => {
+      const query = searchInput.value.toLowerCase().trim();
+      cards.forEach(card => {
+        const title = card.getAttribute('data-title');
+        if (title.includes(query)) {
+          card.style.display = "";
+        } else {
+          card.style.display = "none";
+        }
+      });
+    });
   </script>
 </body>
 </html>
