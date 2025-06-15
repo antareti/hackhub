@@ -281,3 +281,21 @@
             const card = createCard(file);
             gallery.appendChild(card);
             cards.push(card);
+          }
+        });
+      })
+      .catch(err => {
+        console.error("Ошибка загрузки:", err);
+        gallery.innerHTML = "<p>Ошибка загрузки изображений.</p>";
+      });
+
+    searchInput.addEventListener("input", () => {
+      const query = searchInput.value.toLowerCase().trim();
+      cards.forEach(card => {
+        const title = card.getAttribute("data-title");
+        card.style.display = title.includes(query) ? "" : "none";
+      });
+    });
+  </script>
+</body>
+</html>
