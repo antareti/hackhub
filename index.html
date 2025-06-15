@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>PORNIMkHub Gallery</title>
+  <title>HackHub Gallery</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
   <style>
     body {
@@ -19,7 +19,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      box-shadow: 0 0 15px rgba(255, 153, 0, 0.5);
+      box-shadow: 0 0 20px rgba(255, 153, 0, 0.8);
       animation: fadeInDown 1s ease forwards;
       position: sticky;
       top: 0;
@@ -27,14 +27,28 @@
     }
 
     @keyframes fadeInDown {
-      0% {
-        opacity: 0;
-        transform: translateY(-15px);
+      0% { opacity: 0; transform: translateY(-15px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes glowPulse {
+      0%, 100% {
+        text-shadow: 0 0 8px #ff9900, 0 0 20px #ff6600, 0 0 30px #ff6600;
+        box-shadow: 0 0 8px #ff6600, 0 0 20px #ff6600;
       }
-      100% {
-        opacity: 1;
-        transform: translateY(0);
+      50% {
+        text-shadow: 0 0 16px #ffd24d, 0 0 40px #ffb84d, 0 0 60px #ffb84d;
+        box-shadow: 0 0 16px #ffb84d, 0 0 40px #ffb84d;
       }
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); box-shadow: 0 0 8px #ff9900; }
+      50% { transform: scale(1.05); box-shadow: 0 0 15px #ffd24d; }
+    }
+
+    .logo, .logo span {
+      animation: glowPulse 3s ease-in-out infinite;
     }
 
     .logo {
@@ -43,38 +57,24 @@
       color: #ff9900;
       font-family: 'Courier New', Courier, monospace;
       letter-spacing: 2px;
-      text-shadow:
-        0 0 8px #ff9900,
-        0 0 20px #ff6600,
-        0 0 30px #ff6600;
       cursor: default;
-      transition: color 0.3s ease, text-shadow 0.3s ease;
+      transition: color 0.3s ease;
     }
 
-    .logo:hover {
-      color: #ffd24d;
-      text-shadow:
-        0 0 10px #ffd24d,
-        0 0 25px #ffb84d,
-        0 0 35px #ffb84d;
-    }
+    .logo:hover { color: #ffd24d; }
 
     .logo span {
       background-color: #ff6600;
       padding: 0 8px;
       color: #111;
       border-radius: 6px;
-      box-shadow:
-        0 0 8px #ff6600,
-        0 0 20px #ff6600;
       transition: background-color 0.3s ease;
+      box-shadow: 0 0 8px #ff6600, 0 0 20px #ff6600;
     }
 
     .logo span:hover {
       background-color: #ff9933;
-      box-shadow:
-        0 0 12px #ff9933,
-        0 0 28px #ff9933;
+      box-shadow: 0 0 12px #ff9933, 0 0 28px #ff9933;
     }
 
     .search input {
@@ -86,19 +86,23 @@
       color: #fff;
       font-size: 16px;
       outline: none;
-      transition: border-color 0.3s ease, box-shadow 0.3s ease;
       box-shadow: inset 0 0 6px #ff9900;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
     }
 
     .search input::placeholder {
       color: #bbb;
       font-style: italic;
+      opacity: 0.7;
+      transition: opacity 0.3s ease;
     }
 
     .search input:focus {
       border-color: #ffd24d;
       box-shadow: 0 0 12px #ffd24d;
     }
+
+    .search input:focus::placeholder { opacity: 0.3; }
 
     .gallery {
       display: grid;
@@ -114,13 +118,12 @@
       transition: 0.3s;
     }
 
-    .card:hover {
-      background-color: #333;
-    }
+    .card:hover { background-color: #333; }
 
     .card img {
       width: 100%;
       border-radius: 6px;
+      cursor: pointer;
     }
 
     .card h3 {
@@ -145,6 +148,11 @@
       display: flex;
       align-items: center;
       gap: 5px;
+      transition: background-color 0.3s ease;
+    }
+
+    .buttons a:hover {
+      animation: pulse 1.5s infinite;
     }
 
     footer {
@@ -173,24 +181,24 @@
 
   <script>
     const repoOwner = "antareti";
-    const repoName = "PORNIMkhub";
+    const repoName = "hackhub";
     const folderPath = "images";
 
     const gallery = document.getElementById("gallery");
     const searchInput = document.getElementById("searchInput");
     let cards = [];
 
-    // Функция для создания карточки с картинкой
     function createCard(file) {
       const card = document.createElement("div");
       card.className = "card";
       const title = file.name.replace('загружено - ', '').split('.')[0].toLowerCase();
       card.setAttribute('data-title', title);
+      const imageUrl = `https://raw.githubusercontent.com/${repoOwner}/${repoName}/main/${folderPath}/${file.name}`;
       card.innerHTML = `
-        <img loading="lazy" src="https://raw.githubusercontent.com/${repoOwner}/${repoName}/main/${folderPath}/${file.name}" alt="${file.name}">
+        <img loading="lazy" src="${imageUrl}" alt="${file.name}" onclick="window.open('${imageUrl}', '_blank')">
         <h3>${file.name.replace('загружено - ', '').split('.')[0]}</h3>
         <div class="buttons">
-          <a href="https://raw.githubusercontent.com/${repoOwner}/${repoName}/main/${folderPath}/${file.name}" target="_blank" rel="noopener noreferrer">
+          <a href="${imageUrl}" target="_blank" rel="noopener noreferrer">
             <i class="fa fa-play"></i> Смотреть
           </a>
         </div>
@@ -198,14 +206,12 @@
       return card;
     }
 
-    // Загрузка изображений с GitHub
     fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/contents/${folderPath}`)
       .then(response => response.json())
       .then(data => {
         if (!Array.isArray(data)) throw new Error("Неверный формат данных");
-
         data.forEach(file => {
-          if (file.name.endsWith(".png") || file.name.endsWith(".jpg") || file.name.endsWith(".jpeg")) {
+          if (/\.(png|jpe?g|gif)$/i.test(file.name)) {
             const card = createCard(file);
             gallery.appendChild(card);
             cards.push(card);
@@ -217,16 +223,11 @@
         gallery.innerHTML = "<p>Не удалось загрузить изображения.</p>";
       });
 
-    // Фильтрация по поиску
     searchInput.addEventListener('input', () => {
       const query = searchInput.value.toLowerCase().trim();
       cards.forEach(card => {
         const title = card.getAttribute('data-title');
-        if (title.includes(query)) {
-          card.style.display = "";
-        } else {
-          card.style.display = "none";
-        }
+        card.style.display = title.includes(query) ? "" : "none";
       });
     });
   </script>
