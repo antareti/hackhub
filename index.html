@@ -14,31 +14,90 @@
     }
 
     header {
-      background-color: #000;
-      padding: 10px 20px;
+      background: linear-gradient(90deg, #000000, #1a1a1a, #000000);
+      padding: 15px 30px;
       display: flex;
       align-items: center;
       justify-content: space-between;
+      box-shadow: 0 0 15px rgba(255, 153, 0, 0.5);
+      animation: fadeInDown 1s ease forwards;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    @keyframes fadeInDown {
+      0% {
+        opacity: 0;
+        transform: translateY(-15px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
     .logo {
-      font-size: 28px;
-      font-weight: bold;
+      font-size: 36px;
+      font-weight: 900;
+      color: #ff9900;
+      font-family: 'Courier New', Courier, monospace;
+      letter-spacing: 2px;
+      text-shadow:
+        0 0 8px #ff9900,
+        0 0 20px #ff6600,
+        0 0 30px #ff6600;
+      cursor: default;
+      transition: color 0.3s ease, text-shadow 0.3s ease;
+    }
+
+    .logo:hover {
+      color: #ffd24d;
+      text-shadow:
+        0 0 10px #ffd24d,
+        0 0 25px #ffb84d,
+        0 0 35px #ffb84d;
     }
 
     .logo span {
-      background-color: #ff9900;
-      padding: 0 6px;
-      color: #000;
-      border-radius: 4px;
+      background-color: #ff6600;
+      padding: 0 8px;
+      color: #111;
+      border-radius: 6px;
+      box-shadow:
+        0 0 8px #ff6600,
+        0 0 20px #ff6600;
+      transition: background-color 0.3s ease;
+    }
+
+    .logo span:hover {
+      background-color: #ff9933;
+      box-shadow:
+        0 0 12px #ff9933,
+        0 0 28px #ff9933;
     }
 
     .search input {
-      padding: 6px;
-      width: 300px;
-      border-radius: 3px;
-      border: none;
+      padding: 8px 12px;
+      width: 320px;
+      border-radius: 25px;
+      border: 2px solid #ff9900;
+      background-color: #222;
+      color: #fff;
       font-size: 16px;
+      outline: none;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+      box-shadow: inset 0 0 6px #ff9900;
+    }
+
+    .search input::placeholder {
+      color: #bbb;
+      font-style: italic;
+    }
+
+    .search input:focus {
+      border-color: #ffd24d;
+      box-shadow: 0 0 12px #ffd24d;
     }
 
     .gallery {
@@ -83,6 +142,9 @@
       border-radius: 4px;
       cursor: pointer;
       text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 5px;
     }
 
     footer {
@@ -128,7 +190,7 @@
         <img loading="lazy" src="https://raw.githubusercontent.com/${repoOwner}/${repoName}/main/${folderPath}/${file.name}" alt="${file.name}">
         <h3>${file.name.replace('загружено - ', '').split('.')[0]}</h3>
         <div class="buttons">
-          <a href="https://raw.githubusercontent.com/${repoOwner}/${repoName}/main/${folderPath}/${file.name}" target="_blank">
+          <a href="https://raw.githubusercontent.com/${repoOwner}/${repoName}/main/${folderPath}/${file.name}" target="_blank" rel="noopener noreferrer">
             <i class="fa fa-play"></i> Смотреть
           </a>
         </div>
@@ -143,7 +205,7 @@
         if (!Array.isArray(data)) throw new Error("Неверный формат данных");
 
         data.forEach(file => {
-          if (file.name.endsWith(".png") || file.name.endsWith(".jpg")) {
+          if (file.name.endsWith(".png") || file.name.endsWith(".jpg") || file.name.endsWith(".jpeg")) {
             const card = createCard(file);
             gallery.appendChild(card);
             cards.push(card);
