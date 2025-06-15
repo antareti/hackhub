@@ -31,6 +31,9 @@
       color: #ff9900;
       font-family: 'Courier New', Courier, monospace;
       animation: glowPulse 3s ease-in-out infinite;
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
 
     .logo span {
@@ -38,6 +41,12 @@
       padding: 0 8px;
       color: #111;
       border-radius: 6px;
+      animation: glowPulse 3s ease-in-out infinite;
+    }
+
+    .logo i {
+      color: #ffd24d;
+      font-size: 30px;
       animation: glowPulse 3s ease-in-out infinite;
     }
 
@@ -99,7 +108,6 @@
       color: #888;
     }
 
-    /* Модальное окно */
     .modal {
       display: none;
       position: fixed;
@@ -145,7 +153,10 @@
 </head>
 <body>
   <header>
-    <div class="logo">Hack<span>Hub</span></div>
+    <div class="logo">
+      <i class="fas fa-crown"></i>
+      Hack<span>Hub</span>
+    </div>
     <div class="search">
       <input id="searchInput" type="text" placeholder="Поиск...">
     </div>
@@ -155,7 +166,6 @@
 
   <footer>© 2025 HackHub. Все права защищены. Контент для демонстрации.</footer>
 
-  <!-- Модальное окно -->
   <div id="imageModal" class="modal">
     <span class="close" onclick="closeModal()">&times;</span>
     <img class="modal-content" id="modalImg" alt="Просмотр изображения">
@@ -196,7 +206,6 @@
       modalImg.src = "";
     }
 
-    // Закрытие по ESC
     document.addEventListener("keydown", (e) => {
       if (e.key === "Escape") closeModal();
     });
@@ -204,28 +213,3 @@
     fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/contents/${folderPath}`)
       .then(res => res.json())
       .then(data => {
-        if (!Array.isArray(data)) throw new Error("Неверный формат данных");
-
-        data.forEach(file => {
-          if (/\.(png|jpe?g|gif)$/i.test(file.name)) {
-            const card = createCard(file);
-            gallery.appendChild(card);
-            cards.push(card);
-          }
-        });
-      })
-      .catch(err => {
-        console.error("Ошибка загрузки:", err);
-        gallery.innerHTML = "<p>Ошибка загрузки изображений.</p>";
-      });
-
-    searchInput.addEventListener("input", () => {
-      const query = searchInput.value.toLowerCase().trim();
-      cards.forEach(card => {
-        const title = card.getAttribute("data-title");
-        card.style.display = title.includes(query) ? "" : "none";
-      });
-    });
-  </script>
-</body>
-</html>
