@@ -6,97 +6,128 @@
   <title>HackHub Gallery</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap');
+
     body {
       margin: 0;
-      background-color: #111;
-      color: white;
-      font-family: Arial, sans-serif;
+      background-color: #121212;
+      color: #eee;
+      font-family: 'Montserrat', Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
     }
 
     header {
       background: linear-gradient(90deg, #000000, #1a1a1a, #000000);
-      padding: 15px 30px;
+      padding: 20px 30px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      box-shadow: 0 0 20px rgba(255, 153, 0, 0.8);
+      box-shadow: 0 0 20px rgba(255, 102, 0, 0.9);
       position: sticky;
       top: 0;
       z-index: 100;
     }
 
     .logo {
-      font-size: 36px;
+      font-size: 40px;
       font-weight: 900;
-      color: #ff9900;
-      font-family: 'Courier New', Courier, monospace;
-      animation: glowPulse 3s ease-in-out infinite;
+      color: #fff;
+      font-family: 'Montserrat', sans-serif;
+      user-select: none;
     }
 
     .logo span {
       background-color: #ff6600;
-      padding: 0 8px;
-      color: #111;
+      padding: 0 10px;
+      color: #121212;
       border-radius: 6px;
-      animation: glowPulse 3s ease-in-out infinite;
+      box-shadow: 0 0 10px #ff6600;
+      transition: box-shadow 0.3s ease;
     }
 
-    @keyframes glowPulse {
-      0%, 100% {
-        text-shadow: 0 0 8px #ff9900, 0 0 20px #ff6600;
-        box-shadow: 0 0 8px #ff6600;
-      }
-      50% {
-        text-shadow: 0 0 16px #ffd24d, 0 0 40px #ffb84d;
-        box-shadow: 0 0 16px #ffb84d;
-      }
+    .logo span:hover {
+      box-shadow: 0 0 25px #ff9900, 0 0 40px #ffb84d;
+      cursor: default;
     }
 
     .search input {
-      padding: 8px 12px;
-      width: 300px;
-      border-radius: 25px;
-      border: 2px solid #ff9900;
+      padding: 10px 18px;
+      width: 320px;
+      max-width: 100%;
+      border-radius: 30px;
+      border: 2px solid #ff6600;
       background-color: #222;
-      color: white;
-      font-size: 16px;
-      box-shadow: inset 0 0 6px #ff9900;
+      color: #eee;
+      font-size: 17px;
+      box-shadow: inset 0 0 8px #ff6600;
+      outline: none;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .search input::placeholder {
+      color: #ff9e3b;
+      opacity: 0.7;
+    }
+
+    .search input:focus {
+      border-color: #ff9900;
+      box-shadow: 0 0 15px #ff9900;
+      background-color: #2a2a2a;
+      color: #fff;
     }
 
     .gallery {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 15px;
-      padding: 20px;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 18px;
+      padding: 25px 30px 50px;
+      max-width: 1200px;
+      margin: 0 auto;
     }
 
     .card {
-      background-color: #222;
-      padding: 10px;
-      border-radius: 10px;
+      background-color: #1e1e1e;
+      border-radius: 12px;
+      box-shadow: 0 0 12px rgba(255, 102, 0, 0.4);
+      overflow: hidden;
+      cursor: pointer;
+      transition: box-shadow 0.3s ease;
+      position: relative;
+    }
+
+    .card:hover {
+      box-shadow: 0 0 20px #ff6600, 0 0 35px #ff9900;
     }
 
     .card img {
       width: 100%;
-      border-radius: 6px;
-      cursor: pointer;
-      transition: 0.3s;
+      height: auto;
+      display: block;
+      border-bottom: 3px solid #ff6600;
+      transition: filter 0.3s ease;
     }
 
     .card img:hover {
-      filter: brightness(1.1);
+      filter: brightness(1.15);
     }
 
     .card h3 {
-      font-size: 16px;
-      margin: 10px 0 5px;
+      font-size: 17px;
+      font-weight: 700;
+      margin: 12px 15px 15px;
+      color: #ff6600;
+      user-select: none;
     }
 
     footer {
       text-align: center;
-      padding: 20px;
+      padding: 22px 15px;
       font-size: 14px;
-      color: #888;
+      color: #777;
+      background-color: #111;
+      box-shadow: inset 0 1px 5px rgba(255, 102, 0, 0.2);
+      user-select: none;
     }
 
     /* Модальное окно */
@@ -104,13 +135,15 @@
       display: none;
       position: fixed;
       z-index: 9999;
-      padding-top: 60px;
+      padding-top: 70px;
       left: 0;
       top: 0;
       width: 100vw;
       height: 100vh;
       overflow: auto;
-      background-color: rgba(0, 0, 0, 0.9);
+      background-color: rgba(18, 18, 18, 0.95);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
     }
 
     .modal-content {
@@ -118,28 +151,64 @@
       display: block;
       max-width: 90%;
       max-height: 80vh;
-      border-radius: 10px;
-      box-shadow: 0 0 20px #ff9900;
-      animation: zoomIn 0.3s;
+      border-radius: 14px;
+      box-shadow: 0 0 30px #ff6600;
+      animation: zoomIn 0.3s ease forwards;
+      user-select: none;
     }
 
     @keyframes zoomIn {
-      from { transform: scale(0.7); opacity: 0 }
-      to { transform: scale(1); opacity: 1 }
+      from { transform: scale(0.75); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
     }
 
     .close {
       position: absolute;
       top: 20px;
-      right: 35px;
-      color: #ff9900;
-      font-size: 40px;
-      font-weight: bold;
+      right: 40px;
+      color: #ff6600;
+      font-size: 42px;
+      font-weight: 900;
       cursor: pointer;
+      text-shadow: 0 0 8px #ff6600;
+      transition: color 0.3s ease, text-shadow 0.3s ease;
+      user-select: none;
     }
 
     .close:hover {
       color: #ffd24d;
+      text-shadow: 0 0 20px #ffd24d;
+    }
+
+    /* Scrollbar для галереи */
+    .gallery::-webkit-scrollbar {
+      width: 10px;
+    }
+
+    .gallery::-webkit-scrollbar-track {
+      background: #121212;
+    }
+
+    .gallery::-webkit-scrollbar-thumb {
+      background-color: #ff6600;
+      border-radius: 10px;
+      border: 2px solid #121212;
+    }
+
+    /* Адаптив */
+    @media (max-width: 600px) {
+      header {
+        flex-direction: column;
+        gap: 15px;
+      }
+      .search input {
+        width: 100%;
+      }
+      .gallery {
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        padding: 15px;
+        gap: 12px;
+      }
     }
   </style>
 </head>
@@ -151,14 +220,14 @@
     </div>
   </header>
 
-  <section class="gallery" id="gallery"></section>
+  <section class="gallery" id="gallery" aria-label="Галерея изображений"></section>
 
   <footer>© 2025 HackHub. Все права защищены. Контент для демонстрации.</footer>
 
   <!-- Модальное окно -->
-  <div id="imageModal" class="modal">
-    <span class="close" onclick="closeModal()">&times;</span>
-    <img class="modal-content" id="modalImg" alt="Просмотр изображения">
+  <div id="imageModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modalImgAlt">
+    <span class="close" onclick="closeModal()" aria-label="Закрыть">&times;</span>
+    <img class="modal-content" id="modalImg" alt="Просмотр изображения" tabindex="0">
   </div>
 
   <script>
@@ -180,7 +249,7 @@
       card.setAttribute('data-title', title);
       const imageUrl = `https://raw.githubusercontent.com/${repoOwner}/${repoName}/main/${folderPath}/${file.name}`;
       card.innerHTML = `
-        <img loading="lazy" src="${imageUrl}" alt="${file.name}" onclick="openModal('${imageUrl}')">
+        <img loading="lazy" src="${imageUrl}" alt="${file.name}" onclick="openModal('${imageUrl}')" tabindex="0" onkeydown="if(event.key==='Enter') openModal('${imageUrl}')">
         <h3>${file.name.replace('загружено - ', '').split('.')[0]}</h3>
       `;
       return card;
@@ -189,6 +258,7 @@
     function openModal(src) {
       modal.style.display = "block";
       modalImg.src = src;
+      modalImg.focus();
     }
 
     function closeModal() {
@@ -211,21 +281,3 @@
             const card = createCard(file);
             gallery.appendChild(card);
             cards.push(card);
-          }
-        });
-      })
-      .catch(err => {
-        console.error("Ошибка загрузки:", err);
-        gallery.innerHTML = "<p>Ошибка загрузки изображений.</p>";
-      });
-
-    searchInput.addEventListener("input", () => {
-      const query = searchInput.value.toLowerCase().trim();
-      cards.forEach(card => {
-        const title = card.getAttribute("data-title");
-        card.style.display = title.includes(query) ? "" : "none";
-      });
-    });
-  </script>
-</body>
-</html>
