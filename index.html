@@ -18,12 +18,12 @@
       padding: 20px 30px;
       display: flex;
       align-items: center;
-      justify-content: center; /* Поиск теперь по центру */
+      justify-content: center;
       box-shadow: 0 0 20px rgba(255, 102, 0, 0.9);
       position: sticky;
       top: 0;
       z-index: 100;
-      gap: 30px; /* Чтобы логотип и поиск не сливались */
+      gap: 30px;
     }
     .logo {
       font-size: 40px;
@@ -48,6 +48,34 @@
       color: #eee;
       font-size: 17px;
       outline-offset: 2px;
+    }
+    .categories {
+      background-color: #1a1a1a;
+      padding: 12px 30px;
+      box-shadow: inset 0 -1px 0 #333;
+    }
+    .categories ul {
+      list-style: none;
+      display: flex;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      gap: 18px;
+      margin: 0;
+      padding: 0;
+    }
+    .categories li a {
+      color: #ff6600;
+      font-weight: bold;
+      text-decoration: none;
+      font-size: 15px;
+      padding: 6px 12px;
+      border-radius: 20px;
+      transition: background 0.2s, color 0.2s;
+      white-space: nowrap;
+    }
+    .categories li a:hover {
+      background-color: #ff6600;
+      color: #121212;
     }
     .gallery {
       display: grid;
@@ -130,6 +158,19 @@
     </div>
   </header>
 
+  <nav class="categories">
+    <ul>
+      <li><a href="#">Главная</a></li>
+      <li><a href="#">Категории</a></li>
+      <li><a href="#">Новое</a></li>
+      <li><a href="#">Популярное</a></li>
+      <li><a href="#">Лучшее</a></li>
+      <li><a href="#">GIF</a></li>
+      <li><a href="#">VR</a></li>
+      <li><a href="#">Модель дня</a></li>
+    </ul>
+  </nav>
+
   <section class="gallery" id="gallery"></section>
 
   <footer>© 2025 HackHub. Все права защищены.</footer>
@@ -195,7 +236,6 @@
         gallery.innerHTML = "<p>Ошибка загрузки изображений.</p>";
       });
 
-    // debounce функция — задержка вызова
     function debounce(func, wait) {
       let timeout;
       return function(...args) {
@@ -210,10 +250,9 @@
         cards.forEach(card => card.style.display = "");
         return;
       }
-      const terms = query.split(/\s+/); // разбиваем по пробелам
+      const terms = query.split(/\s+/);
       cards.forEach(card => {
         const title = card.getAttribute("data-title");
-        // проверяем, что все слова содержатся в названии
         const match = terms.every(term => title.includes(term));
         card.style.display = match ? "" : "none";
       });
