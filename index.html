@@ -191,13 +191,31 @@
         gallery.innerHTML = "<p>Ошибка загрузки изображений.</p>";
       });
 
-    searchInput.addEventListener("input", () => {
+    // debounce функция — задержка вызова
+    function debounce(func, wait) {
+      let timeout;
+      return function(...args) {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func.apply(this, args), wait);
+      };
+    }
+
+    function filterCards() {
       const query = searchInput.value.toLowerCase().trim();
+      if (!query) {
+        cards.forEach(card => card.style.display = "");
+        return;
+      }
+      const terms = query.split(/\s+/); // разбиваем по пробелам
       cards.forEach(card => {
         const title = card.getAttribute("data-title");
-        card.style.display = title.includes(query) ? "" : "none";
+        // проверяем, что все слова содержатся в названии
+        const match = terms.every(term => title.includes(term));
+        card.style.display = match ? "" : "none";
       });
-    });
+    }
+
+    searchInput.addEventListener("input", debounce(filterCards, 300));
   </script>
 </body>
 </html>
