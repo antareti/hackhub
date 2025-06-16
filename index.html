@@ -35,6 +35,9 @@
       color: #fff;
       font-family: 'Montserrat', sans-serif;
       user-select: none;
+      display: flex;
+      align-items: center;
+      gap: 12px;
     }
 
     .logo span {
@@ -49,6 +52,12 @@
     .logo span:hover {
       box-shadow: 0 0 25px #ff9900, 0 0 40px #ffb84d;
       cursor: default;
+    }
+
+    .logo i.fa-crown {
+      color: gold;
+      text-shadow: 0 0 10px gold, 0 0 20px #ffaa00;
+      font-size: 30px;
     }
 
     .search input {
@@ -130,7 +139,6 @@
       user-select: none;
     }
 
-    /* Модальное окно */
     .modal {
       display: none;
       position: fixed;
@@ -180,7 +188,6 @@
       text-shadow: 0 0 20px #ffd24d;
     }
 
-    /* Scrollbar для галереи */
     .gallery::-webkit-scrollbar {
       width: 10px;
     }
@@ -195,7 +202,6 @@
       border: 2px solid #121212;
     }
 
-    /* Адаптив */
     @media (max-width: 600px) {
       header {
         flex-direction: column;
@@ -214,7 +220,7 @@
 </head>
 <body>
   <header>
-    <div class="logo">Hack<span>Hub</span></div>
+    <div class="logo"><i class="fas fa-crown"></i> Hack<span>Hub</span></div>
     <div class="search">
       <input id="searchInput" type="text" placeholder="Поиск...">
     </div>
@@ -224,7 +230,6 @@
 
   <footer>© 2025 HackHub. Все права защищены. Контент для демонстрации.</footer>
 
-  <!-- Модальное окно -->
   <div id="imageModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modalImgAlt">
     <span class="close" onclick="closeModal()" aria-label="Закрыть">&times;</span>
     <img class="modal-content" id="modalImg" alt="Просмотр изображения" tabindex="0">
@@ -266,7 +271,6 @@
       modalImg.src = "";
     }
 
-    // Закрытие по ESC
     document.addEventListener("keydown", (e) => {
       if (e.key === "Escape") closeModal();
     });
