@@ -19,6 +19,22 @@
       font-weight: bold;
       color: #ff6600;
       box-shadow: 0 0 15px #ff6600;
+      position: relative;
+    }
+    .home-link {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      font-size: 16px;
+      color: #fff;
+      background-color: #ff6600;
+      padding: 6px 12px;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: background 0.3s ease;
+    }
+    .home-link:hover {
+      background-color: #e65c00;
     }
     .video-gallery {
       display: grid;
@@ -40,7 +56,10 @@
   </style>
 </head>
 <body>
-  <header>🎥 Видеогалерея HackHub</header>
+  <header>
+    <a href="index.html" class="home-link">🏠 Главная</a>
+    🎥 Видеогалерея HackHub
+  </header>
 
   <section class="video-gallery" id="videoGallery">
     <p class="error" id="errorMsg">Загрузка видео...</p>
