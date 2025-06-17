@@ -23,6 +23,16 @@
       color: #000;
       cursor: pointer;
     }
+    a {
+      color: #00ff99;
+      text-decoration: none;
+      display: block;
+      margin-top: 15px;
+      font-size: 16px;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
   </style>
 </head>
 <body>
@@ -31,6 +41,9 @@
   <input type="text" id="username" placeholder="Username" />
   <br />
   <button onclick="login()">Войти</button>
+
+  <!-- 🔗 Ссылка на регистрацию -->
+  <a href="register.html">Нет аккаунта? Зарегистрируйся</a>
 
   <script>
     function login() {
