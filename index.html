@@ -18,7 +18,7 @@
       padding: 20px 30px;
       display: flex;
       align-items: center;
-      justify-content: center;
+      justify-content: space-between;
       box-shadow: 0 0 20px rgba(255, 102, 0, 0.9);
       position: sticky;
       top: 0;
@@ -48,6 +48,16 @@
       color: #eee;
       font-size: 17px;
       outline-offset: 2px;
+    }
+    .logout-btn {
+      background-color: #ff6600;
+      color: #121212;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 30px;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 16px;
     }
     .categories {
       background-color: #1a1a1a;
@@ -142,6 +152,17 @@
       cursor: pointer;
     }
   </style>
+
+  <script>
+    if (localStorage.getItem("auth") !== "true") {
+      window.location.href = "../login.html";
+    }
+
+    function logout() {
+      localStorage.removeItem("auth");
+      window.location.href = "../login.html";
+    }
+  </script>
 </head>
 <body>
 
@@ -156,6 +177,7 @@
     <div class="search">
       <input id="searchInput" type="text" placeholder="Поиск...">
     </div>
+    <button class="logout-btn" onclick="logout()">Выйти</button>
   </header>
 
   <nav class="categories">
@@ -168,7 +190,7 @@
       <li><a href="#">GIF</a></li>
       <li><a href="#">VR</a></li>
       <li><a href="#">Модель дня</a></li>
-      <li><a href="video.html">🎥 Видео</a></li> <!-- ВСТАВЛЕННАЯ ССЫЛКА -->
+      <li><a href="video.html">🎥 Видео</a></li>
     </ul>
   </nav>
 
