@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <title>Вход в HackHub</title>
+  <style>
+    body {
+      background: #0b0b0b;
+      color: #00ff99;
+      font-family: monospace;
+      text-align: center;
+      padding-top: 100px;
+    }
+    input, button {
+      padding: 12px;
+      margin: 10px;
+      font-size: 18px;
+      border: none;
+      border-radius: 5px;
+    }
+    button {
+      background-color: #00ff99;
+      color: #000;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h1>Вход в HackHub</h1>
+  <p>Введите имя пользователя</p>
+  <input type="text" id="username" placeholder="Username" />
+  <br />
+  <button onclick="login()">Войти</button>
+
+  <script>
+    function login() {
+      const username = document.getElementById("username").value;
+      if (username.trim() !== "") {
+        localStorage.setItem("auth", "true");
+        window.location.href = "hackhub/index.html";
+      } else {
+        alert("Пожалуйста, введите имя.");
+      }
+    }
+  </script>
+</body>
+</html>
