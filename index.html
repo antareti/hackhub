@@ -262,7 +262,15 @@
         const match = terms.every(term => title.includes(term));
         card.style.display = match ? "" : "none";
       });
-    }
+    }<button onclick="logout()">Выйти</button>
+
+<script>
+  function logout() {
+    localStorage.removeItem("auth");
+    window.location.href = "login.html";
+  }
+</script>
+
 
     searchInput.addEventListener("input", debounce(filterCards, 300));
   </script>
