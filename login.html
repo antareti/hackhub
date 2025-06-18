@@ -3,22 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <title>Вход в HackHub</title>
-  <script>
-  function login() {
-    const username = document.getElementById("username").value.trim();
-    const users = JSON.parse(localStorage.getItem("users") || "[]");
-    
-    const userExists = users.find(u => u.username === username);
-
-    if (userExists) {
-      localStorage.setItem("auth", "true");
-      window.location.href = "index.html";
-    } else {
-      alert("Пользователь не найден. Зарегистрируйся сначала.");
-    }
-  }
-</script>
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
     body {
       background: #0b0b0b;
       color: #00ff99;
@@ -33,30 +19,51 @@
       border: none;
       border-radius: 5px;
     }
+    input {
+      width: 250px;
+      background: #1a1a1a;
+      color: #00ff99;
+      border: 2px solid #00ff99;
+    }
     button {
       background-color: #00ff99;
       color: #000;
       cursor: pointer;
+      width: 270px;
+    }
+    a {
+      color: #00ff99;
+      display: block;
+      margin-top: 15px;
+      text-decoration: none;
     }
   </style>
-</head>
-<body>
-  <h1>Вход в HackHub</h1>
-  <p>Введите имя пользователя</p>
-  <input type="text" id="username" placeholder="Username" />
-  <br />
-  <button onclick="login()">Войти</button>
-
   <script>
     function login() {
-      const username = document.getElementById("username").value;
-      if (username.trim() !== "") {
+      const username = document.getElementById("username").value.trim();
+      const password = document.getElementById("password").value;
+
+      const users = JSON.parse(localStorage.getItem("users") || "[]");
+      const user = users.find(u => u.username === username && u.password === password);
+
+      if (user) {
         localStorage.setItem("auth", "true");
-        window.location.href = "hackhub/index.html";
+        localStorage.setItem("currentUser", username);
+        window.location.href = "index.html";
       } else {
-        alert("Пожалуйста, введите имя.");
+        alert("Неверное имя пользователя или пароль. Попробуйте снова.");
       }
     }
   </script>
+</head>
+<body>
+  <h1>Вход в HackHub</h1>
+  <p>Введите имя пользователя и пароль</p>
+  <input type="text" id="username" placeholder="Имя пользователя" />
+  <br />
+  <input type="password" id="password" placeholder="Пароль" />
+  <br />
+  <button onclick="login()">Войти</button>
+  <a href="register.html">Ещё нет аккаунта?</a>
 </body>
 </html>
