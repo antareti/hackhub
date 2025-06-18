@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Регистрация | HackHub</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <script>
     if (localStorage.getItem("auth")) {
       window.location.href = "index.html";
@@ -58,8 +58,8 @@
 <body>
   <div class="form">
     <h2>Регистрация</h2>
-    <input type="text" id="username" placeholder="Имя пользователя" required>
-    <input type="password" id="password" placeholder="Пароль" required>
+    <input type="text" id="username" placeholder="Имя пользователя" required />
+    <input type="password" id="password" placeholder="Пароль" required />
     <button onclick="register()">Зарегистрироваться</button>
     <a href="login.html">Уже есть аккаунт?</a>
   </div>
@@ -84,8 +84,8 @@
       users.push({ username, password });
       localStorage.setItem("users", JSON.stringify(users));
       alert("Регистрация прошла успешно!");
-      // Перенаправляем на главную страницу
-      window.location.href = "index.html";
+      // После успешной регистрации — на страницу входа
+      window.location.href = "login.html";
     }
   </script>
 </body>
