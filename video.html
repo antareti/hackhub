@@ -2,18 +2,22 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Видео | HackHub</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap');
+
     body {
       margin: 0;
       font-family: 'Montserrat', Arial, sans-serif;
-      background-color: #121212;
-      color: #eee;
+      background-color: #111;
+      color: #fff;
       overflow-x: hidden;
+      position: relative;
+      min-height: 100vh;
     }
+
+    /* Видеофон */
     .smoke-video {
       position: fixed;
       top: 0; left: 0;
@@ -21,67 +25,86 @@
       object-fit: cover;
       opacity: 0.3;
       z-index: -1;
+      pointer-events: none;
     }
+
+    @media (max-width: 768px) {
+      /* Отключаем видеофон на мобильных */
+      .smoke-video {
+        display: none;
+      }
+    }
+
     header {
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      background: linear-gradient(90deg, #000000, #1a1a1a, #000000);
+      background: #000;
       padding: 20px;
       text-align: center;
       font-size: 30px;
       font-weight: bold;
       color: #ff6600;
       box-shadow: 0 0 15px #ff6600;
+      position: relative;
+      z-index: 10;
     }
+
     .home-link {
       position: absolute;
-      top: 20px; left: 20px;
+      top: 20px;
+      left: 20px;
       font-size: 16px;
       color: #fff;
       background-color: #ff6600;
       padding: 6px 12px;
       border-radius: 8px;
       text-decoration: none;
-      transition: background 0.3s;
+      transition: background 0.3s ease;
+      z-index: 11;
     }
+
     .home-link:hover {
       background-color: #e65c00;
     }
+
     .video-gallery {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
       gap: 20px;
       padding: 30px;
       max-width: 1200px;
-      margin: 0 auto;
+      margin: 0 auto 40px;
       position: relative;
-      z-index: 1;
+      z-index: 5;
     }
+
     .video-wrapper {
       border: 3px solid #ff6600;
       border-radius: 12px;
       box-shadow: 0 0 15px rgba(255, 102, 0, 0.5);
       overflow: hidden;
     }
-    .video-wrapper video {
+
+    video {
       width: 100%;
+      height: auto;
       display: block;
-      background-color: #000;
+      background: #000;
     }
+
     .error {
       text-align: center;
       color: #f44;
       padding: 20px;
+      font-weight: bold;
+      font-size: 18px;
+      grid-column: 1 / -1;
     }
   </style>
 </head>
 <body>
 
-  <!-- Видео-фон -->
-  <video class="smoke-video" autoplay loop muted playsinline>
-    <source src="https://raw.githubusercontent.com/antareti/hackhub/main/smoke-loop.mp4" type="video/mp4">
-    Ваш браузер не поддерживает видео-фон.
+  <!-- Видеофон -->
+  <video class="smoke-video" autoplay loop muted playsinline preload="none">
+    <source src="https://raw.githubusercontent.com/antareti/hackhub/main/smoke-loop.mp4" type="video/mp4" />
   </video>
 
   <header>
@@ -94,42 +117,87 @@
   </section>
 
   <script>
-    const owner = "antareti";
-    const repo = "hackhub";
-    const folder = "videos";
-    const gallery = document.getElementById("videoGallery");
-    const errorMsg = document.getElementById("errorMsg");
+    (function() {
+      const repoOwner = "antareti";
+      const repoName = "hackhub";
+      const folderPath = "videos";
 
-    fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${folder}`)
-      .then(res => {
-        if (!res.ok) throw new Error("не удалось получить список файлов");
-        return res.json();
-      })
-      .then(files => {
-        errorMsg.style.display = "none";
-        const videos = files.filter(f => /\.(mp4|webm|ogg)$/i.test(f.name));
-        if (videos.length === 0) {
-          errorMsg.textContent = "Видео не найдены.";
-          errorMsg.style.display = "block";
-          return;
-        }
-        videos.forEach(file => {
-          const url = `https://raw.githubusercontent.com/${owner}/${repo}/main/${folder}/${file.name}`;
-          const wrap = document.createElement("div");
-          wrap.className = "video-wrapper";
-          const vid = document.createElement("video");
-          vid.controls = true;
-          vid.src = url;
-          vid.poster = ""; // можно добавить постер при желании
-          wrap.appendChild(vid);
-          gallery.appendChild(wrap);
+      const gallery = document.getElementById("videoGallery");
+      const errorMsg = document.getElementById("errorMsg");
+
+      // Для ленивой загрузки видео
+      const observer = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const video = entry.target;
+            if (video.dataset.src) {
+              video.src = video.dataset.src;
+              video.load();
+              observer.unobserve(video);
+            }
+          }
         });
-      })
-      .catch(err => {
-        console.error(err);
-        errorMsg.textContent = "Ошибка загрузки видео.";
-        errorMsg.style.display = "block";
+      }, {
+        rootMargin: "100px",
+        threshold: 0.1
       });
+
+      // Функция создания видеоэлемента с lazy loading
+      function createVideoCard(file) {
+        const wrapper = document.createElement("div");
+        wrapper.className = "video-wrapper";
+
+        const video = document.createElement("video");
+        video.controls = true;
+        video.preload = "none";
+        video.setAttribute("playsinline", ""); // для мобильных
+
+        const videoUrl = `https://raw.githubusercontent.com/${repoOwner}/${repoName}/main/${folderPath}/${file.name}`;
+        video.dataset.src = videoUrl; // ленивый src
+
+        wrapper.appendChild(video);
+
+        // Наблюдаем для lazy load
+        observer.observe(video);
+
+        return wrapper;
+      }
+
+      // Загрузка данных с GitHub API
+      fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/contents/${folderPath}`)
+        .then(response => {
+          if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
+          return response.json();
+        })
+        .then(data => {
+          if (!Array.isArray(data)) throw new Error("Неверный формат данных");
+
+          if (data.length === 0) {
+            errorMsg.textContent = "Видео не найдены.";
+            return;
+          }
+
+          errorMsg.style.display = "none";
+
+          data.forEach(file => {
+            if (/\.(mp4|webm|ogg)$/i.test(file.name)) {
+              const videoCard = createVideoCard(file);
+              gallery.appendChild(videoCard);
+            }
+          });
+
+          // Если не добавлено видео
+          if (gallery.children.length === 0) {
+            errorMsg.textContent = "Видео не найдены.";
+            errorMsg.style.display = "block";
+          }
+        })
+        .catch(err => {
+          console.error("Ошибка загрузки видео:", err);
+          errorMsg.textContent = "Ошибка загрузки видео.";
+          errorMsg.style.display = "block";
+        });
+    })();
   </script>
 
 </body>
