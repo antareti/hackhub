@@ -8,44 +8,30 @@
     if (localStorage.getItem("auth")) {
       window.location.href = "index.html";
     }
-
-    // Проверка возраста через дату рождения
+    // Проверка возраста
     window.onload = function () {
       if (!localStorage.getItem("ageVerified")) {
-        const modal = document.createElement("div");
-        modal.innerHTML = `
+        const confirmBox = document.createElement("div");
+        confirmBox.innerHTML = `
           <div style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.95); color: #fff; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 9999; text-align: center;">
-            <h2 style="font-size: 24px; margin-bottom: 20px;">Сайт содержит материалы 18+</h2>
-            <p style="margin-bottom: 10px;">Введите свою дату рождения:</p>
-            <input type="date" id="birthDate" style="padding: 10px; font-size: 16px; border-radius: 5px; margin-bottom: 20px;"/>
+            <h2 style="font-size: 24px; margin-bottom: 20px;">Внимание! Сайт содержит материалы 18+</h2>
+            <p style="margin-bottom: 30px;">Подтвердите, что вам есть 18 лет, чтобы продолжить.</p>
             <div>
-              <button onclick="checkAge()" style="background: #28a745; color: #fff; border: none; padding: 10px 20px; font-size: 16px; border-radius: 5px; cursor: pointer;">Подтвердить</button>
+              <button onclick="confirmAge(true)" style="background: #28a745; color: #fff; border: none; padding: 10px 20px; margin: 0 10px; font-size: 16px; border-radius: 5px; cursor: pointer;">Мне есть 18</button>
+              <button onclick="confirmAge(false)" style="background: #dc3545; color: #fff; border: none; padding: 10px 20px; margin: 0 10px; font-size: 16px; border-radius: 5px; cursor: pointer;">Мне нет 18</button>
             </div>
           </div>
         `;
-        document.body.appendChild(modal);
+        document.body.appendChild(confirmBox);
       }
     }
 
-    function checkAge() {
-      const input = document.getElementById("birthDate").value;
-      if (!input) {
-        alert("Пожалуйста, введите дату рождения.");
-        return;
-      }
-
-      const birthDate = new Date(input);
-      const today = new Date();
-      const age = today.getFullYear() - birthDate.getFullYear();
-      const m = today.getMonth() - birthDate.getMonth();
-      const isOldEnough = age > 18 || (age === 18 && m >= 0 && today.getDate() >= birthDate.getDate());
-
-      if (isOldEnough) {
+    function confirmAge(isAdult) {
+      if (isAdult) {
         localStorage.setItem("ageVerified", "true");
         document.body.removeChild(document.body.lastChild);
       } else {
-        alert("Извините, доступ запрещён. Вам должно быть 18+.");
-        window.location.href = "https://www.google.com";
+        window.location.href = "https://www.google.com"; // или ваш сайт/страница отказа
       }
     }
   </script>
