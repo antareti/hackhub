@@ -17,20 +17,13 @@
     }
     .smoke-video {
       position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
       object-fit: cover;
-      opacity: 0.08;
-      pointer-events: none;
-      z-index: 0;
-    }
-    .video-overlay {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: rgba(0, 0, 0, 0.4);
-      pointer-events: none;
-      z-index: 1;
+      opacity: 0.3; /* Более чёткое видео */
+      z-index: -1;
     }
     header {
       background: linear-gradient(90deg, #000000, #1a1a1a, #000000);
@@ -189,8 +182,6 @@
   <video class="smoke-video" autoplay loop muted>
     <source src="https://raw.githubusercontent.com/antareti/hackhub/main/smoke-loop.mp4" type="video/mp4">
   </video>
-
-  <div class="video-overlay"></div>
 
   <audio autoplay loop>
     <source src="https://raw.githubusercontent.com/antareti/hackhub/main/music/Smokie%20-%20Living%20Next%20Door%20to%20Alice%20(Official%20Video)%20(VOD).mp3" type="audio/mpeg">
