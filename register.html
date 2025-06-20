@@ -8,6 +8,32 @@
     if (localStorage.getItem("auth")) {
       window.location.href = "index.html";
     }
+    // Проверка возраста
+    window.onload = function () {
+      if (!localStorage.getItem("ageVerified")) {
+        const confirmBox = document.createElement("div");
+        confirmBox.innerHTML = `
+          <div style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.95); color: #fff; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 9999; text-align: center;">
+            <h2 style="font-size: 24px; margin-bottom: 20px;">Внимание! Сайт содержит материалы 18+</h2>
+            <p style="margin-bottom: 30px;">Подтвердите, что вам есть 18 лет, чтобы продолжить.</p>
+            <div>
+              <button onclick="confirmAge(true)" style="background: #28a745; color: #fff; border: none; padding: 10px 20px; margin: 0 10px; font-size: 16px; border-radius: 5px; cursor: pointer;">Мне есть 18</button>
+              <button onclick="confirmAge(false)" style="background: #dc3545; color: #fff; border: none; padding: 10px 20px; margin: 0 10px; font-size: 16px; border-radius: 5px; cursor: pointer;">Мне нет 18</button>
+            </div>
+          </div>
+        `;
+        document.body.appendChild(confirmBox);
+      }
+    }
+
+    function confirmAge(isAdult) {
+      if (isAdult) {
+        localStorage.setItem("ageVerified", "true");
+        document.body.removeChild(document.body.lastChild);
+      } else {
+        window.location.href = "https://www.google.com"; // или ваш сайт/страница отказа
+      }
+    }
   </script>
   <style>
     body {
@@ -84,7 +110,6 @@
       users.push({ username, password });
       localStorage.setItem("users", JSON.stringify(users));
       alert("Регистрация прошла успешно!");
-      // После успешной регистрации — на страницу входа
       window.location.href = "login.html";
     }
   </script>
