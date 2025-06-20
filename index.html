@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -8,7 +7,6 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap');
-
     body {
       margin: 0;
       background-color: #121212;
@@ -17,7 +15,6 @@
       position: relative;
       overflow-x: hidden;
     }
-
     .smoke-video {
       position: fixed;
       top: 0; left: 0;
@@ -27,7 +24,6 @@
       pointer-events: none;
       z-index: 0;
     }
-
     header {
       background: linear-gradient(90deg, #000000, #1a1a1a, #000000);
       padding: 20px 30px;
@@ -62,7 +58,6 @@
       background-color: #222;
       color: #eee;
       font-size: 17px;
-      outline-offset: 2px;
     }
     .logout-btn {
       background: none;
@@ -183,7 +178,6 @@
   </script>
 </head>
 <body>
-
   <video class="smoke-video" autoplay loop muted>
     <source src="https://raw.githubusercontent.com/antareti/hackhub/main/smoke-loop.mp4" type="video/mp4">
   </video>
@@ -193,6 +187,120 @@
     Ваш браузер не поддерживает аудио.
   </audio>
 
-  <!-- Остальной HTML оставлен без изменений -->
+  <header>
+    <div class="logo">Hack<span>Hub</span></div>
+    <div class="search">
+      <input id="searchInput" type="text" placeholder="Поиск...">
+    </div>
+    <button class="logout-btn" onclick="logout()">Выйти</button>
+  </header>
+
+  <nav class="categories">
+    <ul>
+      <li><a href="#">Главная</a></li>
+      <li><a href="#">Категории</a></li>
+      <li><a href="#">Новое</a></li>
+      <li><a href="#">Популярное</a></li>
+      <li><a href="#">Лучшее</a></li>
+      <li><a href="#">GIF</a></li>
+      <li><a href="#">VR</a></li>
+      <li><a href="#">Модель дня</a></li>
+      <li><a href="video.html">🎥 Видео</a></li>
+    </ul>
+  </nav>
+
+  <section class="gallery" id="gallery"></section>
+
+  <footer>© 2025 HackHub. Все права защищены.</footer>
+
+  <div id="imageModal" class="modal">
+    <span class="close" onclick="closeModal()">&times;</span>
+    <img class="modal-content" id="modalImg" alt="Просмотр изображения">
+  </div>
+
+  <script>
+    const repoOwner = "antareti";
+    const repoName = "hackhub";
+    const folderPath = "images";
+    const gallery = document.getElementById("gallery");
+    const searchInput = document.getElementById("searchInput");
+    const modal = document.getElementById("imageModal");
+    const modalImg = document.getElementById("modalImg");
+
+    let cards = [];
+
+    function createCard(file) {
+      const card = document.createElement("div");
+      card.className = "card";
+      const title = file.name.replace('загружено - ', '').split('.')[0].toLowerCase();
+      card.setAttribute('data-title', title);
+      const imageUrl = `https://raw.githubusercontent.com/${repoOwner}/${repoName}/main/${folderPath}/${file.name}`;
+      card.innerHTML = `
+        <img src="${imageUrl}" alt="${file.name}" onclick="openModal('${imageUrl}')">
+        <h3>${file.name.replace('загружено - ', '').split('.')[0]}</h3>
+      `;
+      return card;
+    }
+
+    function openModal(src) {
+      modal.style.display = "block";
+      modalImg.src = src;
+    }
+
+    function closeModal() {
+      modal.style.display = "none";
+      modalImg.src = "";
+    }
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") closeModal();
+    });
+
+    fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/contents/${folderPath}`)
+      .then(res => res.json())
+      .then(data => {
+        if (!Array.isArray(data)) throw new Error("Неверный формат данных");
+        data.forEach(file => {
+          if (/\.(png|jpe?g|gif)$/i.test(file.name)) {
+            const card = createCard(file);
+            gallery.appendChild(card);
+            cards.push(card);
+          }
+        });
+      })
+      .catch(err => {
+        console.error("Ошибка загрузки:", err);
+        gallery.innerHTML = "<p>Ошибка загрузки изображений.</p>";
+      });
+
+    function debounce(func, wait) {
+      let timeout;
+      return function(...args) {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func.apply(this, args), wait);
+      };
+    }
+
+    function filterCards() {
+      const query = searchInput.value.toLowerCase().trim();
+      if (!query) {
+        cards.forEach(card => card.style.display = "");
+        return;
+      }
+      const terms = query.split(/\s+/);
+      cards.forEach(card => {
+        const title = card.getAttribute("data-title");
+        const match = terms.every(term => title.includes(term));
+        card.style.display = match ? "" : "none";
+      });
+    }
+
+    function logout() {
+      localStorage.removeItem("auth");
+      window.location.href = "login.html";
+    }
+
+    searchInput.addEventListener("input", debounce(filterCards, 300));
+  </script>
 </body>
 </html>
