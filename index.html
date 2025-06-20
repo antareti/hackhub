@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap');
-    
+
     body {
       margin: 0;
       background-color: #121212;
@@ -17,27 +17,15 @@
       overflow-x: hidden;
     }
 
-    /* 🔥 Дымовая анимация поверх фона */
-    .smoke-overlay {
+    /* 🔥 Видео с дымом */
+    .smoke-video {
       position: fixed;
       top: 0; left: 0;
       width: 100%; height: 100%;
+      object-fit: cover;
+      opacity: 0.08;
       pointer-events: none;
-      z-index: 1;
-    }
-    .smoke-overlay::before {
-      content: "";
-      position: absolute;
-      width: 200%;
-      height: 200%;
-      background: radial-gradient(ellipse at center, rgba(255,255,255,0.03) 0%, rgba(0,0,0,0.0) 70%);
-      animation: drift 30s infinite linear;
-    }
-
-    @keyframes drift {
-      0% { transform: translate(-25%, -25%); }
-      50% { transform: translate(25%, 25%); }
-      100% { transform: translate(-25%, -25%); }
+      z-index: 0;
     }
 
     header {
@@ -195,7 +183,11 @@
   </script>
 </head>
 <body>
-  <div class="smoke-overlay"></div>
+
+  <!-- Видео с дымом на фоне -->
+  <video class="smoke-video" autoplay loop muted>
+    <source src="https://raw.githubusercontent.com/antareti/hackhub/main/videos/smoke-loop.mp4" type="video/mp4">
+  </video>
 
   <audio autoplay loop>
     <source src="https://raw.githubusercontent.com/antareti/hackhub/main/music/Smokie%20-%20Living%20Next%20Door%20to%20Alice%20(Official%20Video)%20(VOD).mp3" type="audio/mpeg">
