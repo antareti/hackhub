@@ -146,6 +146,17 @@
     .card .btn:hover {
       text-decoration: underline;
     }
+    .like-section {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .like-btn.liked {
+      color: red;
+    }
+    .like-count {
+      font-size: 14px;
+    }
     .modal {
       display: none;
       position: fixed;
@@ -233,7 +244,10 @@
         <h3>${file.name.replace('загружено - ', '').split('.')[0]}</h3>
         <div class="actions">
           <button class="btn" onclick="downloadImage('${imageUrl}')">Скачать</button>
-          <button class="btn">❤</button>
+          <div class="like-section">
+            <button class="btn like-btn" onclick="toggleLike('${file.name}')">❤</button>
+            <span id="like-count-${file.name}" class="like-count">0</span>
+          </div>
         </div>
       `;
       return card;
@@ -283,6 +297,29 @@
       link.click();
     }
 
+    function toggleLike(name) {
+      const keyLiked = `like-${name}`;
+      const keyCount = `like-count-${name}`;
+      let liked = localStorage.getItem(keyLiked) === "true";
+      liked = !liked;
+      localStorage.setItem(keyLiked, liked);
+
+      let count = parseInt(localStorage.getItem(keyCount) || "0");
+      count = liked ? count + 1 : Math.max(0, count - 1);
+      localStorage.setItem(keyCount, count);
+
+      updateLikeDisplay(name);
+    }
+
+    function updateLikeDisplay(name) {
+      const btn = document.querySelector(`.like-btn[onclick*="${name}"]`);
+      const countElement = document.getElementById(`like-count-${name}`);
+      const liked = localStorage.getItem(`like-${name}`) === "true";
+      const count = localStorage.getItem(`like-count-${name}`) || "0";
+      if (btn) btn.classList.toggle("liked", liked);
+      if (countElement) countElement.textContent = count;
+    }
+
     document.addEventListener("keydown", (e) => {
       if (e.key === "Escape") closeModal();
     });
@@ -296,6 +333,7 @@
             const card = createCard(file);
             gallery.appendChild(card);
             cards.push(card);
+            updateLikeDisplay(file.name);
           }
         });
       })
