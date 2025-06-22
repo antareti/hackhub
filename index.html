@@ -15,7 +15,6 @@
       overflow-x: hidden;
     }
 
-    /* ДИСКЛЕЙМЕР */
     #disclaimer {
       position: fixed;
       z-index: 10000;
@@ -50,6 +49,7 @@
       opacity: 0.3;
       z-index: -1;
     }
+
     header {
       background: linear-gradient(90deg, #000000, #1a1a1a, #000000);
       padding: 20px 30px;
@@ -97,6 +97,7 @@
       background-color: #ff6600;
       color: #121212;
     }
+
     .categories {
       background-color: #1a1a1a;
       padding: 12px 30px;
@@ -127,6 +128,18 @@
       background-color: #ff6600;
       color: #121212;
     }
+
+    .categories li a.premium {
+      color: gold;
+      font-weight: 900;
+      animation: blink 1.4s infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
     .gallery {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
@@ -135,6 +148,7 @@
       max-width: 1200px;
       margin: 0 auto;
     }
+
     .card {
       background-color: #1e1e1e;
       border-radius: 12px;
@@ -228,6 +242,7 @@
   <video class="smoke-video" autoplay loop muted>
     <source src="https://raw.githubusercontent.com/antareti/hackhub/main/smoke-loop.mp4" type="video/mp4">
   </video>
+
   <header>
     <div class="logo">Hack<span>Hub</span></div>
     <div class="search">
@@ -235,6 +250,7 @@
     </div>
     <button class="logout-btn" onclick="logout()">Выйти</button>
   </header>
+
   <nav class="categories">
     <ul>
       <li><a href="#" class="active">Главная</a></li>
@@ -246,8 +262,10 @@
       <li><a href="#">VR</a></li>
       <li><a href="#">Модель дня</a></li>
       <li><a href="video.html">🎥 Видео</a></li>
+      <li><a href="premium.html" class="premium">💎 Премиум</a></li>
     </ul>
   </nav>
+
   <section class="gallery" id="gallery"></section>
   <footer>© 2025 HackHub. Все права защищены.</footer>
   <div id="imageModal" class="modal">
@@ -255,7 +273,6 @@
     <img class="modal-content" id="modalImg" alt="Просмотр изображения">
   </div>
   <script>
-    // ДИСКЛЕЙМЕР: скрыть после загрузки
     window.onload = () => {
       const disclaimer = document.getElementById("disclaimer");
       disclaimer.classList.add("fade-out");
