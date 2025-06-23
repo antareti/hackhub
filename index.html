@@ -243,6 +243,8 @@
     <source src="https://raw.githubusercontent.com/antareti/hackhub/main/smoke-loop.mp4" type="video/mp4">
   </video>
 
+  <audio id="sexyAudio" src="sexy_ad.mp3" preload="auto" autoplay></audio>
+
   <header>
     <div class="logo">Hack<span>Hub</span></div>
     <div class="search">
@@ -277,6 +279,18 @@
       const disclaimer = document.getElementById("disclaimer");
       disclaimer.classList.add("fade-out");
       setTimeout(() => disclaimer.remove(), 1000);
+
+      // Попытка запустить звук, если браузер блокирует autoplay
+      const audio = document.getElementById("sexyAudio");
+      if (audio) {
+        const playPromise = audio.play();
+        if (playPromise !== undefined) {
+          playPromise.catch(() => {
+            // Здесь можно добавить UI для запуска звука пользователем
+            console.log("Автовоспроизведение заблокировано браузером.");
+          });
+        }
+      }
     };
 
     const repoOwner = "antareti";
