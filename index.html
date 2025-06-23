@@ -14,6 +14,7 @@
       font-family: 'Montserrat', Arial, sans-serif;
       overflow-x: hidden;
     }
+
     #disclaimer {
       position: fixed;
       z-index: 10000;
@@ -37,6 +38,7 @@
       opacity: 0;
       pointer-events: none;
     }
+
     .smoke-video {
       position: fixed;
       top: 0;
@@ -47,6 +49,7 @@
       opacity: 0.3;
       z-index: -1;
     }
+
     header {
       background: linear-gradient(90deg, #000000, #1a1a1a, #000000);
       padding: 20px 30px;
@@ -94,6 +97,7 @@
       background-color: #ff6600;
       color: #121212;
     }
+
     .categories {
       background-color: #1a1a1a;
       padding: 12px 30px;
@@ -124,22 +128,18 @@
       background-color: #ff6600;
       color: #121212;
     }
+
     .categories li a.premium {
       color: gold;
       font-weight: 900;
       animation: blink 1.4s infinite;
     }
+
     @keyframes blink {
       0%, 100% { opacity: 1; }
       50% { opacity: 0.4; }
     }
-    #imageCount {
-      text-align: center;
-      color: #ff6600;
-      margin: 15px;
-      font-size: 18px;
-      animation: fadeIn 0.5s ease-in-out;
-    }
+
     .gallery {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
@@ -148,6 +148,7 @@
       max-width: 1200px;
       margin: 0 auto;
     }
+
     .card {
       background-color: #1e1e1e;
       border-radius: 12px;
@@ -232,61 +233,172 @@
   </style>
 </head>
 <body>
-  <header>
-    <div class="logo"><span>Hack</span>Hub</div>
-    <div class="search"><input id="searchInput" type="text" placeholder="Поиск..." oninput="filterCards()"/></div>
-    <button class="logout-btn">Выход</button>
-  </header>
 
-  <div class="categories">
-    <ul>
-      <li><a href="#" class="active">Все</a></li>
-      <li><a href="#">NSFW</a></li>
-      <li><a href="#">Art</a></li>
-      <li><a href="#">AI</a></li>
-      <li><a class="premium" href="#">Премиум</a></li>
-    </ul>
+  <!-- ДИСКЛЕЙМЕР -->
+  <div id="disclaimer">
+    <img src="22.gif" alt="Disclaimer">
   </div>
 
-  <div id="imageCount">Показано: 0</div>
-  <div class="gallery" id="gallery"></div>
+  <video class="smoke-video" autoplay loop muted>
+    <source src="https://raw.githubusercontent.com/antareti/hackhub/main/smoke-loop.mp4" type="video/mp4">
+  </video>
 
+  <header>
+    <div class="logo">Hack<span>Hub</span></div>
+    <div class="search">
+      <input id="searchInput" type="text" placeholder="Поиск...">
+    </div>
+    <button class="logout-btn" onclick="logout()">Выйти</button>
+  </header>
+
+  <nav class="categories">
+    <ul>
+      <li><a href="#" class="active">Главная</a></li>
+      <li><a href="#">Категории</a></li>
+      <li><a href="#">Новое</a></li>
+      <li><a href="#">Популярное</a></li>
+      <li><a href="#">Лучшее</a></li>
+      <li><a href="#">GIF</a></li>
+      <li><a href="#">VR</a></li>
+      <li><a href="#">Модель дня</a></li>
+      <li><a href="video.html">🎥 Видео</a></li>
+      <li><a href="premium.html" class="premium">💎 Премиум</a></li>
+    </ul>
+  </nav>
+
+  <section class="gallery" id="gallery"></section>
+  <footer>© 2025 HackHub. Все права защищены.</footer>
+  <div id="imageModal" class="modal">
+    <span class="close" onclick="closeModal()">&times;</span>
+    <img class="modal-content" id="modalImg" alt="Просмотр изображения">
+  </div>
   <script>
-    const searchInput = document.getElementById('searchInput');
-    const gallery = document.getElementById('gallery');
-    const imageCountElement = document.getElementById('imageCount');
+    window.onload = () => {
+      const disclaimer = document.getElementById("disclaimer");
+      disclaimer.classList.add("fade-out");
+      setTimeout(() => disclaimer.remove(), 1000);
+    };
 
-    const cards = [];
-    for (let i = 1; i <= 10; i++) {
-      const div = document.createElement('div');
-      div.className = 'card';
-      div.setAttribute('data-title', `Картинка ${i}`);
-      div.innerHTML = `
-        <img src="https://placehold.co/600x400?text=Image+${i}" alt="Image ${i}" />
-        <h3>Картинка ${i}</h3>
+    const repoOwner = "antareti";
+    const repoName = "hackhub";
+    const folderPath = "images";
+    const gallery = document.getElementById("gallery");
+    const searchInput = document.getElementById("searchInput");
+    const modal = document.getElementById("imageModal");
+    const modalImg = document.getElementById("modalImg");
+
+    let cards = [];
+
+    function createCard(file) {
+      const card = document.createElement("div");
+      card.className = "card";
+      const title = file.name.replace('загружено - ', '').split('.')[0].toLowerCase();
+      card.setAttribute('data-title', title);
+      const imageUrl = `https://raw.githubusercontent.com/${repoOwner}/${repoName}/main/${folderPath}/${file.name}`;
+      card.innerHTML = `
+        <img src="${imageUrl}" alt="${file.name}" onclick="openModal('${imageUrl}')">
+        <h3>${file.name.replace('загружено - ', '').split('.')[0]}</h3>
         <div class="actions">
+          <button class="btn" onclick="downloadImage('${imageUrl}')">Скачать</button>
           <div class="like-section">
-            <i class="fa fa-heart like-btn"></i>
-            <span class="like-count">0</span>
+            <button class="btn like-btn" onclick="toggleLike('${file.name}')">❤</button>
+            <span id="like-count-${file.name}" class="like-count">0</span>
           </div>
-          <button class="btn">Подробнее</button>
         </div>
       `;
-      gallery.appendChild(div);
-      cards.push(div);
+      return card;
     }
+
+    function openModal(src) {
+      modal.style.display = "block";
+      modalImg.src = src;
+    }
+
+    function closeModal() {
+      modal.style.display = "none";
+      modalImg.src = "";
+    }
+
+    function logout() {
+      localStorage.removeItem("auth");
+      window.location.href = "login.html";
+    }
+
+    function debounce(func, wait) {
+      let timeout;
+      return function(...args) {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func.apply(this, args), wait);
+      };
+    }
+
     function filterCards() {
       const query = searchInput.value.toLowerCase().trim();
-      let visibleCount = 0;
+      if (!query) {
+        cards.forEach(card => card.style.display = "");
+        return;
+      }
+      const terms = query.split(/\s+/);
       cards.forEach(card => {
-        const title = card.getAttribute('data-title').toLowerCase();
-        const visible = title.includes(query);
-        card.style.display = visible ? '' : 'none';
-        if (visible) visibleCount++;
+        const title = card.getAttribute("data-title");
+        const match = terms.every(term => title.includes(term));
+        card.style.display = match ? "" : "none";
       });
-      imageCountElement.textContent = `Показано: ${visibleCount} из ${cards.length}`;
     }
-    filterCards();
+
+    function downloadImage(url) {
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = url.split("/").pop();
+      link.click();
+    }
+
+    function toggleLike(name) {
+      const keyLiked = `like-${name}`;
+      const keyCount = `like-count-${name}`;
+      let liked = localStorage.getItem(keyLiked) === "true";
+      liked = !liked;
+      localStorage.setItem(keyLiked, liked);
+
+      let count = parseInt(localStorage.getItem(keyCount) || "0");
+      count = liked ? count + 1 : Math.max(0, count - 1);
+      localStorage.setItem(keyCount, count);
+
+      updateLikeDisplay(name);
+    }
+
+    function updateLikeDisplay(name) {
+      const btn = document.querySelector(`.like-btn[onclick*="${name}"]`);
+      const countElement = document.getElementById(`like-count-${name}`);
+      const liked = localStorage.getItem(`like-${name}`) === "true";
+      const count = localStorage.getItem(`like-count-${name}`) || "0";
+      if (btn) btn.classList.toggle("liked", liked);
+      if (countElement) countElement.textContent = count;
+    }
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") closeModal();
+    });
+
+    fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/contents/${folderPath}`)
+      .then(res => res.json())
+      .then(data => {
+        if (!Array.isArray(data)) throw new Error("Неверный формат данных");
+        data.forEach(file => {
+          if (/\.(png|jpe?g|gif)$/i.test(file.name)) {
+            const card = createCard(file);
+            gallery.appendChild(card);
+            cards.push(card);
+            updateLikeDisplay(file.name);
+          }
+        });
+      })
+      .catch(err => {
+        console.error("Ошибка загрузки:", err);
+        gallery.innerHTML = "<p>Ошибка загрузки изображений.</p>";
+      });
+
+    searchInput.addEventListener("input", debounce(filterCards, 300));
   </script>
 </body>
 </html>
