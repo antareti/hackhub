@@ -156,6 +156,7 @@
       overflow: hidden;
       cursor: pointer;
       transition: 0.3s;
+      position: relative;
     }
     .card:hover {
       box-shadow: 0 0 20px #ff6600, 0 0 35px #ff9900;
@@ -233,8 +234,6 @@
   </style>
 </head>
 <body>
-
-  <!-- ДИСКЛЕЙМЕР -->
   <div id="disclaimer">
     <img src="22.gif" alt="Disclaimer">
   </div>
@@ -268,10 +267,12 @@
 
   <section class="gallery" id="gallery"></section>
   <footer>© 2025 HackHub. Все права защищены.</footer>
+
   <div id="imageModal" class="modal">
     <span class="close" onclick="closeModal()">&times;</span>
     <img class="modal-content" id="modalImg" alt="Просмотр изображения">
   </div>
+
   <script>
     window.onload = () => {
       const disclaimer = document.getElementById("disclaimer");
@@ -286,18 +287,27 @@
     const searchInput = document.getElementById("searchInput");
     const modal = document.getElementById("imageModal");
     const modalImg = document.getElementById("modalImg");
-
     let cards = [];
 
     function createCard(file) {
       const card = document.createElement("div");
       card.className = "card";
-      const title = file.name.replace('загружено - ', '').split('.')[0].toLowerCase();
+      const baseName = file.name.replace('загружено - ', '').split('.')[0];
+      const title = baseName.toLowerCase();
       card.setAttribute('data-title', title);
       const imageUrl = `https://raw.githubusercontent.com/${repoOwner}/${repoName}/main/${folderPath}/${file.name}`;
+
+      const altImages = [1,2,3,4,5]
+        .map(n => `https://raw.githubusercontent.com/${repoOwner}/${repoName}/main/${folderPath}/${baseName}_${n}.webp`);
+
+      let imgTag = `<img src="${imageUrl}" alt="${file.name}"`;
+      if (altImages.length) {
+        imgTag = `<img src="${imageUrl}" alt="${file.name}" data-sequence='${JSON.stringify(altImages)}' onclick="openModal('${imageUrl}')" />`;
+      }
+
       card.innerHTML = `
-        <img src="${imageUrl}" alt="${file.name}" onclick="openModal('${imageUrl}')">
-        <h3>${file.name.replace('загружено - ', '').split('.')[0]}</h3>
+        ${imgTag}
+        <h3>${baseName}</h3>
         <div class="actions">
           <button class="btn" onclick="downloadImage('${imageUrl}')">Скачать</button>
           <div class="like-section">
@@ -306,6 +316,8 @@
           </div>
         </div>
       `;
+
+      setTimeout(() => observer.observe(card.querySelector('img')), 100);
       return card;
     }
 
@@ -376,8 +388,20 @@
       if (countElement) countElement.textContent = count;
     }
 
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape") closeModal();
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting && entry.target.dataset.sequence) {
+          const img = entry.target;
+          const frames = JSON.parse(img.dataset.sequence);
+          let i = 0;
+          img._interval = setInterval(() => {
+            i = (i + 1) % frames.length;
+            img.src = frames[i];
+          }, 800);
+        } else {
+          clearInterval(entry.target._interval);
+        }
+      });
     });
 
     fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/contents/${folderPath}`)
@@ -399,6 +423,9 @@
       });
 
     searchInput.addEventListener("input", debounce(filterCards, 300));
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") closeModal();
+    });
   </script>
 </body>
 </html>
