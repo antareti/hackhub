@@ -128,13 +128,11 @@
       background-color: #ff6600;
       color: #121212;
     }
-
     .categories li a.premium {
       color: gold;
       font-weight: 900;
       animation: blink 1.4s infinite;
     }
-
     @keyframes blink {
       0%, 100% { opacity: 1; }
       50% { opacity: 0.4; }
@@ -268,6 +266,8 @@
     </ul>
   </nav>
 
+  <p id="imageCount" style="text-align:center;color:#888;margin:15px;font-size:16px;"></p>
+
   <section class="gallery" id="gallery"></section>
   <footer>© 2025 HackHub. Все права защищены.</footer>
   <div id="imageModal" class="modal">
@@ -280,14 +280,12 @@
       disclaimer.classList.add("fade-out");
       setTimeout(() => disclaimer.remove(), 1000);
 
-      // Попытка запустить звук, если браузер блокирует autoplay
       const audio = document.getElementById("sexyAudio");
       if (audio) {
         const playPromise = audio.play();
         if (playPromise !== undefined) {
           playPromise.catch(() => {
-            // Здесь можно добавить UI для запуска звука пользователем
-            console.log("Автовоспроизведение заблокировано браузером.");
+            console.log("Автовоспроизведение заблокировано.");
           });
         }
       }
@@ -300,6 +298,7 @@
     const searchInput = document.getElementById("searchInput");
     const modal = document.getElementById("imageModal");
     const modalImg = document.getElementById("modalImg");
+    const imageCountElement = document.getElementById("imageCount");
 
     let cards = [];
 
@@ -406,6 +405,7 @@
             updateLikeDisplay(file.name);
           }
         });
+        imageCountElement.textContent = `Всего изображений: ${cards.length}`;
       })
       .catch(err => {
         console.error("Ошибка загрузки:", err);
