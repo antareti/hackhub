@@ -14,7 +14,222 @@
       font-family: 'Montserrat', Arial, sans-serif;
       overflow-x: hidden;
     }
-    /* Остальной CSS остаётся без изменений */
+
+    #disclaimer {
+      position: fixed;
+      z-index: 10000;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 1s ease;
+    }
+    #disclaimer img {
+      max-width: 90%;
+      max-height: 90%;
+      border-radius: 20px;
+      box-shadow: 0 0 40px #ff6600;
+    }
+    #disclaimer.fade-out {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .smoke-video {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.3;
+      z-index: -1;
+    }
+
+    header {
+      background: linear-gradient(90deg, #000000, #1a1a1a, #000000);
+      padding: 20px 30px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 0 20px rgba(255, 102, 0, 0.9);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .logo {
+      font-size: 40px;
+      font-weight: 900;
+      color: #fff;
+      cursor: default;
+    }
+    .logo span {
+      background-color: #ff6600;
+      padding: 0 10px;
+      color: #121212;
+      border-radius: 6px;
+      box-shadow: 0 0 10px #ff6600;
+    }
+    .search input {
+      padding: 10px 18px;
+      width: 320px;
+      border-radius: 30px;
+      border: 2px solid #ff6600;
+      background-color: #222;
+      color: #eee;
+      font-size: 17px;
+    }
+    .logout-btn {
+      background: none;
+      border: 2px solid #ff6600;
+      color: #ff6600;
+      padding: 8px 18px;
+      border-radius: 20px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .logout-btn:hover {
+      background-color: #ff6600;
+      color: #121212;
+    }
+
+    .categories {
+      background-color: #1a1a1a;
+      padding: 12px 30px;
+      box-shadow: inset 0 -1px 0 #333;
+    }
+    .categories ul {
+      list-style: none;
+      display: flex;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      gap: 18px;
+      margin: 0;
+      padding: 0;
+      -webkit-overflow-scrolling: touch;
+    }
+    .categories li a {
+      color: #ff6600;
+      font-weight: bold;
+      text-decoration: none;
+      font-size: 15px;
+      padding: 6px 12px;
+      border-radius: 20px;
+      transition: background 0.2s, color 0.2s;
+      white-space: nowrap;
+    }
+    .categories li a:hover,
+    .categories li a.active {
+      background-color: #ff6600;
+      color: #121212;
+    }
+
+    .categories li a.premium {
+      color: gold;
+      font-weight: 900;
+      animation: blink 1.4s infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 18px;
+      padding: 25px 30px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .card {
+      background-color: #1e1e1e;
+      border-radius: 12px;
+      box-shadow: 0 0 12px rgba(255, 102, 0, 0.4);
+      overflow: hidden;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .card:hover {
+      box-shadow: 0 0 20px #ff6600, 0 0 35px #ff9900;
+    }
+    .card img {
+      width: 100%;
+      display: block;
+    }
+    .card h3 {
+      font-size: 16px;
+      font-weight: 700;
+      margin: 12px 15px 6px;
+      color: #ff6600;
+    }
+    .card .actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 15px 12px;
+    }
+    .card .btn {
+      background-color: transparent;
+      border: none;
+      color: #ff6600;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .card .btn:hover {
+      text-decoration: underline;
+    }
+    .like-section {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .like-btn.liked {
+      color: red;
+    }
+    .like-count {
+      font-size: 14px;
+    }
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 9999;
+      padding-top: 70px;
+      left: 0;
+      top: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: rgba(18, 18, 18, 0.95);
+      animation: fadeIn 0.4s ease;
+    }
+    @keyframes fadeIn {
+      from {opacity: 0;}
+      to {opacity: 1;}
+    }
+    .modal-content {
+      margin: auto;
+      display: block;
+      max-width: 90%;
+      max-height: 80vh;
+      border-radius: 14px;
+      box-shadow: 0 0 30px #ff6600;
+    }
+    .close {
+      position: absolute;
+      top: 20px;
+      right: 40px;
+      color: #ff6600;
+      font-size: 42px;
+      font-weight: 900;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
@@ -57,8 +272,13 @@
     <span class="close" onclick="closeModal()">&times;</span>
     <img class="modal-content" id="modalImg" alt="Просмотр изображения">
   </div>
-
   <script>
+    window.onload = () => {
+      const disclaimer = document.getElementById("disclaimer");
+      disclaimer.classList.add("fade-out");
+      setTimeout(() => disclaimer.remove(), 1000);
+    };
+
     const repoOwner = "antareti";
     const repoName = "hackhub";
     const folderPath = "images";
@@ -66,43 +286,18 @@
     const searchInput = document.getElementById("searchInput");
     const modal = document.getElementById("imageModal");
     const modalImg = document.getElementById("modalImg");
-    let cards = [];
 
-    const observer = new IntersectionObserver(entries => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting && entry.target.dataset.sequence) {
-          const img = entry.target;
-          const frames = JSON.parse(img.dataset.sequence);
-          let i = 0;
-          img._interval = setInterval(() => {
-            i = (i + 1) % frames.length;
-            img.src = frames[i];
-          }, 800);
-        } else {
-          clearInterval(entry.target._interval);
-        }
-      });
-    });
+    let cards = [];
 
     function createCard(file) {
       const card = document.createElement("div");
       card.className = "card";
-      const baseName = file.name.replace('загружено - ', '').split('.')[0];
-      const title = baseName.toLowerCase();
+      const title = file.name.replace('загружено - ', '').split('.')[0].toLowerCase();
       card.setAttribute('data-title', title);
       const imageUrl = `https://raw.githubusercontent.com/${repoOwner}/${repoName}/main/${folderPath}/${file.name}`;
-
-      const altImages = [1,2,3,4,5]
-        .map(n => `https://raw.githubusercontent.com/${repoOwner}/${repoName}/main/${folderPath}/${baseName}_${n}.webp`);
-
-      let imgTag = `<img src="${imageUrl}" alt="${file.name}"`; 
-      if (altImages.length) {
-        imgTag = `<img src="${imageUrl}" alt="${file.name}" data-sequence='${JSON.stringify(altImages)}' />`;
-      }
-
       card.innerHTML = `
-        ${imgTag}
-        <h3>${baseName}</h3>
+        <img src="${imageUrl}" alt="${file.name}" onclick="openModal('${imageUrl}')">
+        <h3>${file.name.replace('загружено - ', '').split('.')[0]}</h3>
         <div class="actions">
           <button class="btn" onclick="downloadImage('${imageUrl}')">Скачать</button>
           <div class="like-section">
@@ -111,49 +306,22 @@
           </div>
         </div>
       `;
-
-      setTimeout(() => observer.observe(card.querySelector('img')), 100);
       return card;
     }
 
-    function downloadImage(url) {
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = url.split("/").pop();
-      link.click();
-    }
-    function toggleLike(name) {
-      const keyLiked = `like-${name}`;
-      const keyCount = `like-count-${name}`;
-      let liked = localStorage.getItem(keyLiked) === "true";
-      liked = !liked;
-      localStorage.setItem(keyLiked, liked);
-
-      let count = parseInt(localStorage.getItem(keyCount) || "0");
-      count = liked ? count + 1 : Math.max(0, count - 1);
-      localStorage.setItem(keyCount, count);
-
-      updateLikeDisplay(name);
-    }
-    function updateLikeDisplay(name) {
-      const btn = document.querySelector(`.like-btn[onclick*="${name}"]`);
-      const countElement = document.getElementById(`like-count-${name}`);
-      const liked = localStorage.getItem(`like-${name}`) === "true";
-      const count = localStorage.getItem(`like-count-${name}`) || "0";
-      if (btn) btn.classList.toggle("liked", liked);
-      if (countElement) countElement.textContent = count;
-    }
-    function logout() {
-      localStorage.removeItem("auth");
-      window.location.href = "login.html";
-    }
     function openModal(src) {
       modal.style.display = "block";
       modalImg.src = src;
     }
+
     function closeModal() {
       modal.style.display = "none";
       modalImg.src = "";
+    }
+
+    function logout() {
+      localStorage.removeItem("auth");
+      window.location.href = "login.html";
     }
 
     function debounce(func, wait) {
@@ -178,6 +346,36 @@
       });
     }
 
+    function downloadImage(url) {
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = url.split("/").pop();
+      link.click();
+    }
+
+    function toggleLike(name) {
+      const keyLiked = `like-${name}`;
+      const keyCount = `like-count-${name}`;
+      let liked = localStorage.getItem(keyLiked) === "true";
+      liked = !liked;
+      localStorage.setItem(keyLiked, liked);
+
+      let count = parseInt(localStorage.getItem(keyCount) || "0");
+      count = liked ? count + 1 : Math.max(0, count - 1);
+      localStorage.setItem(keyCount, count);
+
+      updateLikeDisplay(name);
+    }
+
+    function updateLikeDisplay(name) {
+      const btn = document.querySelector(`.like-btn[onclick*="${name}"]`);
+      const countElement = document.getElementById(`like-count-${name}`);
+      const liked = localStorage.getItem(`like-${name}`) === "true";
+      const count = localStorage.getItem(`like-count-${name}`) || "0";
+      if (btn) btn.classList.toggle("liked", liked);
+      if (countElement) countElement.textContent = count;
+    }
+
     document.addEventListener("keydown", (e) => {
       if (e.key === "Escape") closeModal();
     });
@@ -187,7 +385,7 @@
       .then(data => {
         if (!Array.isArray(data)) throw new Error("Неверный формат данных");
         data.forEach(file => {
-          if (/\.(png|jpe?g|gif|webp)$/i.test(file.name)) {
+          if (/\.(png|jpe?g|gif)$/i.test(file.name)) {
             const card = createCard(file);
             gallery.appendChild(card);
             cards.push(card);
@@ -201,12 +399,6 @@
       });
 
     searchInput.addEventListener("input", debounce(filterCards, 300));
-
-    window.onload = () => {
-      const disclaimer = document.getElementById("disclaimer");
-      disclaimer.classList.add("fade-out");
-      setTimeout(() => disclaimer.remove(), 1000);
-    };
   </script>
 </body>
 </html>
