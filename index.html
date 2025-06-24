@@ -76,6 +76,22 @@
       100% { transform: rotate(360deg) translateX(0); }
     }
 
+    /* Новый эффект — плавное гало за курсором */
+    #cursor-light {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 150px;
+      height: 150px;
+      pointer-events: none;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,102,0,0.4) 0%, rgba(255,102,0,0) 60%);
+      filter: blur(30px);
+      transform: translate(-50%, -50%);
+      transition: top 0.15s ease-out, left 0.15s ease-out;
+      z-index: 9999;
+    }
+
     header {
       background: linear-gradient(90deg, #000000, #1a1a1a, #000000);
       padding: 20px 30px;
@@ -273,6 +289,9 @@
   <div class="spotlight left"></div>
   <div class="spotlight right"></div>
 
+  <!-- Плавающий свет за курсором -->
+  <div id="cursor-light"></div>
+
   <header>
     <div class="logo">Hack<span>Hub</span></div>
     <div class="search">
@@ -429,6 +448,13 @@
       });
 
     searchInput.addEventListener("input", debounce(filterCards, 300));
+
+    // Плавающий свет за курсором
+    const cursorLight = document.getElementById('cursor-light');
+    window.addEventListener('mousemove', e => {
+      cursorLight.style.top = e.clientY + 'px';
+      cursorLight.style.left = e.clientX + 'px';
+    });
   </script>
 </body>
 </html>
