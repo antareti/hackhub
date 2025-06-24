@@ -392,4 +392,72 @@
       cards.forEach(card => {
         const title = card.getAttribute("data-title");
         const match = terms.every(term => title.includes(term));
-        card.style
+        card.style.display = match ? "" : "none";
+      });
+    }
+
+    function downloadImage(url) {
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = url.split("/").pop();
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    function toggleLike(name) {
+      const keyLiked = `like-${name}`;
+      const keyCount = `like-count-${name}`;
+      let liked = localStorage.getItem(keyLiked) === "true";
+      liked = !liked;
+      localStorage.setItem(keyLiked, liked);
+
+      let count = parseInt(localStorage.getItem(keyCount) || "0");
+      count = liked ? count + 1 : Math.max(0, count - 1);
+      localStorage.setItem(keyCount, count);
+
+      updateLikeDisplay(name);
+    }
+
+    function updateLikeDisplay(name) {
+      const btn = document.querySelector(`.like-btn[onclick*="${name}"]`);
+      const countElement = document.getElementById(`like-count-${name}`);
+      const liked = localStorage.getItem(`like-${name}`) === "true";
+      const count = localStorage.getItem(`like-count-${name}`) || "0";
+      if (btn) btn.classList.toggle("liked", liked);
+      if (countElement) countElement.textContent = count;
+    }
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") closeModal();
+    });
+
+    fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/contents/${folderPath}`)
+      .then(res => res.json())
+      .then(data => {
+        if (!Array.isArray(data)) throw new Error("Неверный формат данных");
+        data.forEach(file => {
+          if (/\.(png|jpe?g|gif)$/i.test(file.name)) {
+            const card = createCard(file);
+            gallery.appendChild(card);
+            cards.push(card);
+            updateLikeDisplay(file.name);
+          }
+        });
+      })
+      .catch(err => {
+        console.error("Ошибка загрузки:", err);
+        gallery.innerHTML = "<p>Ошибка загрузки изображений.</p>";
+      });
+
+    searchInput.addEventListener("input", debounce(filterCards, 300));
+
+    // Плавающий свет за курсором
+    const cursorLight = document.getElementById('cursor-light');
+    window.addEventListener('mousemove', e => {
+      cursorLight.style.top = e.clientY + 'px';
+      cursorLight.style.left = e.clientX + 'px';
+    });
+  </script>
+</body>
+</html>
