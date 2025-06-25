@@ -276,7 +276,6 @@
 </head>
 <body>
 
-  <!-- ДИСКЛЕЙМЕР -->
   <div id="disclaimer">
     <img src="22.gif" alt="Disclaimer">
   </div>
@@ -285,11 +284,9 @@
     <source src="https://raw.githubusercontent.com/antareti/hackhub/main/smoke-loop.mp4" type="video/mp4">
   </video>
 
-  <!-- Эффекты прожекторов -->
   <div class="spotlight left"></div>
   <div class="spotlight right"></div>
 
-  <!-- Плавающий свет за курсором -->
   <div id="cursor-light"></div>
 
   <header>
@@ -340,27 +337,25 @@
     let cards = [];
 
     function createCard(file) {
-  const card = document.createElement("div");
-  card.className = "card";
-  const title = file.name.replace('загружено - ', '').split('.')[0].toLowerCase();
-  card.setAttribute('data-title', title);
-  const imageUrl = `https://raw.githubusercontent.com/${repoOwner}/${repoName}/main/${folderPath}/${file.name}`;
-  card.innerHTML = `
-    <img src="${imageUrl}" alt="${file.name}" onclick="openModal('${imageUrl}')">
-    <h3>${file.name.replace('загружено - ', '').split('.')[0]}</h3>
-    <div class="actions">
-      <button class="btn" onclick="downloadImage('${imageUrl}')">Скачать</button>
-      <div class="like-section">
-        <button class="btn like-btn" onclick="toggleLike('${file.name}')">
-          <img src="https://i.imgur.com/7ZQm7Yj.png" alt="попка" style="width:20px; height:20px; vertical-align:middle;">
-        </button>
-        <span id="like-count-${file.name}" class="like-count">0</span>
-      </div>
-    </div>
-  `;
-  return card;
-}
-
+      const card = document.createElement("div");
+      card.className = "card";
+      const title = file.name.replace('загружено - ', '').split('.')[0].toLowerCase();
+      card.setAttribute('data-title', title);
+      const imageUrl = `https://raw.githubusercontent.com/${repoOwner}/${repoName}/main/${folderPath}/${file.name}`;
+      card.innerHTML = `
+        <img src="${imageUrl}" alt="${file.name}" onclick="openModal('${imageUrl}')">
+        <h3>${file.name.replace('загружено - ', '').split('.')[0]}</h3>
+        <div class="actions">
+          <button class="btn" onclick="downloadImage('${imageUrl}')">Скачать</button>
+          <div class="like-section">
+            <button class="btn like-btn" onclick="toggleLike('${file.name}')">
+              <img src="https://i.imgur.com/7ZQm7Yj.png" alt="попка" style="width:20px; height:20px; vertical-align:middle;">
+            </button>
+            <span id="like-count-${file.name}" class="like-count">0</span>
+          </div>
+        </div>
+      `;
+      return card;
     }
 
     function openModal(src) {
