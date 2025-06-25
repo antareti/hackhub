@@ -287,7 +287,8 @@
         <i class="fas fa-arrow-up"></i>
     </button>
 
-    <audio id="showerSound" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" preload="auto"></audio>
+    <audio id="showerSound" src="path/to/your/shower-sound.mp3" preload="auto"></audio>
+
     <script>
         (function() {
             const repoOwner = "antareti";
@@ -361,6 +362,7 @@
                 video.addEventListener('play', () => {
                     // Если звук уже играет, не запускаем его снова
                     if (showerSound.paused) {
+                        showerSound.currentTime = 0; // Начинаем звук с начала каждый раз
                         showerSound.play().catch(e => console.error("Ошибка воспроизведения звука душа:", e));
                     }
                 });
