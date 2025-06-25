@@ -1,233 +1,265 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Видео | HackHub</title>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap');
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Видео | HackHub</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap');
 
-    body {
-      margin: 0;
-      font-family: 'Montserrat', Arial, sans-serif;
-      background-color: #111;
-      color: #fff;
-      overflow-x: hidden;
-      position: relative;
-      min-height: 100vh;
-    }
+        body {
+            margin: 0;
+            font-family: 'Montserrat', Arial, sans-serif;
+            background-color: #111;
+            color: #fff;
+            overflow-x: hidden;
+            position: relative;
+            min-height: 100vh;
+        }
 
-    /* Видеофон */
-    .smoke-video {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      object-fit: cover;
-      opacity: 0.3;
-      z-index: -1;
-      pointer-events: none;
-    }
+        /* Видеофон */
+        .smoke-video {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            object-fit: cover;
+            opacity: 0.3;
+            z-index: -1;
+            pointer-events: none;
+        }
 
-    @media (max-width: 768px) {
-      /* Отключаем видеофон на мобильных */
-      .smoke-video {
-        display: none;
-      }
-    }
+        @media (max-width: 768px) {
+            /* Отключаем видеофон на мобильных */
+            .smoke-video {
+                display: none;
+            }
+        }
 
-    header {
-      background: #000;
-      padding: 20px;
-      text-align: center;
-      font-size: 30px;
-      font-weight: bold;
-      color: #ff6600;
-      box-shadow: 0 0 15px #ff6600;
-      position: relative;
-      z-index: 10;
-    }
+        header {
+            background: #000;
+            padding: 20px;
+            text-align: center;
+            font-size: 30px;
+            font-weight: bold;
+            color: #ff6600;
+            box-shadow: 0 0 15px #ff6600;
+            position: relative;
+            z-index: 10;
+        }
 
-    .home-link {
-      position: absolute;
-      top: 20px;
-      left: 20px;
-      font-size: 16px;
-      color: #fff;
-      background-color: #ff6600;
-      padding: 6px 12px;
-      border-radius: 8px;
-      text-decoration: none;
-      transition: background 0.3s ease;
-      z-index: 11;
-    }
+        .home-link {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            font-size: 16px;
+            color: #fff;
+            background-color: #ff6600;
+            padding: 6px 12px;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: background 0.3s ease;
+            z-index: 11;
+        }
 
-    .home-link:hover {
-      background-color: #e65c00;
-    }
+        .home-link:hover {
+            background-color: #e65c00;
+        }
 
-    .video-gallery {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      gap: 20px;
-      padding: 30px;
-      max-width: 1200px;
-      margin: 0 auto 40px;
-      position: relative;
-      z-index: 5;
-    }
+        .video-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 20px;
+            padding: 30px;
+            max-width: 1200px;
+            margin: 0 auto 40px;
+            position: relative;
+            z-index: 5;
+        }
 
-    .video-wrapper {
-      border: 3px solid #ff6600;
-      border-radius: 12px;
-      box-shadow: 0 0 15px rgba(255, 102, 0, 0.5);
-      overflow: hidden;
-      display: flex; /* Используем flexbox для заголовка */
-      flex-direction: column;
-    }
+        .video-wrapper {
+            border: 3px solid #ff6600;
+            border-radius: 12px;
+            box-shadow: 0 0 15px rgba(255, 102, 0, 0.5);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
 
-    .video-wrapper h3 {
-      background-color: #222;
-      color: #ff6600;
-      padding: 10px 15px;
-      margin: 0;
-      font-size: 18px;
-      text-align: center;
-      border-top: 1px solid #333;
-    }
+            /* Анимации открытия/закрытия */
+            transform: scale(1);
+            opacity: 1;
+            transition: transform 0.3s ease-out, opacity 0.3s ease-out; /* Плавный переход */
+        }
 
-    video {
-      width: 100%;
-      height: auto;
-      display: block;
-      background: #000;
-    }
+        .video-wrapper.opening {
+            transform: scale(0.9); /* Начальное состояние для открытия */
+            opacity: 0;
+        }
 
-    .error {
-      text-align: center;
-      color: #f44;
-      padding: 20px;
-      font-weight: bold;
-      font-size: 18px;
-      grid-column: 1 / -1;
-    }
-  </style>
+        .video-wrapper.closing {
+            transform: scale(0.9); /* Конечное состояние для закрытия */
+            opacity: 0;
+        }
+
+        .video-wrapper h3 {
+            background-color: #222;
+            color: #ff6600;
+            padding: 10px 15px;
+            margin: 0;
+            font-size: 18px;
+            text-align: center;
+            border-top: 1px solid #333;
+        }
+
+        video {
+            width: 100%;
+            height: auto;
+            display: block;
+            background: #000;
+        }
+
+        .error {
+            text-align: center;
+            color: #f44;
+            padding: 20px;
+            font-weight: bold;
+            font-size: 18px;
+            grid-column: 1 / -1;
+        }
+    </style>
 </head>
 <body>
 
-  <video class="smoke-video" autoplay loop muted playsinline preload="none">
-    <source src="https://raw.githubusercontent.com/antareti/hackhub/main/smoke-loop.mp4" type="video/mp4" />
-  </video>
+    <video class="smoke-video" autoplay loop muted playsinline preload="none">
+        <source src="https://raw.githubusercontent.com/antareti/hackhub/main/smoke-loop.mp4" type="video/mp4" />
+    </video>
 
-  <header>
-    <a href="index.html" class="home-link">🏠 Главная</a>
-    🎥 Видеогалерея HackHub
-  </header>
+    <header>
+        <a href="index.html" class="home-link">🏠 Главная</a>
+        🎥 Видеогалерея HackHub
+    </header>
 
-  <section class="video-gallery" id="videoGallery">
-    <p class="error" id="errorMsg">Загрузка видео...</p>
-  </section>
+    <section class="video-gallery" id="videoGallery">
+        <p class="error" id="errorMsg">Загрузка видео...</p>
+    </section>
 
-  <script>
-    (function() {
-      const repoOwner = "antareti";
-      const repoName = "hackhub";
-      const folderPath = "videos";
+    <script>
+        (function() {
+            const repoOwner = "antareti";
+            const repoName = "hackhub";
+            const folderPath = "videos";
 
-      const gallery = document.getElementById("videoGallery");
-      const errorMsg = document.getElementById("errorMsg");
+            const gallery = document.getElementById("videoGallery");
+            const errorMsg = document.getElementById("errorMsg");
 
-      // Список имен для видео
-      const videoNames = [
-        "Гриша и Ира", "Приключения Саши", "Вечер с Катей", "Дэнс с Олей", "Романтика с Андреем",
-        "Путешествие Вики", "Забавы с Максом", "Утро с Леной", "Кофе с Костей", "Секреты с Наташей",
-        "Праздник у Димы", "Истории с Мариной", "Встреча с Борисом", "Прогулка с Аней", "Тренировка с Васей",
-        "Ужин с Юлей", "Работа с Петей", "Отдых с Светой", "Разговор с Мишей", "Прогулки по крышам с Аней" // Добавьте больше, если нужно
-      ];
+            // Список имен для видео
+            const videoNames = [
+                "Гриша и Ира", "Приключения Саши", "Вечер с Катей", "Дэнс с Олей", "Романтика с Андреем",
+                "Путешествие Вики", "Забавы с Максом", "Утро с Леной", "Кофе с Костей", "Секреты с Наташей",
+                "Праздник у Димы", "Истории с Мариной", "Встреча с Борисом", "Прогулка с Аней", "Тренировка с Васей",
+                "Ужин с Юлей", "Работа с Петей", "Отдых с Светой", "Разговор с Мишей", "Прогулки по крышам с Аней"
+            ];
 
-      function getRandomVideoName() {
-        const randomIndex = Math.floor(Math.random() * videoNames.length);
-        return videoNames[randomIndex];
-      }
-
-      // Для ленивой загрузки видео
-      const observer = new IntersectionObserver(entries => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            const video = entry.target;
-            if (video.dataset.src) {
-              video.src = video.dataset.src;
-              video.load();
-              observer.unobserve(video);
+            function getRandomVideoName() {
+                const randomIndex = Math.floor(Math.random() * videoNames.length);
+                return videoNames[randomIndex];
             }
-          }
-        });
-      }, {
-        rootMargin: "100px",
-        threshold: 0.1
-      });
 
-      // Функция создания видеоэлемента с lazy loading
-      function createVideoCard(file) {
-        const wrapper = document.createElement("div");
-        wrapper.className = "video-wrapper";
+            // Для ленивой загрузки видео
+            const observer = new IntersectionObserver(entries => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const video = entry.target;
+                        if (video.dataset.src) {
+                            video.src = video.dataset.src;
+                            video.load();
+                            observer.unobserve(video);
 
-        const video = document.createElement("video");
-        video.controls = true;
-        video.preload = "none";
-        video.setAttribute("playsinline", ""); // для мобильных
+                            // После загрузки и отображения, убираем класс 'opening'
+                            const wrapper = video.closest('.video-wrapper');
+                            if (wrapper && wrapper.classList.contains('opening')) {
+                                setTimeout(() => {
+                                    wrapper.classList.remove('opening');
+                                }, 50); // Небольшая задержка
+                            }
+                        }
+                    }
+                });
+            }, {
+                rootMargin: "100px",
+                threshold: 0.1
+            });
 
-        const videoUrl = `https://raw.githubusercontent.com/${repoOwner}/${repoName}/main/${folderPath}/${file.name}`;
-        video.dataset.src = videoUrl; // ленивый src
+            // Функция создания видеоэлемента с lazy loading
+            function createVideoCard(file) {
+                const wrapper = document.createElement("div");
+                wrapper.className = "video-wrapper opening"; // Добавляем класс 'opening' по умолчанию
 
-        // Добавляем заголовок с случайным именем
-        const titleElement = document.createElement("h3");
-        titleElement.textContent = getRandomVideoName();
+                const video = document.createElement("video");
+                video.controls = true;
+                video.preload = "none";
+                video.setAttribute("playsinline", ""); // для мобильных
 
-        wrapper.appendChild(video);
-        wrapper.appendChild(titleElement); // Добавляем заголовок под видео или над, как вам удобно
+                const videoUrl = `https://raw.githubusercontent.com/${repoOwner}/${repoName}/main/${folderPath}/${file.name}`;
+                video.dataset.src = videoUrl; // ленивый src
 
-        // Наблюдаем для lazy load
-        observer.observe(video);
+                // Добавляем заголовок с случайным именем
+                const titleElement = document.createElement("h3");
+                titleElement.textContent = getRandomVideoName();
 
-        return wrapper;
-      }
+                wrapper.appendChild(video);
+                wrapper.appendChild(titleElement);
 
-      // Загрузка данных с GitHub API
-      fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/contents/${folderPath}`)
-        .then(response => {
-          if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
-          return response.json();
-        })
-        .then(data => {
-          if (!Array.isArray(data)) throw new Error("Неверный формат данных");
+                // Пример: Закрытие видео по двойному клику
+                wrapper.addEventListener('dblclick', () => {
+                    wrapper.classList.add('closing');
+                    wrapper.addEventListener('transitionend', function handler() {
+                        wrapper.remove();
+                        wrapper.removeEventListener('transitionend', handler); // Удалить слушателя
+                    });
+                });
 
-          if (data.length === 0) {
-            errorMsg.textContent = "Видео не найдены.";
-            return;
-          }
+                // Наблюдаем для lazy load
+                observer.observe(video);
 
-          errorMsg.style.display = "none";
-
-          data.forEach(file => {
-            if (/\.(mp4|webm|ogg)$/i.test(file.name)) {
-              const videoCard = createVideoCard(file);
-              gallery.appendChild(videoCard);
+                return wrapper;
             }
-          });
 
-          // Если не добавлено видео
-          if (gallery.children.length === 0) {
-            errorMsg.textContent = "Видео не найдены.";
-            errorMsg.style.display = "block";
-          }
-        })
-        .catch(err => {
-          console.error("Ошибка загрузки видео:", err);
-          errorMsg.textContent = "Ошибка загрузки видео.";
-          errorMsg.style.display = "block";
-        });
-    })();
-  </script>
+            // Загрузка данных с GitHub API
+            fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/contents/${folderPath}`)
+                .then(response => {
+                    if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
+                    return response.json();
+                })
+                .then(data => {
+                    if (!Array.isArray(data)) throw new Error("Неверный формат данных");
+
+                    if (data.length === 0) {
+                        errorMsg.textContent = "Видео не найдены.";
+                        return;
+                    }
+
+                    errorMsg.style.display = "none";
+
+                    data.forEach(file => {
+                        if (/\.(mp4|webm|ogg)$/i.test(file.name)) {
+                            const videoCard = createVideoCard(file);
+                            gallery.appendChild(videoCard);
+                        }
+                    });
+
+                    // Если не добавлено видео
+                    if (gallery.children.length === 0) {
+                        errorMsg.textContent = "Видео не найдены.";
+                        errorMsg.style.display = "block";
+                    }
+                })
+                .catch(err => {
+                    console.error("Ошибка загрузки видео:", err);
+                    errorMsg.textContent = "Ошибка загрузки видео.";
+                    errorMsg.style.display = "block";
+                });
+        })();
+    </script>
 
 </body>
 </html>
