@@ -361,8 +361,9 @@
                 // Добавляем слушатель события "play" для каждого видео
                 video.addEventListener('play', () => {
                     // Если звук уже играет, не запускаем его снова
+                    // и сбрасываем его на начало, чтобы он играл каждый раз с начала видео
                     if (showerSound.paused) {
-                        showerSound.currentTime = 0; // Начинаем звук с начала каждый раз
+                        showerSound.currentTime = 0;
                         showerSound.play().catch(e => console.error("Ошибка воспроизведения звука душа:", e));
                     }
                 });
