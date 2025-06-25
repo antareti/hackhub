@@ -336,15 +336,28 @@
 
     let cards = [];
 
+    // Список женских имен для использования
+    const femaleNames = [
+      "Анна", "Елена", "Мария", "Ольга", "Наталья", "Светлана", "Татьяна", "Ирина", "Екатерина", "Дарья",
+      "Анастасия", "София", "Виктория", "Полина", "Ксения", "Александра", "Елизавета", "Валерия", "Варвара", "Вероника",
+      "Юлия", "Алина", "Арина", "Маргарита", "Аделина", "Кира", "Эвелина", "Злата", "Милана", "Диана"
+    ];
+
+    function getRandomFemaleName() {
+      const randomIndex = Math.floor(Math.random() * femaleNames.length);
+      return femaleNames[randomIndex];
+    }
+
     function createCard(file) {
       const card = document.createElement("div");
       card.className = "card";
-      const title = file.name.replace('загружено - ', '').split('.')[0].toLowerCase();
-      card.setAttribute('data-title', title);
+      // Используем случайное женское имя для заголовка и атрибута data-title
+      const displayedTitle = getRandomFemaleName();
+      card.setAttribute('data-title', displayedTitle.toLowerCase()); // Для поиска используем нижний регистр
       const imageUrl = `https://raw.githubusercontent.com/${repoOwner}/${repoName}/main/${folderPath}/${file.name}`;
       card.innerHTML = `
         <img src="${imageUrl}" alt="${file.name}" onclick="openModal('${imageUrl}')">
-        <h3>${file.name.replace('загружено - ', '').split('.')[0]}</h3>
+        <h3>${displayedTitle}</h3>
         <div class="actions">
           <button class="btn" onclick="downloadImage('${imageUrl}')">Скачать</button>
           <div class="like-section">
