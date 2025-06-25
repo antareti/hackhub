@@ -83,21 +83,24 @@
             overflow: hidden;
             display: flex;
             flex-direction: column;
+            cursor: pointer; /* Делаем курсор "указывающим" для интерактивности */
 
             /* Анимации открытия/закрытия */
-            transform: scale(1);
-            opacity: 1;
+            transform: scale(0.9); /* Начальное состояние: уменьшено и скрыто */
+            opacity: 0;
             transition: transform 0.3s ease-out, opacity 0.3s ease-out; /* Плавный переход */
         }
 
-        .video-wrapper.opening {
-            transform: scale(0.9); /* Начальное состояние для открытия */
-            opacity: 0;
+        /* Состояние при активном (открытом) видео */
+        .video-wrapper.active {
+            transform: scale(1); /* Возвращаем к нормальному размеру */
+            opacity: 1; /* Показываем */
         }
 
-        .video-wrapper.closing {
-            transform: scale(0.9); /* Конечное состояние для закрытия */
-            opacity: 0;
+        /* Стиль при наведении, чтобы показать, что на него можно нажать */
+        .video-wrapper:not(.active):hover {
+            transform: scale(0.95); /* Немного увеличиваем при наведении */
+            opacity: 0.7;
         }
 
         .video-wrapper h3 {
@@ -164,23 +167,16 @@
                 return videoNames[randomIndex];
             }
 
-            // Для ленивой загрузки видео
+            // Для ленивой загрузки видео. Видео подгружается, когда обертка входит в область видимости,
+            // но анимация открытия запускается только по клику.
             const observer = new IntersectionObserver(entries => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
                         const video = entry.target;
-                        if (video.dataset.src) {
+                        if (video.dataset.src && !video.src) { // Проверяем, что src ещё не установлен
                             video.src = video.dataset.src;
-                            video.load();
-                            observer.unobserve(video);
-
-                            // После загрузки и отображения, убираем класс 'opening'
-                            const wrapper = video.closest('.video-wrapper');
-                            if (wrapper && wrapper.classList.contains('opening')) {
-                                setTimeout(() => {
-                                    wrapper.classList.remove('opening');
-                                }, 50); // Небольшая задержка
-                            }
+                            video.load(); // Начинаем загрузку видео
+                            observer.unobserve(video); // Прекращаем наблюдение после загрузки
                         }
                     }
                 });
@@ -189,36 +185,48 @@
                 threshold: 0.1
             });
 
-            // Функция создания видеоэлемента с lazy loading
+            // Функция создания видеоэлемента
             function createVideoCard(file) {
                 const wrapper = document.createElement("div");
-                wrapper.className = "video-wrapper opening"; // Добавляем класс 'opening' по умолчанию
+                wrapper.className = "video-wrapper"; // Изначально без класса 'active'
 
                 const video = document.createElement("video");
                 video.controls = true;
                 video.preload = "none";
-                video.setAttribute("playsinline", ""); // для мобильных
+                video.setAttribute("playsinline", "");
 
                 const videoUrl = `https://raw.githubusercontent.com/${repoOwner}/${repoName}/main/${folderPath}/${file.name}`;
-                video.dataset.src = videoUrl; // ленивый src
+                video.dataset.src = videoUrl; // Используем data-src для ленивой загрузки
 
-                // Добавляем заголовок с случайным именем
                 const titleElement = document.createElement("h3");
                 titleElement.textContent = getRandomVideoName();
 
                 wrapper.appendChild(video);
                 wrapper.appendChild(titleElement);
 
-                // Пример: Закрытие видео по двойному клику
-                wrapper.addEventListener('dblclick', () => {
-                    wrapper.classList.add('closing');
-                    wrapper.addEventListener('transitionend', function handler() {
-                        wrapper.remove();
-                        wrapper.removeEventListener('transitionend', handler); // Удалить слушателя
-                    });
+                // Главное изменение: обработчик клика для открытия/закрытия
+                wrapper.addEventListener('click', () => {
+                    // Переключаем класс 'active' для запуска CSS-анимации
+                    wrapper.classList.toggle('active');
+
+                    // Если видео активируется, можно начать его воспроизведение
+                    if (wrapper.classList.contains('active')) {
+                        // Проверяем, что видео уже загружено или запускаем загрузку
+                        const currentVideo = wrapper.querySelector('video');
+                        if (currentVideo.dataset.src && !currentVideo.src) {
+                             currentVideo.src = currentVideo.dataset.src;
+                             currentVideo.load();
+                        }
+                        currentVideo.play().catch(e => console.log("Автовоспроизведение заблокировано:", e));
+                    } else {
+                        // Если видео деактивируется (закрывается), останавливаем воспроизведение
+                        const currentVideo = wrapper.querySelector('video');
+                        currentVideo.pause();
+                        currentVideo.currentTime = 0; // Сбрасываем на начало
+                    }
                 });
 
-                // Наблюдаем для lazy load
+                // Наблюдаем за видеоэлементом для ленивой загрузки
                 observer.observe(video);
 
                 return wrapper;
@@ -247,7 +255,7 @@
                         }
                     });
 
-                    // Если не добавлено видео
+                    // Если после загрузки данных видео не добавлено
                     if (gallery.children.length === 0) {
                         errorMsg.textContent = "Видео не найдены.";
                         errorMsg.style.display = "block";
