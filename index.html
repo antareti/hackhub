@@ -50,6 +50,7 @@
       z-index: -1;
     }
 
+    /* Эффект прожекторов */
     .spotlight {
       position: fixed;
       top: -20%;
@@ -75,6 +76,7 @@
       100% { transform: rotate(360deg) translateX(0); }
     }
 
+    /* Плавающее гало за курсором */
     #cursor-light {
       position: fixed;
       top: 0;
@@ -273,40 +275,192 @@
   </style>
 </head>
 <body>
-  <!-- Элемент светящегося круга за курсором -->
-  <div id="cursor-light"></div>
 
-  <!-- Световые пятна -->
+  <!-- ДИСКЛЕЙМЕР -->
+  <div id="disclaimer">
+    <img src="22.gif" alt="Disclaimer">
+  </div>
+
+  <video class="smoke-video" autoplay loop muted>
+    <source src="https://raw.githubusercontent.com/antareti/hackhub/main/smoke-loop.mp4" type="video/mp4">
+  </video>
+
+  <!-- Эффекты прожекторов -->
   <div class="spotlight left"></div>
   <div class="spotlight right"></div>
 
-  <!-- Пример хедера -->
+  <!-- Плавающий свет за курсором -->
+  <div id="cursor-light"></div>
+
   <header>
     <div class="logo">Hack<span>Hub</span></div>
-    <input class="search" type="text" placeholder="Поиск..." />
-    <button class="logout-btn">Выйти</button>
+    <div class="search">
+      <input id="searchInput" type="text" placeholder="Поиск...">
+    </div>
+    <button class="logout-btn" onclick="logout()">Выйти</button>
   </header>
 
-  <!-- Пример категорий -->
   <nav class="categories">
     <ul>
-      <li><a href="#" class="active">Все</a></li>
-      <li><a href="#">Технологии</a></li>
-      <li><a href="#">Безопасность</a></li>
-      <li><a href="#" class="premium">Премиум</a></li>
+      <li><a href="#" class="active">Главная</a></li>
+      <li><a href="#">Категории</a></li>
+      <li><a href="#">Новое</a></li>
+      <li><a href="#">Популярное</a></li>
+      <li><a href="#">Лучшее</a></li>
+      <li><a href="#">GIF</a></li>
+      <li><a href="#">VR</a></li>
+      <li><a href="#">Модель дня</a></li>
+      <li><a href="video.html">🎥 Видео</a></li>
+      <li><a href="premium.html" class="premium">💎 Премиум</a></li>
     </ul>
   </nav>
 
-  <!-- Пустая галерея для примера -->
-  <section class="gallery">
-    <!-- Карточки можно добавить сюда -->
-  </section>
+  <section class="gallery" id="gallery"></section>
+  <footer>© 2025 HackHub. Все права защищены.</footer>
+  <div id="imageModal" class="modal">
+    <span class="close" onclick="closeModal()">&times;</span>
+    <img class="modal-content" id="modalImg" alt="Просмотр изображения">
+  </div>
 
   <script>
-    // Перемещение светящегося круга за курсором
+    window.onload = () => {
+      const disclaimer = document.getElementById("disclaimer");
+      disclaimer.classList.add("fade-out");
+      setTimeout(() => disclaimer.remove(), 1000);
+    };
+
+    const repoOwner = "antareti";
+    const repoName = "hackhub";
+    const folderPath = "images";
+    const gallery = document.getElementById("gallery");
+    const searchInput = document.getElementById("searchInput");
+    const modal = document.getElementById("imageModal");
+    const modalImg = document.getElementById("modalImg");
+
+    let cards = [];
+
+    function createCard(file) {
+  const card = document.createElement("div");
+  card.className = "card";
+  const title = file.name.replace('загружено - ', '').split('.')[0].toLowerCase();
+  card.setAttribute('data-title', title);
+  const imageUrl = `https://raw.githubusercontent.com/${repoOwner}/${repoName}/main/${folderPath}/${file.name}`;
+  card.innerHTML = `
+    <img src="${imageUrl}" alt="${file.name}" onclick="openModal('${imageUrl}')">
+    <h3>${file.name.replace('загружено - ', '').split('.')[0]}</h3>
+    <div class="actions">
+      <button class="btn" onclick="downloadImage('${imageUrl}')">Скачать</button>
+      <div class="like-section">
+        <button class="btn like-btn" onclick="toggleLike('${file.name}')">
+          <img src="https://i.imgur.com/7ZQm7Yj.png" alt="попка" style="width:20px; height:20px; vertical-align:middle;">
+        </button>
+        <span id="like-count-${file.name}" class="like-count">0</span>
+      </div>
+    </div>
+  `;
+  return card;
+}
+
+    }
+
+    function openModal(src) {
+      modal.style.display = "block";
+      modalImg.src = src;
+    }
+
+    function closeModal() {
+      modal.style.display = "none";
+      modalImg.src = "";
+    }
+
+    function logout() {
+      localStorage.removeItem("auth");
+      window.location.href = "login.html";
+    }
+
+    function debounce(func, wait) {
+      let timeout;
+      return function(...args) {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func.apply(this, args), wait);
+      };
+    }
+
+    function filterCards() {
+      const query = searchInput.value.toLowerCase().trim();
+      if (!query) {
+        cards.forEach(card => card.style.display = "");
+        return;
+      }
+      const terms = query.split(/\s+/);
+      cards.forEach(card => {
+        const title = card.getAttribute("data-title");
+        const match = terms.every(term => title.includes(term));
+        card.style.display = match ? "" : "none";
+      });
+    }
+
+    function downloadImage(url) {
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = url.split("/").pop();
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    function toggleLike(name) {
+      const keyLiked = `like-${name}`;
+      const keyCount = `like-count-${name}`;
+      let liked = localStorage.getItem(keyLiked) === "true";
+      liked = !liked;
+      localStorage.setItem(keyLiked, liked);
+
+      let count = parseInt(localStorage.getItem(keyCount) || "0");
+      count = liked ? count + 1 : Math.max(0, count - 1);
+      localStorage.setItem(keyCount, count);
+
+      updateLikeDisplay(name);
+    }
+
+    function updateLikeDisplay(name) {
+      const btn = document.querySelector(`.like-btn[onclick*="${name}"]`);
+      const countElement = document.getElementById(`like-count-${name}`);
+      const liked = localStorage.getItem(`like-${name}`) === "true";
+      const count = localStorage.getItem(`like-count-${name}`) || "0";
+      if (btn) btn.classList.toggle("liked", liked);
+      if (countElement) countElement.textContent = count;
+    }
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") closeModal();
+    });
+
+    fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/contents/${folderPath}`)
+      .then(res => res.json())
+      .then(data => {
+        if (!Array.isArray(data)) throw new Error("Неверный формат данных");
+        data.forEach(file => {
+          if (/\.(png|jpe?g|gif)$/i.test(file.name)) {
+            const card = createCard(file);
+            gallery.appendChild(card);
+            cards.push(card);
+            updateLikeDisplay(file.name);
+          }
+        });
+      })
+      .catch(err => {
+        console.error("Ошибка загрузки:", err);
+        gallery.innerHTML = "<p>Ошибка загрузки изображений.</p>";
+      });
+
+    searchInput.addEventListener("input", debounce(filterCards, 300));
+
+    // Плавающий свет за курсором
     const cursorLight = document.getElementById('cursor-light');
     window.addEventListener('mousemove', e => {
-      cursorLight.style.transform = `translate(${e.clientX}px, ${e.clientY}px) translate(-50%, -50%)`;
+      cursorLight.style.top = e.clientY + 'px';
+      cursorLight.style.left = e.clientX + 'px';
     });
   </script>
 </body>
