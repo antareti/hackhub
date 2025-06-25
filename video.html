@@ -299,6 +299,9 @@
             const videoSearchInput = document.getElementById("videoSearch");
             const scrollToTopBtn = document.getElementById("scrollToTopBtn");
             const showerSound = document.getElementById("showerSound");
+            // Установите желаемую громкость для звука душа (от 0.0 до 1.0)
+            // showerSound.volume = 0.3; // Раскомментируйте и измените значение, если нужно
+
             let allVideoData = [];
 
             const videoNames = [
@@ -347,6 +350,7 @@
                 video.controls = true;
                 video.preload = "none";
                 video.setAttribute("playsinline", "");
+                video.loop = true; // ДОБАВЛЕНО: Атрибут loop для непрерывного воспроизведения
 
                 const videoUrl = `https://raw.githubusercontent.com/${repoOwner}/${repoName}/main/${folderPath}/${file.name}`;
                 video.dataset.src = videoUrl;
