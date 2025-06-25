@@ -272,6 +272,172 @@
       font-weight: 900;
       cursor: pointer;
     }
+
+    /* --- Chat Styles --- */
+    #chat-toggle-btn {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background-color: #ff6600;
+      color: #121212;
+      border: none;
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      font-size: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 0 20px rgba(255, 102, 0, 0.7);
+      transition: transform 0.3s ease, background-color 0.3s ease;
+      z-index: 1000;
+    }
+
+    #chat-toggle-btn:hover {
+      transform: scale(1.1);
+      background-color: #e65c00;
+    }
+
+    #chat-container {
+      position: fixed;
+      bottom: 100px; /* Adjust based on button height */
+      right: 30px;
+      width: 350px;
+      height: 450px;
+      background-color: #1a1a1a;
+      border-radius: 12px;
+      box-shadow: 0 0 30px rgba(255, 102, 0, 0.7);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      transform: translateY(20px) scale(0.9);
+      opacity: 0;
+      visibility: hidden;
+      transition: transform 0.3s ease, opacity 0.3s ease, visibility 0.3s ease;
+      z-index: 999;
+    }
+
+    #chat-container.open {
+      transform: translateY(0) scale(1);
+      opacity: 1;
+      visibility: visible;
+    }
+
+    #chat-header {
+      background-color: #ff6600;
+      color: #121212;
+      padding: 15px;
+      font-weight: bold;
+      font-size: 18px;
+      border-top-left-radius: 10px;
+      border-top-right-radius: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    #chat-close-btn {
+      background: none;
+      border: none;
+      color: #121212;
+      font-size: 24px;
+      cursor: pointer;
+      transition: color 0.2s ease;
+    }
+
+    #chat-close-btn:hover {
+      color: #333;
+    }
+
+    #chat-messages {
+      flex-grow: 1;
+      padding: 15px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      background-color: #1f1f1f;
+    }
+
+    .message {
+      padding: 10px 15px;
+      border-radius: 15px;
+      max-width: 80%;
+      word-wrap: break-word;
+      font-size: 14px;
+    }
+
+    .message.user {
+      align-self: flex-end;
+      background-color: #ff6600;
+      color: #121212;
+      border-bottom-right-radius: 5px;
+    }
+
+    .message.ai {
+      align-self: flex-start;
+      background-color: #333;
+      color: #eee;
+      border-bottom-left-radius: 5px;
+    }
+
+    .message.loading {
+      align-self: flex-start;
+      background-color: #333;
+      color: #eee;
+      border-bottom-left-radius: 5px;
+      font-style: italic;
+      opacity: 0.7;
+    }
+
+    #chat-input-container {
+      display: flex;
+      padding: 15px;
+      border-top: 1px solid #333;
+      background-color: #1a1a1a;
+    }
+
+    #chat-input {
+      flex-grow: 1;
+      padding: 10px 15px;
+      border-radius: 20px;
+      border: 1px solid #ff6600;
+      background-color: #2a2a2a;
+      color: #eee;
+      font-size: 15px;
+      outline: none;
+      margin-right: 10px;
+    }
+
+    #chat-send-btn {
+      background-color: #ff6600;
+      color: #121212;
+      border: none;
+      border-radius: 20px;
+      padding: 10px 18px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    }
+
+    #chat-send-btn:hover {
+      background-color: #e65c00;
+    }
+
+    /* Адаптивность для мобильных */
+    @media (max-width: 768px) {
+      #chat-container {
+        width: 90vw;
+        height: 70vh;
+        right: 5vw;
+        bottom: 90px;
+      }
+      #chat-toggle-btn {
+        bottom: 20px;
+        right: 20px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -319,6 +485,21 @@
     <img class="modal-content" id="modalImg" alt="Просмотр изображения">
   </div>
 
+  <button id="chat-toggle-btn"><i class="fas fa-comment-dots"></i></button>
+
+  <div id="chat-container">
+    <div id="chat-header">
+      AI Ассистент
+      <button id="chat-close-btn">&times;</button>
+    </div>
+    <div id="chat-messages">
+      <div class="message ai">Привет! Я AI ассистент. Чем могу помочь?</div>
+    </div>
+    <div id="chat-input-container">
+      <input type="text" id="chat-input" placeholder="Введите ваше сообщение...">
+      <button id="chat-send-btn"><i class="fas fa-paper-plane"></i></button>
+    </div>
+  </div>
   <script>
     window.onload = () => {
       const disclaimer = document.getElementById("disclaimer");
@@ -470,6 +651,102 @@
       cursorLight.style.top = e.clientY + 'px';
       cursorLight.style.left = e.clientX + 'px';
     });
+
+
+    // --- Chat functionality ---
+    const chatToggleBtn = document.getElementById('chat-toggle-btn');
+    const chatContainer = document.getElementById('chat-container');
+    const chatCloseBtn = document.getElementById('chat-close-btn');
+    const chatMessages = document.getElementById('chat-messages');
+    const chatInput = document.getElementById('chat-input');
+    const chatSendBtn = document.getElementById('chat-send-btn');
+
+    // Важно: Храните ваш API ключ в безопасном месте, не в публичном репозитории GitHub.
+    // Для демонстрации я вставил его сюда, но для реального проекта используйте серверное прокси.
+    const DEEPSEEK_API_KEY = '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';
+    const DEEPSEEK_API_URL = 'https://api.deepseek.com/chat/completions';
+
+    let chatHistory = [{ role: 'system', content: 'You are a helpful assistant on a gallery website. Provide concise and friendly answers.' }];
+    let isSendingMessage = false;
+
+    chatToggleBtn.addEventListener('click', () => {
+      chatContainer.classList.toggle('open');
+      if (chatContainer.classList.contains('open')) {
+        chatInput.focus();
+        chatMessages.scrollTop = chatMessages.scrollHeight; // Прокрутить до конца при открытии
+      }
+    });
+
+    chatCloseBtn.addEventListener('click', () => {
+      chatContainer.classList.remove('open');
+    });
+
+    chatSendBtn.addEventListener('click', sendMessage);
+    chatInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault(); // Предотвратить новую строку в textarea
+        sendMessage();
+      }
+    });
+
+    function appendMessage(sender, text, isLoading = false) {
+      const messageDiv = document.createElement('div');
+      messageDiv.classList.add('message', sender);
+      messageDiv.textContent = text;
+      if (isLoading) {
+        messageDiv.classList.add('loading');
+      }
+      chatMessages.appendChild(messageDiv);
+      chatMessages.scrollTop = chatMessages.scrollHeight; // Автопрокрутка
+      return messageDiv; // Возвращаем элемент для дальнейшего изменения, если это загрузочное сообщение
+    }
+
+    async function sendMessage() {
+      const userMessage = chatInput.value.trim();
+      if (!userMessage || isSendingMessage) return;
+
+      appendMessage('user', userMessage);
+      chatInput.value = '';
+      isSendingMessage = true;
+
+      chatHistory.push({ role: 'user', content: userMessage });
+
+      const loadingMessage = appendMessage('ai', 'Печатает...', true); // Сообщение "печатает..."
+
+      try {
+        const response = await fetch(DEEPSEEK_API_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${DEEPSEEK_API_KEY}`
+          },
+          body: JSON.stringify({
+            model: 'deepseek-chat', // Или другой подходящий модели DeepSeek
+            messages: chatHistory,
+            stream: false // Отключаем потоковую передачу для простоты
+          })
+        });
+
+        if (!response.ok) {
+          throw new Error(`Ошибка API DeepSeek: ${response.status} ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        const aiResponseContent = data.choices[0].message.content;
+
+        loadingMessage.textContent = aiResponseContent; // Обновляем сообщение с ответом
+        loadingMessage.classList.remove('loading');
+        chatHistory.push({ role: 'assistant', content: aiResponseContent });
+
+      } catch (error) {
+        console.error('Ошибка при отправке сообщения в DeepSeek API:', error);
+        loadingMessage.textContent = 'Произошла ошибка. Пожалуйста, попробуйте еще раз.';
+        loadingMessage.classList.remove('loading');
+        loadingMessage.classList.add('error'); // Можно добавить класс для стилизации ошибок
+      } finally {
+        isSendingMessage = false;
+      }
+    }
   </script>
 </body>
 </html>
