@@ -287,7 +287,7 @@
         <i class="fas fa-arrow-up"></i>
     </button>
 
-    <audio id="showerSound" src="path/to/your/shower-sound.mp3" preload="auto"></audio>
+    <audio id="showerSound" src="5.mp3" preload="auto"></audio>
 
     <script>
         (function() {
@@ -298,7 +298,7 @@
             const gallery = document.getElementById("videoGallery");
             const videoSearchInput = document.getElementById("videoSearch");
             const scrollToTopBtn = document.getElementById("scrollToTopBtn");
-            const showerSound = document.getElementById("showerSound"); // Получаем аудиоэлемент
+            const showerSound = document.getElementById("showerSound");
             let allVideoData = [];
 
             const videoNames = [
@@ -363,7 +363,7 @@
                     // Если звук уже играет, не запускаем его снова
                     // и сбрасываем его на начало, чтобы он играл каждый раз с начала видео
                     if (showerSound.paused) {
-                        showerSound.currentTime = 0;
+                        showerSound.currentTime = 0; // Сбрасываем звук на начало
                         showerSound.play().catch(e => console.error("Ошибка воспроизведения звука душа:", e));
                     }
                 });
