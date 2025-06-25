@@ -664,7 +664,6 @@
     const DEEPSEEK_API_KEY = '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';
     const DEEPSEEK_API_URL = 'https://api.deepseek.com/chat/completions';
 
-    // Инициализация chatHistory с системным сообщением
     let chatHistory = [{ role: 'system', content: 'You are a helpful assistant on a gallery website. Provide concise and friendly answers.' }];
     let isSendingMessage = false;
 
@@ -683,7 +682,7 @@
     chatSendBtn.addEventListener('click', sendMessage);
     chatInput.addEventListener('keydown', (e) => {
       if (e.key === 'Enter' && !e.shiftKey) {
-        e.preventDefault(); // Предотвратить новую строку в textarea
+        e.preventDefault();
         sendMessage();
       }
     });
@@ -696,8 +695,8 @@
         messageDiv.classList.add('loading');
       }
       chatMessages.appendChild(messageDiv);
-      chatMessages.scrollTop = chatMessages.scrollHeight; // Автопрокрутка
-      return messageDiv; // Возвращаем элемент для дальнейшего изменения, если это загрузочное сообщение
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+      return messageDiv;
     }
 
     async function sendMessage() {
@@ -709,38 +708,44 @@
       isSendingMessage = true;
 
       // Добавляем сообщение пользователя в историю чата
-      // Важно: chatHistory всегда должен начинаться с системного сообщения,
-      // за которым следуют чередующиеся user/assistant сообщения.
       chatHistory.push({ role: 'user', content: userMessage });
 
-      const loadingMessage = appendMessage('ai', 'Печатает...', true); // Сообщение "печатает..."
+      const loadingMessage = appendMessage('ai', 'Печатает...', true);
 
       try {
+        // Логируем отправляемый объект для отладки
+        const requestBody = {
+            model: 'deepseek-chat',
+            messages: chatHistory,
+            stream: false
+        };
+        console.log('Отправляется запрос в DeepSeek API:', JSON.stringify(requestBody, null, 2));
+
+
         const response = await fetch(DEEPSEEK_API_URL, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${DEEPSEEK_API_KEY}`
           },
-          body: JSON.stringify({
-            model: 'deepseek-chat',
-            messages: chatHistory, // Отправляем всю историю чата
-            stream: false
-          })
+          body: JSON.stringify(requestBody) // Отправляем подготовленный объект
         });
 
         if (!response.ok) {
           let errorData;
           try {
             errorData = await response.json();
+            console.error('Ошибка DeepSeek API (JSON):', errorData); // Логируем весь объект ошибки
           } catch (jsonError) {
             errorData = { message: await response.text() };
+            console.error('Ошибка DeepSeek API (текст):', errorData.message); // Логируем текст ошибки
           }
           const errorMessage = errorData.message || 'Неизвестная ошибка API.';
           throw new Error(`Ошибка API DeepSeek: ${response.status} ${response.statusText}. Детали: ${errorMessage}`);
         }
 
         const data = await response.json();
+        console.log('Ответ от DeepSeek API:', data); // Логируем весь успешный ответ
 
         if (data && data.choices && data.choices.length > 0 && data.choices[0].message && data.choices[0].message.content) {
           const aiResponseContent = data.choices[0].message.content;
@@ -753,7 +758,7 @@
         }
 
       } catch (error) {
-        console.error('Ошибка при отправке сообщения в DeepSeek API:', error);
+        console.error('Критическая ошибка при отправке сообщения в DeepSeek API:', error);
         loadingMessage.textContent = `Произошла ошибка: ${error.message}. Пожалуйста, попробуйте еще раз.`;
         loadingMessage.classList.remove('loading');
         loadingMessage.classList.add('error');
