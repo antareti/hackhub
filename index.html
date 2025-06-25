@@ -239,6 +239,12 @@
     .like-count {
       font-size: 14px;
     }
+    /* Стили для смайлика женщины */
+    .woman-emoji {
+      font-size: 1.2em; /* Размер смайлика */
+      margin-left: 5px; /* Отступ от других элементов */
+      vertical-align: middle; /* Выравнивание по центру */
+    }
     .modal {
       display: none;
       position: fixed;
@@ -547,7 +553,7 @@
             </button>
             <span id="like-count-${file.name}" class="like-count">0</span>
           </div>
-        </div>
+          <span class="woman-emoji">🧍‍♀️</span> </div>
       `;
       return card;
     }
