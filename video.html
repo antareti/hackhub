@@ -81,6 +81,18 @@
       border-radius: 12px;
       box-shadow: 0 0 15px rgba(255, 102, 0, 0.5);
       overflow: hidden;
+      display: flex; /* Используем flexbox для заголовка */
+      flex-direction: column;
+    }
+
+    .video-wrapper h3 {
+      background-color: #222;
+      color: #ff6600;
+      padding: 10px 15px;
+      margin: 0;
+      font-size: 18px;
+      text-align: center;
+      border-top: 1px solid #333;
     }
 
     video {
@@ -102,7 +114,6 @@
 </head>
 <body>
 
-  <!-- Видеофон -->
   <video class="smoke-video" autoplay loop muted playsinline preload="none">
     <source src="https://raw.githubusercontent.com/antareti/hackhub/main/smoke-loop.mp4" type="video/mp4" />
   </video>
@@ -124,6 +135,19 @@
 
       const gallery = document.getElementById("videoGallery");
       const errorMsg = document.getElementById("errorMsg");
+
+      // Список имен для видео
+      const videoNames = [
+        "Гриша и Ира", "Приключения Саши", "Вечер с Катей", "Дэнс с Олей", "Романтика с Андреем",
+        "Путешествие Вики", "Забавы с Максом", "Утро с Леной", "Кофе с Костей", "Секреты с Наташей",
+        "Праздник у Димы", "Истории с Мариной", "Встреча с Борисом", "Прогулка с Аней", "Тренировка с Васей",
+        "Ужин с Юлей", "Работа с Петей", "Отдых с Светой", "Разговор с Мишей", "Прогулки по крышам с Аней" // Добавьте больше, если нужно
+      ];
+
+      function getRandomVideoName() {
+        const randomIndex = Math.floor(Math.random() * videoNames.length);
+        return videoNames[randomIndex];
+      }
 
       // Для ленивой загрузки видео
       const observer = new IntersectionObserver(entries => {
@@ -155,7 +179,12 @@
         const videoUrl = `https://raw.githubusercontent.com/${repoOwner}/${repoName}/main/${folderPath}/${file.name}`;
         video.dataset.src = videoUrl; // ленивый src
 
+        // Добавляем заголовок с случайным именем
+        const titleElement = document.createElement("h3");
+        titleElement.textContent = getRandomVideoName();
+
         wrapper.appendChild(video);
+        wrapper.appendChild(titleElement); // Добавляем заголовок под видео или над, как вам удобно
 
         // Наблюдаем для lazy load
         observer.observe(video);
