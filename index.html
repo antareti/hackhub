@@ -662,7 +662,7 @@
     const chatSendBtn = document.getElementById('chat-send-btn');
 
     // **ВАШ НОВЫЙ DEEPSEEK API-КЛЮЧ**
-    const DEEPSEEK_API_KEY = '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';
+    const DEEPSEEK_API_KEY = 'sk-eb528a425b1e4ac9a8f61f5ba3405267'; // Ваш новый ключ вставлен сюда!
     const DEEPSEEK_API_URL = 'https://api.deepseek.com/chat/completions';
 
     let chatHistory = [{ role: 'system', content: 'You are a helpful assistant on a gallery website. Provide concise and friendly answers.' }];
@@ -708,16 +708,14 @@
       chatInput.value = '';
       isSendingMessage = true;
 
-      // Добавляем сообщение пользователя в историю чата
       chatHistory.push({ role: 'user', content: userMessage });
 
       const loadingMessage = appendMessage('ai', 'Печатает...', true);
 
       try {
-        // Логируем отправляемый объект для отладки
         const requestBody = {
             model: 'deepseek-chat',
-            messages: chatHistory, // Отправляем всю историю чата
+            messages: chatHistory,
             stream: false
         };
         console.log('Отправляется запрос в DeepSeek API:', JSON.stringify(requestBody, null, 2));
@@ -729,24 +727,24 @@
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${DEEPSEEK_API_KEY}`
           },
-          body: JSON.stringify(requestBody) // Отправляем подготовленный объект
+          body: JSON.stringify(requestBody)
         });
 
         if (!response.ok) {
           let errorData;
           try {
             errorData = await response.json();
-            console.error('Ошибка DeepSeek API (JSON):', errorData); // Логируем весь объект ошибки
+            console.error('Ошибка DeepSeek API (JSON):', errorData);
           } catch (jsonError) {
             errorData = { message: await response.text() };
-            console.error('Ошибка DeepSeek API (текст):', errorData.message); // Логируем текст ошибки
+            console.error('Ошибка DeepSeek API (текст):', errorData.message);
           }
           const errorMessage = errorData.message || 'Неизвестная ошибка API.';
           throw new Error(`Ошибка API DeepSeek: ${response.status} ${response.statusText}. Детали: ${errorMessage}`);
         }
 
         const data = await response.json();
-        console.log('Ответ от DeepSeek API:', data); // Логируем весь успешный ответ
+        console.log('Ответ от DeepSeek API:', data);
 
         if (data && data.choices && data.choices.length > 0 && data.choices[0].message && data.choices[0].message.content) {
           const aiResponseContent = data.choices[0].message.content;
