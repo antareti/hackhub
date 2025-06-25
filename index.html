@@ -721,28 +721,43 @@
             'Authorization': `Bearer ${DEEPSEEK_API_KEY}`
           },
           body: JSON.stringify({
-            model: 'deepseek-chat', // Или другой подходящий модели DeepSeek
+            // Убедитесь, что эта модель доступна с вашим ключом и соответствует DeepSeek AI
+            model: 'deepseek-chat',
             messages: chatHistory,
             stream: false // Отключаем потоковую передачу для простоты
           })
         });
 
+        // Проверяем, что ответ OK (статус 2xx)
         if (!response.ok) {
-          throw new Error(`Ошибка API DeepSeek: ${response.status} ${response.statusText}`);
+          // Пытаемся прочитать сообщение об ошибке из тела ответа
+          let errorData;
+          try {
+            errorData = await response.json();
+          } catch (jsonError) {
+            // Если ответ не JSON, используем текстовое сообщение
+            errorData = { message: await response.text() };
+          }
+          throw new Error(`Ошибка API DeepSeek: ${response.status} ${response.statusText}. Детали: ${errorData.message || 'Нет дополнительных деталей.'}`);
         }
 
         const data = await response.json();
-        const aiResponseContent = data.choices[0].message.content;
 
-        loadingMessage.textContent = aiResponseContent; // Обновляем сообщение с ответом
-        loadingMessage.classList.remove('loading');
-        chatHistory.push({ role: 'assistant', content: aiResponseContent });
+        // Проверяем, что ответ содержит ожидаемые данные
+        if (data && data.choices && data.choices.length > 0 && data.choices[0].message && data.choices[0].message.content) {
+          const aiResponseContent = data.choices[0].message.content;
+          loadingMessage.textContent = aiResponseContent; // Обновляем сообщение с ответом
+          loadingMessage.classList.remove('loading');
+          chatHistory.push({ role: 'assistant', content: aiResponseContent });
+        } else {
+          throw new Error('Некорректный или пустой ответ от DeepSeek API.');
+        }
 
       } catch (error) {
         console.error('Ошибка при отправке сообщения в DeepSeek API:', error);
-        loadingMessage.textContent = 'Произошла ошибка. Пожалуйста, попробуйте еще раз.';
+        loadingMessage.textContent = `Произошла ошибка: ${error.message}. Пожалуйста, попробуйте еще раз.`;
         loadingMessage.classList.remove('loading');
-        loadingMessage.classList.add('error'); // Можно добавить класс для стилизации ошибок
+        loadingMessage.classList.add('error'); // Добавляем класс для стилизации ошибок
       } finally {
         isSendingMessage = false;
       }
