@@ -287,6 +287,7 @@
         <i class="fas fa-arrow-up"></i>
     </button>
 
+    <audio id="showerSound" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" preload="auto"></audio>
     <script>
         (function() {
             const repoOwner = "antareti";
@@ -296,7 +297,8 @@
             const gallery = document.getElementById("videoGallery");
             const videoSearchInput = document.getElementById("videoSearch");
             const scrollToTopBtn = document.getElementById("scrollToTopBtn");
-            let allVideoData = []; // Для хранения всех загруженных видео
+            const showerSound = document.getElementById("showerSound"); // Получаем аудиоэлемент
+            let allVideoData = [];
 
             const videoNames = [
                 "Гриша и Ира", "Приключения Саши", "Вечер с Катей", "Дэнс с Олей", "Романтика с Андреем",
@@ -349,14 +351,33 @@
                 video.dataset.src = videoUrl;
 
                 const titleElement = document.createElement("h3");
-                titleElement.textContent = getRandomVideoName(); // Присваиваем случайное имя при создании
-                file.displayTitle = titleElement.textContent; // Сохраняем имя для поиска
+                titleElement.textContent = getRandomVideoName();
+                file.displayTitle = titleElement.textContent;
 
                 wrapper.appendChild(video);
                 wrapper.appendChild(titleElement);
 
+                // Добавляем слушатель события "play" для каждого видео
+                video.addEventListener('play', () => {
+                    // Если звук уже играет, не запускаем его снова
+                    if (showerSound.paused) {
+                        showerSound.play().catch(e => console.error("Ошибка воспроизведения звука душа:", e));
+                    }
+                });
+
+                // Добавляем слушатель события "pause" для каждого видео
+                video.addEventListener('pause', () => {
+                    // Останавливаем звук душа, когда видео ставится на паузу
+                    showerSound.pause();
+                    showerSound.currentTime = 0; // Сбрасываем звук на начало
+                });
+
                 wrapper.addEventListener('dblclick', () => {
                     wrapper.classList.add('closing');
+                    // Перед удалением обертки, убедимся, что видео остановлено и звук душа тоже
+                    video.pause();
+                    showerSound.pause();
+                    showerSound.currentTime = 0;
                     wrapper.addEventListener('transitionend', function handler() {
                         wrapper.remove();
                         wrapper.removeEventListener('transitionend', handler);
@@ -368,7 +389,7 @@
             }
 
             function displayVideos(videosToDisplay) {
-                gallery.innerHTML = ''; // Очищаем галерею
+                gallery.innerHTML = '';
                 if (videosToDisplay.length === 0) {
                     gallery.innerHTML = '<p class="error">Видео не найдены.</p>';
                     return;
@@ -380,7 +401,6 @@
                 });
             }
 
-            // Загрузка данных с GitHub API
             fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/contents/${folderPath}`)
                 .then(response => {
                     if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
@@ -403,7 +423,6 @@
                     gallery.innerHTML = `<p class="error">Ошибка загрузки видео: ${err.message}</p>`;
                 });
 
-            // Поиск видео
             videoSearchInput.addEventListener('input', (event) => {
                 const searchTerm = event.target.value.toLowerCase();
                 const filteredVideos = allVideoData.filter(file =>
@@ -412,9 +431,8 @@
                 displayVideos(filteredVideos);
             });
 
-            // Кнопка "Наверх"
             window.addEventListener('scroll', () => {
-                if (window.scrollY > 300) { // Показать кнопку, если прокручено более 300px
+                if (window.scrollY > 300) {
                     scrollToTopBtn.style.display = "flex";
                 } else {
                     scrollToTopBtn.style.display = "none";
@@ -424,7 +442,7 @@
             scrollToTopBtn.addEventListener('click', () => {
                 window.scrollTo({
                     top: 0,
-                    behavior: 'smooth' // Плавная прокрутка
+                    behavior: 'smooth'
                 });
             });
         })();
