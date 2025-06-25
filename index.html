@@ -273,4 +273,41 @@
   </style>
 </head>
 <body>
-<!-- Продолжение содержимого в следующем обновлении -->
+  <!-- Элемент светящегося круга за курсором -->
+  <div id="cursor-light"></div>
+
+  <!-- Световые пятна -->
+  <div class="spotlight left"></div>
+  <div class="spotlight right"></div>
+
+  <!-- Пример хедера -->
+  <header>
+    <div class="logo">Hack<span>Hub</span></div>
+    <input class="search" type="text" placeholder="Поиск..." />
+    <button class="logout-btn">Выйти</button>
+  </header>
+
+  <!-- Пример категорий -->
+  <nav class="categories">
+    <ul>
+      <li><a href="#" class="active">Все</a></li>
+      <li><a href="#">Технологии</a></li>
+      <li><a href="#">Безопасность</a></li>
+      <li><a href="#" class="premium">Премиум</a></li>
+    </ul>
+  </nav>
+
+  <!-- Пустая галерея для примера -->
+  <section class="gallery">
+    <!-- Карточки можно добавить сюда -->
+  </section>
+
+  <script>
+    // Перемещение светящегося круга за курсором
+    const cursorLight = document.getElementById('cursor-light');
+    window.addEventListener('mousemove', e => {
+      cursorLight.style.transform = `translate(${e.clientX}px, ${e.clientY}px) translate(-50%, -50%)`;
+    });
+  </script>
+</body>
+</html>
