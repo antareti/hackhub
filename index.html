@@ -661,9 +661,9 @@
     const chatInput = document.getElementById('chat-input');
     const chatSendBtn = document.getElementById('chat-send-btn');
 
-    // **ВАШ DEEPSEEK API-КЛЮЧ**
-    const DEEPSEEK_API_KEY = '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'; // Ключ заменён!
-    const DEEPSEEK_API_URL = 'https://api.deepseek.com/chat/completions';
+    // **ВАШ КЛЮЧ OPENROUTER API**
+    const OPENROUTER_API_KEY = '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'; // Этот ключ теперь для OpenRouter!
+    const OPENROUTER_API_URL = 'https://openrouter.ai/api/v1/chat/completions'; // Изменен URL на OpenRouter!
 
     let chatHistory = [{ role: 'system', content: 'You are a helpful assistant on a gallery website. Provide concise and friendly answers.' }];
     let isSendingMessage = false;
@@ -714,18 +714,21 @@
 
       try {
         const requestBody = {
-            model: 'deepseek-chat',
+            model: 'deepseek/deepseek-chat', // Формат модели для OpenRouter
             messages: chatHistory,
             stream: false
         };
-        console.log('Отправляется запрос в DeepSeek API:', JSON.stringify(requestBody, null, 2));
+        console.log('Отправляется запрос в OpenRouter API:', JSON.stringify(requestBody, null, 2));
 
 
-        const response = await fetch(DEEPSEEK_API_URL, {
+        const response = await fetch(OPENROUTER_API_URL, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${DEEPSEEK_API_KEY}`
+            'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
+            // Заголовки для OpenRouter, теперь с вашими данными:
+            "HTTP-Referer": "https://antareti.github.io/hackhub/", // URL вашего сайта
+            "X-Title": "HackHub Gallery" // Название вашего сайта
           },
           body: JSON.stringify(requestBody)
         });
@@ -734,17 +737,17 @@
           let errorData;
           try {
             errorData = await response.json();
-            console.error('Ошибка DeepSeek API (JSON):', errorData);
+            console.error('Ошибка OpenRouter API (JSON):', errorData);
           } catch (jsonError) {
             errorData = { message: await response.text() };
-            console.error('Ошибка DeepSeek API (текст):', errorData.message);
+            console.error('Ошибка OpenRouter API (текст):', errorData.message);
           }
           const errorMessage = errorData.message || 'Неизвестная ошибка API.';
-          throw new Error(`Ошибка API DeepSeek: ${response.status} ${response.statusText}. Детали: ${errorMessage}`);
+          throw new Error(`Ошибка OpenRouter API: ${response.status} ${response.statusText}. Детали: ${errorMessage}`);
         }
 
         const data = await response.json();
-        console.log('Ответ от DeepSeek API:', data);
+        console.log('Ответ от OpenRouter API:', data);
 
         if (data && data.choices && data.choices.length > 0 && data.choices[0].message && data.choices[0].message.content) {
           const aiResponseContent = data.choices[0].message.content;
@@ -752,12 +755,12 @@
           loadingMessage.classList.remove('loading');
           chatHistory.push({ role: 'assistant', content: aiResponseContent });
         } else {
-          console.error('Некорректный или пустой ответ от DeepSeek API:', data);
-          throw new Error('Некорректный или пустой ответ от DeepSeek API.');
+          console.error('Некорректный или пустой ответ от OpenRouter API:', data);
+          throw new Error('Некорректный или пустой ответ от OpenRouter API.');
         }
 
       } catch (error) {
-        console.error('Критическая ошибка при отправке сообщения в DeepSeek API:', error);
+        console.error('Критическая ошибка при отправке сообщения в OpenRouter API:', error);
         loadingMessage.textContent = `Произошла ошибка: ${error.message}. Пожалуйста, попробуйте еще раз.`;
         loadingMessage.classList.remove('loading');
         loadingMessage.classList.add('error');
