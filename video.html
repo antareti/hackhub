@@ -4,14 +4,25 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Видео | HackHub</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
+
+        :root {
+            --primary-color: #ff6600;
+            --secondary-color: #e65c00;
+            --background-dark: #111;
+            --background-light: #222;
+            --text-color: #fff;
+            --border-color: #333;
+            --error-color: #f44;
+        }
 
         body {
             margin: 0;
             font-family: 'Montserrat', Arial, sans-serif;
-            background-color: #111;
-            color: #fff;
+            background-color: var(--background-dark);
+            color: var(--text-color);
             overflow-x: hidden;
             position: relative;
             min-height: 100vh;
@@ -29,7 +40,6 @@
         }
 
         @media (max-width: 768px) {
-            /* Отключаем видеофон на мобильных */
             .smoke-video {
                 display: none;
             }
@@ -41,8 +51,8 @@
             text-align: center;
             font-size: 30px;
             font-weight: bold;
-            color: #ff6600;
-            box-shadow: 0 0 15px #ff6600;
+            color: var(--primary-color);
+            box-shadow: 0 0 15px var(--primary-color);
             position: relative;
             z-index: 10;
         }
@@ -52,22 +62,23 @@
             top: 20px;
             left: 20px;
             font-size: 16px;
-            color: #fff;
-            background-color: #ff6600;
+            color: var(--text-color);
+            background-color: var(--primary-color);
             padding: 6px 12px;
             border-radius: 8px;
             text-decoration: none;
-            transition: background 0.3s ease;
+            transition: background 0.3s ease, transform 0.2s ease;
             z-index: 11;
         }
 
         .home-link:hover {
-            background-color: #e65c00;
+            background-color: var(--secondary-color);
+            transform: translateY(-2px);
         }
 
         .video-gallery {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 20px;
             padding: 30px;
             max-width: 1200px;
@@ -77,37 +88,42 @@
         }
 
         .video-wrapper {
-            border: 3px solid #ff6600;
+            border: 3px solid var(--primary-color);
             border-radius: 12px;
             box-shadow: 0 0 15px rgba(255, 102, 0, 0.5);
             overflow: hidden;
             display: flex;
             flex-direction: column;
-
-            /* Анимации открытия/закрытия */
             transform: scale(1);
             opacity: 1;
-            transition: transform 0.3s ease-out, opacity 0.3s ease-out; /* Плавный переход */
+            transition: transform 0.3s ease-out, opacity 0.3s ease-out, box-shadow 0.3s ease;
+            cursor: pointer; /* Для индикации кликабельности */
+        }
+
+        .video-wrapper:hover {
+            transform: translateY(-5px); /* Легкий эффект при наведении */
+            box-shadow: 0 0 25px rgba(255, 102, 0, 0.7); /* Усиление тени */
         }
 
         .video-wrapper.opening {
-            transform: scale(0.9); /* Начальное состояние для открытия */
+            transform: scale(0.9);
             opacity: 0;
         }
 
         .video-wrapper.closing {
-            transform: scale(0.9); /* Конечное состояние для закрытия */
+            transform: scale(0.9);
             opacity: 0;
         }
 
         .video-wrapper h3 {
-            background-color: #222;
-            color: #ff6600;
+            background-color: var(--background-light);
+            color: var(--primary-color);
             padding: 10px 15px;
             margin: 0;
             font-size: 18px;
             text-align: center;
-            border-top: 1px solid #333;
+            border-top: 1px solid var(--border-color);
+            word-break: break-word; /* Для длинных названий */
         }
 
         video {
@@ -119,11 +135,127 @@
 
         .error {
             text-align: center;
-            color: #f44;
+            color: var(--error-color);
             padding: 20px;
             font-weight: bold;
             font-size: 18px;
             grid-column: 1 / -1;
+        }
+
+        /* Скелетные загрузчики */
+        .skeleton {
+            background-color: var(--background-light);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 0 10px rgba(255, 102, 0, 0.3);
+            position: relative;
+            animation: pulse 1.5s infinite ease-in-out;
+            height: 250px; /* Примерная высота видеокарточки */
+        }
+
+        .skeleton-video {
+            width: 100%;
+            height: 180px; /* Примерная высота видеоплеера */
+            background-color: rgba(255, 102, 0, 0.1);
+        }
+
+        .skeleton-title {
+            height: 25px;
+            margin: 10px 15px;
+            background-color: rgba(255, 102, 0, 0.2);
+            border-radius: 4px;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.7; }
+            50% { opacity: 1; }
+            100% { opacity: 0.7; }
+        }
+
+        /* Кнопка "Наверх" */
+        #scrollToTopBtn {
+            display: none; /* Скрыта по умолчанию */
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 99;
+            font-size: 24px;
+            background-color: var(--primary-color);
+            color: var(--text-color);
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #scrollToTopBtn:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-3px);
+        }
+
+        /* Поле поиска */
+        .search-container {
+            text-align: center;
+            padding: 20px;
+            z-index: 5;
+            position: relative;
+        }
+
+        #videoSearch {
+            width: 90%;
+            max-width: 400px;
+            padding: 12px 20px;
+            border-radius: 25px;
+            border: 2px solid var(--primary-color);
+            background-color: var(--background-light);
+            color: var(--text-color);
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        #videoSearch::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        #videoSearch:focus {
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 10px rgba(255, 102, 0, 0.5);
+        }
+
+        /* Медиа-запросы для адаптивности */
+        @media (max-width: 600px) {
+            header {
+                font-size: 24px;
+                padding: 15px;
+            }
+            .home-link {
+                top: 15px;
+                left: 15px;
+                font-size: 14px;
+                padding: 5px 10px;
+            }
+            .video-gallery {
+                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+                padding: 20px;
+            }
+            .video-wrapper h3 {
+                font-size: 16px;
+                padding: 8px 10px;
+            }
+            #scrollToTopBtn {
+                bottom: 20px;
+                right: 20px;
+                width: 45px;
+                height: 45px;
+                font-size: 20px;
+            }
         }
     </style>
 </head>
@@ -134,13 +266,26 @@
     </video>
 
     <header>
-        <a href="index.html" class="home-link">🏠 Главная</a>
+        <a href="index.html" class="home-link">
+            <i class="fas fa-home"></i> Главная
+        </a>
         🎥 Видеогалерея HackHub
     </header>
 
+    <div class="search-container">
+        <input type="text" id="videoSearch" placeholder="Поиск видео по названию...">
+    </div>
+
     <section class="video-gallery" id="videoGallery">
-        <p class="error" id="errorMsg">Загрузка видео...</p>
+        <div class="skeleton"><div class="skeleton-video"></div><div class="skeleton-title"></div></div>
+        <div class="skeleton"><div class="skeleton-video"></div><div class="skeleton-title"></div></div>
+        <div class="skeleton"><div class="skeleton-video"></div><div class="skeleton-title"></div></div>
+        <div class="skeleton"><div class="skeleton-video"></div><div class="skeleton-title"></div></div>
     </section>
+
+    <button id="scrollToTopBtn" title="Наверх">
+        <i class="fas fa-arrow-up"></i>
+    </button>
 
     <script>
         (function() {
@@ -149,14 +294,18 @@
             const folderPath = "videos";
 
             const gallery = document.getElementById("videoGallery");
-            const errorMsg = document.getElementById("errorMsg");
+            const videoSearchInput = document.getElementById("videoSearch");
+            const scrollToTopBtn = document.getElementById("scrollToTopBtn");
+            let allVideoData = []; // Для хранения всех загруженных видео
 
-            // Список имен для видео
             const videoNames = [
                 "Гриша и Ира", "Приключения Саши", "Вечер с Катей", "Дэнс с Олей", "Романтика с Андреем",
                 "Путешествие Вики", "Забавы с Максом", "Утро с Леной", "Кофе с Костей", "Секреты с Наташей",
                 "Праздник у Димы", "Истории с Мариной", "Встреча с Борисом", "Прогулка с Аней", "Тренировка с Васей",
-                "Ужин с Юлей", "Работа с Петей", "Отдых с Светой", "Разговор с Мишей", "Прогулки по крышам с Аней"
+                "Ужин с Юлей", "Работа с Петей", "Отдых с Светой", "Разговор с Мишей", "Прогулки по крышам с Аней",
+                "Загадки природы с Игорем", "Городские легенды с Дашей", "Кулинарные эксперименты с Олегом",
+                "Философские беседы с Ксенией", "Спорт и здоровье с Никитой", "Искусство и вдохновение с Полиной",
+                "Ночные огни с Артемом", "Тихие вечера с Софией", "Вкусные рецепты с Евой", "Истории успеха с Кириллом"
             ];
 
             function getRandomVideoName() {
@@ -164,7 +313,6 @@
                 return videoNames[randomIndex];
             }
 
-            // Для ленивой загрузки видео
             const observer = new IntersectionObserver(entries => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
@@ -174,12 +322,11 @@
                             video.load();
                             observer.unobserve(video);
 
-                            // После загрузки и отображения, убираем класс 'opening'
                             const wrapper = video.closest('.video-wrapper');
                             if (wrapper && wrapper.classList.contains('opening')) {
                                 setTimeout(() => {
                                     wrapper.classList.remove('opening');
-                                }, 50); // Небольшая задержка
+                                }, 50);
                             }
                         }
                     }
@@ -189,39 +336,48 @@
                 threshold: 0.1
             });
 
-            // Функция создания видеоэлемента с lazy loading
             function createVideoCard(file) {
                 const wrapper = document.createElement("div");
-                wrapper.className = "video-wrapper opening"; // Добавляем класс 'opening' по умолчанию
+                wrapper.className = "video-wrapper opening";
 
                 const video = document.createElement("video");
                 video.controls = true;
                 video.preload = "none";
-                video.setAttribute("playsinline", ""); // для мобильных
+                video.setAttribute("playsinline", "");
 
                 const videoUrl = `https://raw.githubusercontent.com/${repoOwner}/${repoName}/main/${folderPath}/${file.name}`;
-                video.dataset.src = videoUrl; // ленивый src
+                video.dataset.src = videoUrl;
 
-                // Добавляем заголовок с случайным именем
                 const titleElement = document.createElement("h3");
-                titleElement.textContent = getRandomVideoName();
+                titleElement.textContent = getRandomVideoName(); // Присваиваем случайное имя при создании
+                file.displayTitle = titleElement.textContent; // Сохраняем имя для поиска
 
                 wrapper.appendChild(video);
                 wrapper.appendChild(titleElement);
 
-                // Пример: Закрытие видео по двойному клику
                 wrapper.addEventListener('dblclick', () => {
                     wrapper.classList.add('closing');
                     wrapper.addEventListener('transitionend', function handler() {
                         wrapper.remove();
-                        wrapper.removeEventListener('transitionend', handler); // Удалить слушателя
+                        wrapper.removeEventListener('transitionend', handler);
                     });
                 });
 
-                // Наблюдаем для lazy load
                 observer.observe(video);
-
                 return wrapper;
+            }
+
+            function displayVideos(videosToDisplay) {
+                gallery.innerHTML = ''; // Очищаем галерею
+                if (videosToDisplay.length === 0) {
+                    gallery.innerHTML = '<p class="error">Видео не найдены.</p>';
+                    return;
+                }
+
+                videosToDisplay.forEach(file => {
+                    const videoCard = createVideoCard(file);
+                    gallery.appendChild(videoCard);
+                });
             }
 
             // Загрузка данных с GitHub API
@@ -233,31 +389,44 @@
                 .then(data => {
                     if (!Array.isArray(data)) throw new Error("Неверный формат данных");
 
-                    if (data.length === 0) {
-                        errorMsg.textContent = "Видео не найдены.";
+                    allVideoData = data.filter(file => /\.(mp4|webm|ogg)$/i.test(file.name));
+
+                    if (allVideoData.length === 0) {
+                        gallery.innerHTML = '<p class="error">Видео не найдены.</p>';
                         return;
                     }
 
-                    errorMsg.style.display = "none";
-
-                    data.forEach(file => {
-                        if (/\.(mp4|webm|ogg)$/i.test(file.name)) {
-                            const videoCard = createVideoCard(file);
-                            gallery.appendChild(videoCard);
-                        }
-                    });
-
-                    // Если не добавлено видео
-                    if (gallery.children.length === 0) {
-                        errorMsg.textContent = "Видео не найдены.";
-                        errorMsg.style.display = "block";
-                    }
+                    displayVideos(allVideoData);
                 })
                 .catch(err => {
                     console.error("Ошибка загрузки видео:", err);
-                    errorMsg.textContent = "Ошибка загрузки видео.";
-                    errorMsg.style.display = "block";
+                    gallery.innerHTML = `<p class="error">Ошибка загрузки видео: ${err.message}</p>`;
                 });
+
+            // Поиск видео
+            videoSearchInput.addEventListener('input', (event) => {
+                const searchTerm = event.target.value.toLowerCase();
+                const filteredVideos = allVideoData.filter(file =>
+                    file.displayTitle && file.displayTitle.toLowerCase().includes(searchTerm)
+                );
+                displayVideos(filteredVideos);
+            });
+
+            // Кнопка "Наверх"
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 300) { // Показать кнопку, если прокручено более 300px
+                    scrollToTopBtn.style.display = "flex";
+                } else {
+                    scrollToTopBtn.style.display = "none";
+                }
+            });
+
+            scrollToTopBtn.addEventListener('click', () => {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth' // Плавная прокрутка
+                });
+            });
         })();
     </script>
 
