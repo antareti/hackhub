@@ -168,6 +168,33 @@
             box-shadow: 0 0 15px var(--primary-color);
         }
 
+        /* Online Users Counter */
+        .online-users-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background-color: #2a2a2a;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 16px;
+            color: var(--light-text-color);
+            border: 1px solid #444;
+            box-shadow: 0 0 10px rgba(0,0,0,0.3);
+            white-space: nowrap;
+        }
+
+        .online-users-icon {
+            color: var(--primary-color);
+            font-size: 20px;
+            animation: pulse-online 2s infinite;
+        }
+
+        @keyframes pulse-online {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
         /* Categories Navigation */
         .categories {
             background-color: #1a1a1a;
@@ -729,6 +756,14 @@
                 width: 100%;
                 text-align: center;
             }
+            /* Adjust online users counter for smaller screens */
+            .online-users-container {
+                order: -1; /* Move to top of header on small screens */
+                width: 100%;
+                justify-content: center;
+                margin-bottom: 15px;
+                padding: 10px 15px;
+            }
             .categories {
                 padding: 10px 20px;
             }
@@ -892,6 +927,10 @@
         <div class="logo">Hack<span>Hub</span></div>
         <div class="search">
             <input id="searchInput" type="text" placeholder="Поиск...">
+        </div>
+        <div class="online-users-container">
+            <i class="fas fa-users online-users-icon"></i>
+            <span id="online-users-count">500</span> онлайн
         </div>
         <button class="logout-btn" onclick="logout()">Выйти</button>
     </header>
@@ -1286,7 +1325,7 @@
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${OPENROrouter_API_KEY}`,
+                        'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
                         "HTTP-Referer": "https://antareti.github.io/hackhub/",
                         "X-Title": "HackHub Gallery"
                     },
@@ -1328,6 +1367,22 @@
                 isSendingMessage = false;
             }
         }
+
+        // --- Online Users Counter Logic ---
+        const onlineUsersCountElement = document.getElementById('online-users-count');
+
+        function updateOnlineUsersCount() {
+            // Генерируем случайное число пользователей от 100 до 1000
+            const randomCount = Math.floor(Math.random() * (1000 - 100 + 1)) + 100;
+            onlineUsersCountElement.textContent = randomCount;
+        }
+
+        // Вызываем функцию при загрузке страницы
+        updateOnlineUsersCount();
+
+        // Обновляем счетчик каждые 10 секунд
+        setInterval(updateOnlineUsersCount, 10000); // 10000 миллисекунд = 10 секунд
+
     </script>
 </body>
 </html>
