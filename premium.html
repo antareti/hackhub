@@ -1,6 +1,166 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>HackHub Premium</title>
+  <style>
+    body {
+      margin: 0;
+      background-color: #121212;
+      color: #eee;
+      font-family: 'Montserrat', sans-serif;
+      overflow: hidden; /* Добавлено для скрытия полос прокрутки, если видео больше экрана */
+      position: relative; /* Важно для позиционирования видео */
+    }
+
+    /* Стили для фонового видео */
+    .background-video {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      min-width: 100%;
+      min-height: 100%;
+      width: auto;
+      height: auto;
+      z-index: -1; /* Отправляем видео на задний план */
+      transform: translate(-50%, -50%);
+      background-size: cover;
+      opacity: 0.5; /* Для более мягкого эффекта, можно изменить */
+    }
+
+    .password-overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.7); /* Полупрозрачный фон, чтобы видео было видно */
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      text-align: center;
+    }
+    .password-overlay input {
+      padding: 12px 18px;
+      font-size: 18px;
+      border-radius: 10px;
+      border: 2px solid #ff6600;
+      background: #1e1e1e;
+      color: #eee;
+      width: 260px;
+      margin-bottom: 15px;
+      text-align: center;
+    }
+    .password-overlay button {
+      padding: 10px 20px;
+      background-color: #ff6600;
+      color: #121212;
+      border: none;
+      border-radius: 10px;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 16px;
+      margin-top: 10px;
+    }
+    .password-overlay p {
+      margin-top: 20px;
+      color: #aaa;
+      font-size: 14px;
+      max-width: 80%;
+    }
+    .premium-content {
+      display: none;
+      padding: 40px;
+      position: relative; /* Для того чтобы контент был над видео */
+      z-index: 1;
+    }
+    .premium-content h1 {
+      font-size: 36px;
+      color: #ff6600;
+    }
+    .premium-content p {
+      font-size: 18px;
+      max-width: 800px;
+      line-height: 1.6;
+    }
+    .premium-gallery {
+      margin-top: 30px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 20px;
+    }
+    .premium-gallery img {
+      width: 100%;
+      border-radius: 12px;
+      box-shadow: 0 0 15px #ff6600;
+    }
+  </style>
+</head>
+<body>
+
+<video autoplay loop muted class="background-video">
+  <source src="0.mp4" type="video/mp4">
+  Ваш браузер не поддерживает видео HTML5.
+</video>
+
+<div class="password-overlay" id="passwordOverlay">
+  <h2>🔐 Введите пароль для доступа</h2>
+
+  <input type="password" id="passwordInput" placeholder="Пароль" />
+  <button onclick="checkPassword()">Войти</button>
+
+  <p>Нет доступа? Получи Premium всего за $50 через Payeer:</p>
+  <a href="https://payeer.com/transfer/?output=1&sum=50&cur=USD&to=P1126451251&comment=HackHub%20Premium" target="_blank" style="
+    display: inline-block;
+    margin-top: 10px;
+    padding: 10px 20px;
+    background-color: #ff6600;
+    color: #121212;
+    font-weight: bold;
+    font-size: 16px;
+    border-radius: 10px;
+    text-decoration: none;
+  ">
+    💳 Оплатить $50 через Payeer
+  </a>
+
+  <p>После оплаты ты получишь пароль в Telegram или Email.</p>
+</div>
+
+<div id="premiumContent" class="premium-content">
+  <h1>🎉 Добро пожаловать в HackHub Premium</h1>
+  <p>Ты получил доступ к эксклюзивному контенту: секретные изображения, материалы и бонусы только для подписчиков. Ниже — приватная галерея 👇</p>
+
+  <div class="premium-gallery">
+    <img src="https://raw.githubusercontent.com/antareti/hackhub/main/images/premium1.jpg" alt="Премиум 1">
+    <img src="https://raw.githubusercontent.com/antareti/hackhub/main/images/premium2.jpg" alt="Премиум 2">
+    <img src="https://raw.githubusercontent.com/antareti/hackhub/main/images/premium3.jpg" alt="Премиум 3">
+  </div>
+</div>
+
+<script>
+  const CORRECT_PASSWORD = "muraba1977";
+
+  function checkPassword() {
+    const input = document.getElementById("passwordInput").value;
+    if (input === CORRECT_PASSWORD) {
+      document.getElementById("passwordOverlay").style.display = "none";
+      document.getElementById("premiumContent").style.display = "block";
+    } else {
+      alert("❌ Неверный пароль.");
+    }
+  }
+
+  document.getElementById("passwordInput").addEventListener("keydown", function(e) {
+    if (e.key === "Enter") checkPassword();
+  });
+</script>
+
+</body>
+</html><!DOCTYPE html>
+<html lang="ru">
+<head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>HackHub Premium</title>
