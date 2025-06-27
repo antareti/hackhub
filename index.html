@@ -1129,6 +1129,7 @@
             modalImg.style.height = `${targetHeight}px`;
             modalImg.style.left = `${targetLeft}px`;
             modalImg.style.top = `${targetTop}px`;
+            modalImg.style.opacity = '1';
         }
 
         function closeModal() {
@@ -1263,7 +1264,7 @@
         const chatInput = document.getElementById('chat-input');
         const chatSendBtn = document.getElementById('chat-send-btn');
 
-        const OPENROUTER_API_KEY = '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';
+        const OPENROUTER_API_KEY = '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';
         const OPENROUTER_API_URL = 'https://openrouter.ai/api/v1/chat/completions';
 
         let chatHistory = [{ role: 'system', content: 'You are a helpful and friendly AI assistant for HackHub Gallery. Provide concise, encouraging, and enthusiastic answers. You can also give recommendations for categories or features. Your responses should be in Russian. Try to sound energetic and positive!' }];
