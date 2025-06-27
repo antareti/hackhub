@@ -534,23 +534,26 @@
             transition: opacity 0.3s ease-out;
             /* Flexbox для центрирования содержимого модального окна */
             display: flex;
-            align-items: center;
             justify-content: center;
+            align-items: center;
         }
 
         .modal.open {
-            display: flex; /* Важно: использовать flex при открытии */
+            display: flex; /* Убедитесь, что display: flex при открытии */
             opacity: 1;
             pointer-events: auto;
         }
 
         .modal-content-wrapper {
-            position: relative; /* Для позиционирования close button абсолютно внутри */
+            position: relative; /* Чтобы позиционировать close button абсолютно внутри */
+            max-width: 90%;
+            max-height: 90%;
             border-radius: 18px;
             box-shadow: 0 0 40px var(--primary-color);
-            overflow: hidden; /* Обрезает углы изображения, чтобы соответствовать border-radius */
-            max-width: 90%; /* Ограничение размера контейнера модального изображения */
-            max-height: 90%;
+            overflow: auto; /* Добавляем полосы прокрутки, если изображение большое */
+            display: flex; /* Для центрирования изображения внутри обертки */
+            justify-content: center;
+            align-items: center;
         }
 
         .modal-content {
@@ -558,14 +561,17 @@
             max-width: 100%; /* Изображение не будет выходить за пределы контейнера */
             max-height: 100%;
             object-fit: contain; /* Сохраняет пропорции изображения */
-            transform: none !important; /* Отменяем любые предыдущие трансформации для центрирования */
+            /* Удалены position: absolute, top, left, transform отсюда,
+               так как центрирование теперь происходит через flexbox на .modal-content-wrapper */
+            /* Сброс любых инлайновых стилей, которые могли остаться от предыдущей попытки анимации */
+            position: static !important;
             top: auto !important;
             left: auto !important;
+            transform: none !important;
             width: auto !important;
             height: auto !important;
-            position: relative !important; /* Отменяем absolute позиционирование из JS */
-            opacity: 1 !important; /* Всегда видимое, если модальное окно открыто */
-            transition: none !important; /* Отменяем анимации из JS */
+            opacity: 1 !important;
+            transition: none !important;
         }
 
         .close {
@@ -1124,11 +1130,6 @@
                 right: 2.5vw;
                 bottom: 80px;
                 height: 60vh;
-            }
-            #chat-toggle-btn {
-                width: 50px;
-                height: 50px;
-                font-size: 22px;
             }
             #chat-header {
                 font-size: 16px;
