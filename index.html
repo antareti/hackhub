@@ -9,25 +9,21 @@
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Roboto:wght@400;700&display=swap');
 
         :root {
-            --primary-color: #ff6600; /* Исходный оранжевый */
+            --primary-color: #ff6600;
             --secondary-color: #121212;
             --light-text-color: #eee;
             --dark-text-color: #121212;
             --card-bg: #1e1e1e;
             --header-bg: linear-gradient(90deg, #000000, #1a1a1a, #000000);
-            --tooltip-bg: #333;
-            --tooltip-text: var(--light-text-color);
         }
 
         body {
             margin: 0;
             background-color: var(--secondary-color);
             color: var(--light-text-color);
-            font-family: 'Roboto', Arial, sans-serif;
+            font-family: 'Roboto', Arial, sans-serif; /* Изменен основной шрифт */
             overflow-x: hidden;
             line-height: 1.6;
-            perspective: 1px; /* Для параллакса */
-            transform-style: preserve-3d; /* Для параллакса */
         }
 
         h1, h2, h3, h4, h5, h6 {
@@ -67,9 +63,8 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            opacity: 0.2;
-            z-index: -2; /* Изменено на -2 для параллакса */
-            transform: translateZ(-1px) scale(2); /* Для параллакса */
+            opacity: 0.2; /* Уменьшена прозрачность */
+            z-index: -1;
         }
 
         .spotlight {
@@ -77,13 +72,12 @@
             top: -20%;
             width: 60vw;
             height: 160vh;
-            background: radial-gradient(ellipse at center, rgba(255,255,255,0.08) 0%, transparent 70%);
+            background: radial-gradient(ellipse at center, rgba(255,255,255,0.08) 0%, transparent 70%); /* Немного приглушенный эффект */
             pointer-events: none;
             mix-blend-mode: screen;
-            z-index: -1; /* Изменено на -1 для параллакса */
+            z-index: 0;
             transform-origin: center;
-            animation: spin 25s linear infinite;
-            transform: translateZ(-0.5px) scale(1.5); /* Для параллакса */
+            animation: spin 25s linear infinite; /* Немного медленнее */
         }
         .spotlight.left {
             left: -20vw;
@@ -94,20 +88,20 @@
         }
 
         @keyframes spin {
-            0% { transform: rotate(0deg) translateX(0) translateZ(-0.5px) scale(1.5); }
-            100% { transform: rotate(360deg) translateX(0) translateZ(-0.5px) scale(1.5); }
+            0% { transform: rotate(0deg) translateX(0); }
+            100% { transform: rotate(360deg) translateX(0); }
         }
 
         #cursor-light {
             position: fixed;
             top: 0;
             left: 0;
-            width: 180px;
-            height: 180px;
+            width: 180px; /* Больше радиус */
+            height: 180px; /* Больше радиус */
             pointer-events: none;
             border-radius: 50%;
-            background: radial-gradient(circle, rgba(255,102,0,0.5) 0%, rgba(255,102,0,0) 60%);
-            filter: blur(40px);
+            background: radial-gradient(circle, rgba(255,102,0,0.5) 0%, rgba(255,102,0,0) 60%); /* Ярче цвет */
+            filter: blur(40px); /* Сильнее размытие */
             transform: translate(-50%, -50%);
             z-index: 9999;
             will-change: transform;
@@ -120,16 +114,16 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            box-shadow: 0 0 25px rgba(255, 102, 0, 0.7);
+            box-shadow: 0 0 25px rgba(255, 102, 0, 0.7); /* Более выраженная тень */
             position: sticky;
             top: 0;
             z-index: 100;
-            flex-wrap: wrap;
-            gap: 15px;
+            flex-wrap: wrap; /* Для адаптивности */
+            gap: 15px; /* Промежуток между элементами */
         }
         .logo {
             font-family: 'Montserrat', sans-serif;
-            font-size: 44px;
+            font-size: 44px; /* Больше размер */
             font-weight: 900;
             color: #fff;
             cursor: default;
@@ -137,19 +131,19 @@
         }
         .logo span {
             background-color: var(--primary-color);
-            padding: 0 12px;
+            padding: 0 12px; /* Увеличен паддинг */
             color: var(--dark-text-color);
-            border-radius: 8px;
+            border-radius: 8px; /* Больший радиус */
             box-shadow: 0 0 12px var(--primary-color);
         }
         .search input {
-            padding: 12px 20px;
-            width: 350px;
+            padding: 12px 20px; /* Увеличен паддинг */
+            width: 350px; /* Увеличена ширина */
             border-radius: 30px;
             border: 2px solid var(--primary-color);
             background-color: #222;
             color: var(--light-text-color);
-            font-size: 18px;
+            font-size: 18px; /* Увеличен размер шрифта */
             transition: all 0.3s ease;
         }
         .search input:focus {
@@ -161,8 +155,8 @@
             background: none;
             border: 2px solid var(--primary-color);
             color: var(--primary-color);
-            padding: 10px 22px;
-            border-radius: 25px;
+            padding: 10px 22px; /* Увеличен паддинг */
+            border-radius: 25px; /* Больший радиус */
             font-weight: bold;
             cursor: pointer;
             transition: 0.3s ease;
@@ -204,7 +198,7 @@
         /* Categories Navigation */
         .categories {
             background-color: #1a1a1a;
-            padding: 15px 30px;
+            padding: 15px 30px; /* Увеличен паддинг */
             box-shadow: inset 0 -2px 0 #333;
         }
         .categories ul {
@@ -212,12 +206,12 @@
             display: flex;
             flex-wrap: nowrap;
             overflow-x: auto;
-            gap: 20px;
+            gap: 20px; /* Увеличен промежуток */
             margin: 0;
             padding: 0;
             -webkit-overflow-scrolling: touch;
-            scrollbar-width: thin;
-            scrollbar-color: var(--primary-color) #333;
+            scrollbar-width: thin; /* Для Firefox */
+            scrollbar-color: var(--primary-color) #333; /* Для Firefox */
         }
         .categories ul::-webkit-scrollbar {
             height: 8px;
@@ -233,9 +227,9 @@
             color: var(--primary-color);
             font-weight: bold;
             text-decoration: none;
-            font-size: 16px;
-            padding: 8px 15px;
-            border-radius: 25px;
+            font-size: 16px; /* Увеличен размер шрифта */
+            padding: 8px 15px; /* Увеличен паддинг */
+            border-radius: 25px; /* Больший радиус */
             transition: background 0.2s, color 0.2s, transform 0.2s;
             white-space: nowrap;
         }
@@ -259,68 +253,43 @@
             50% { opacity: 0.4; }
         }
 
-        /* Gallery Loading Indicator */
-        .loading-indicator {
-            text-align: center;
-            padding: 50px 0;
-            font-size: 1.5em;
-            color: #ccc;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 15px;
-        }
-        .loading-spinner {
-            border: 4px solid rgba(255, 255, 255, 0.3);
-            border-top: 4px solid var(--primary-color);
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            animation: spin-loader 1s linear infinite;
-        }
-        @keyframes spin-loader {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
         /* Gallery */
         .gallery {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 22px;
-            padding: 30px 35px;
-            max-width: 1300px;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Чуть больше минимальный размер */
+            gap: 22px; /* Увеличен промежуток */
+            padding: 30px 35px; /* Увеличен паддинг */
+            max-width: 1300px; /* Увеличена максимальная ширина */
             margin: 0 auto;
         }
 
         .card {
             background-color: var(--card-bg);
-            border-radius: 15px;
-            box-shadow: 0 0 15px rgba(255, 102, 0, 0.3);
+            border-radius: 15px; /* Больший радиус */
+            box-shadow: 0 0 15px rgba(255, 102, 0, 0.3); /* Более мягкая тень */
             overflow: hidden;
             cursor: pointer;
             transition: all 0.3s ease;
-            display: flex;
+            display: flex; /* Для лучшего контроля содержимым */
             flex-direction: column;
-            position: relative; /* Для кнопок */
         }
         .card:hover {
-            transform: translateY(-5px) scale(1.02);
+            transform: translateY(-5px) scale(1.02); /* Эффект при наведении */
             box-shadow: 0 5px 25px var(--primary-color), 0 0 40px #ff9900;
         }
         .card img {
             width: 100%;
-            height: 200px;
-            object-fit: cover;
+            height: 200px; /* Фиксированная высота изображений */
+            object-fit: cover; /* Обрезать изображение, чтобы оно поместилось */
             display: block;
             border-bottom: 1px solid #333;
         }
         .card h3 {
-            font-size: 18px;
+            font-size: 18px; /* Увеличен размер шрифта */
             font-weight: 700;
-            margin: 15px 18px 8px;
+            margin: 15px 18px 8px; /* Увеличен паддинг */
             color: var(--primary-color);
-            text-overflow: ellipsis;
+            text-overflow: ellipsis; /* Добавлено многоточие для длинных названий */
             white-space: nowrap;
             overflow: hidden;
         }
@@ -328,8 +297,8 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 0 18px 15px;
-            margin-top: auto;
+            padding: 0 18px 15px; /* Увеличен паддинг */
+            margin-top: auto; /* Прижимает действия к низу карточки */
         }
         .card .btn {
             background-color: transparent;
@@ -339,51 +308,23 @@
             font-size: 15px;
             padding: 5px 0;
             transition: color 0.2s, text-decoration 0.2s;
-            position: relative; /* Для тултипов */
         }
         .card .btn:hover {
             color: #ff9900;
             text-decoration: underline;
         }
-
-        /* Tooltip styles */
-        .tooltip {
-            position: absolute;
-            background-color: var(--tooltip-bg);
-            color: var(--tooltip-text);
-            padding: 5px 10px;
-            border-radius: 5px;
-            font-size: 0.85em;
-            white-space: nowrap;
-            z-index: 10;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.2s ease, transform 0.2s ease;
-            transform: translateY(-5px);
-            bottom: 100%; /* По умолчанию над кнопкой */
-            left: 50%;
-            transform: translateX(-50%) translateY(-5px);
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-        }
-
-        .btn:hover .tooltip {
-            opacity: 1;
-            visibility: visible;
-            transform: translateX(-50%) translateY(-10px);
-        }
-
         .like-section {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 8px; /* Увеличен промежуток */
         }
         .like-btn {
-            font-size: 20px;
-            color: #ccc;
+            font-size: 20px; /* Иконка лайка больше */
+            color: #ccc; /* Изначальный цвет */
             transition: color 0.2s;
         }
         .like-btn.liked {
-            color: red;
+            color: red; /* Цвет при лайке */
             filter: drop-shadow(0 0 5px red);
         }
         .like-count {
@@ -391,131 +332,10 @@
             color: var(--light-text-color);
         }
         .woman-emoji {
-            font-size: 1.3em;
-            margin-left: 8px;
+            font-size: 1.3em; /* Размер смайлика */
+            margin-left: 8px; /* Отступ от других элементов */
             vertical-align: middle;
-            filter: drop-shadow(0 0 5px #ff6600);
-        }
-        .share-btn {
-            font-size: 18px; /* Немного больше иконка */
-        }
-
-        /* Top Creators Section */
-        .top-creators-section {
-            padding: 50px 30px;
-            background-color: #1a1a1a;
-            margin-top: 50px;
-            box-shadow: inset 0 5px 15px rgba(0,0,0,0.5);
-            text-align: center;
-        }
-        .creator-card-container {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 25px;
-            max-width: 1200px;
-            margin: 30px auto 0;
-        }
-        .creator-card {
-            background-color: #2a2a2a;
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: 0 0 15px rgba(255, 102, 0, 0.2);
-            width: calc(25% - 25px); /* Четыре карточки в ряд */
-            min-width: 200px;
-            box-sizing: border-box;
-            transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        .creator-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 8px 25px rgba(255, 102, 0, 0.5);
-            background-color: #333;
-        }
-        .creator-card img {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 3px solid var(--primary-color);
-            margin-bottom: 15px;
-            box-shadow: 0 0 10px var(--primary-color);
-        }
-        .creator-card h3 {
-            font-size: 1.4em;
-            margin: 0 0 5px;
-            color: #fff;
-        }
-        .creator-card p {
-            font-size: 0.9em;
-            color: #aaa;
-            margin: 0;
-            text-align: center;
-        }
-        .creator-card .view-profile-btn {
-            background-color: var(--primary-color);
-            color: var(--dark-text-color);
-            border: none;
-            padding: 8px 15px;
-            border-radius: 20px;
-            font-weight: bold;
-            cursor: pointer;
-            margin-top: 15px;
-            transition: background-color 0.2s ease, transform 0.2s ease;
-        }
-        .creator-card .view-profile-btn:hover {
-            background-color: #e65c00;
-            transform: scale(1.05);
-        }
-
-
-        /* Reviews Section */
-        .reviews-section {
-            padding: 50px 30px;
-            background-color: #1a1a1a;
-            margin-top: 50px;
-            box-shadow: inset 0 5px 15px rgba(0,0,0,0.5);
-            text-align: center;
-        }
-        .review-card-container {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 25px;
-            max-width: 1200px;
-            margin: 30px auto 0;
-        }
-        .review-card {
-            background-color: #222;
-            border-radius: 12px;
-            padding: 25px;
-            box-shadow: 0 0 15px rgba(255, 102, 0, 0.2);
-            width: calc(33% - 25px);
-            min-width: 280px;
-            box-sizing: border-box;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        .review-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 8px 25px rgba(255, 102, 0, 0.5);
-        }
-        .review-card p {
-            font-size: 1.05em;
-            color: #ccc;
-            margin-bottom: 15px;
-            font-style: italic;
-        }
-        .review-card .author {
-            font-weight: bold;
-            color: var(--primary-color);
-            font-size: 1.1em;
-        }
-        .review-card .rating {
-            color: gold;
-            font-size: 1.2em;
-            margin-top: 10px;
+            filter: drop-shadow(0 0 5px #ff6600); /* Небольшая тень */
         }
 
         /* Modal */
@@ -527,59 +347,46 @@
             top: 0;
             width: 100vw;
             height: 100vh;
-            background-color: rgba(18, 18, 18, 0.98);
+            background-color: rgba(18, 18, 18, 0.98); /* Более темный фон */
             opacity: 0;
             pointer-events: none;
             overflow: hidden;
             transition: opacity 0.3s ease-out;
-            /* Flexbox для центрирования содержимого модального окна */
-            display: flex;
-            justify-content: center;
-            align-items: center;
         }
 
         .modal.open {
-            display: flex; /* Убедитесь, что display: flex при открытии */
+            display: block;
             opacity: 1;
             pointer-events: auto;
         }
 
         .modal-content-wrapper {
-            position: relative; /* Чтобы позиционировать close button абсолютно внутри */
-            max-width: 90%;
-            max-height: 90%;
-            border-radius: 18px;
-            box-shadow: 0 0 40px var(--primary-color);
-            overflow: auto; /* Добавляем полосы прокрутки, если изображение большое */
-            display: flex; /* Для центрирования изображения внутри обертки */
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
             justify-content: center;
             align-items: center;
+            overflow: hidden;
         }
 
         .modal-content {
-            display: block; /* Убедимся, что изображение является блочным элементом */
-            max-width: 100%; /* Изображение не будет выходить за пределы контейнера */
-            max-height: 100%;
-            object-fit: contain; /* Сохраняет пропорции изображения */
-            /* Удалены position: absolute, top, left, transform отсюда,
-               так как центрирование теперь происходит через flexbox на .modal-content-wrapper */
-            /* Сброс любых инлайновых стилей, которые могли остаться от предыдущей попытки анимации */
-            position: static !important;
-            top: auto !important;
-            left: auto !important;
-            transform: none !important;
-            width: auto !important;
-            height: auto !important;
-            opacity: 1 !important;
-            transition: none !important;
+            border-radius: 18px; /* Больший радиус */
+            box-shadow: 0 0 40px var(--primary-color); /* Более сильная тень */
+            transform-origin: top left;
+            position: absolute;
+            object-fit: contain;
+            will-change: transform, width, height, top, left;
         }
 
         .close {
             position: absolute;
-            top: 25px;
-            right: 45px;
+            top: 25px; /* Чуть ниже */
+            right: 45px; /* Чуть левее */
             color: var(--primary-color);
-            font-size: 48px;
+            font-size: 48px; /* Больше размер */
             font-weight: 900;
             cursor: pointer;
             z-index: 10;
@@ -605,9 +412,9 @@
             color: var(--dark-text-color);
             border: none;
             border-radius: 50%;
-            width: 65px;
-            height: 65px;
-            font-size: 30px;
+            width: 65px; /* Больше размер */
+            height: 65px; /* Больше размер */
+            font-size: 30px; /* Больше иконка */
             display: flex;
             align-items: center;
             justify-content: center;
@@ -618,27 +425,27 @@
         }
 
         #chat-toggle-btn:hover {
-            transform: scale(1.15) rotate(5deg);
+            transform: scale(1.15) rotate(5deg); /* Добавлена небольшая ротация */
             background-color: #e65c00;
             box-shadow: 0 0 35px rgba(255, 102, 0, 0.9);
         }
 
         #chat-container {
             position: fixed;
-            bottom: 110px;
+            bottom: 110px; /* Отступ от кнопки */
             right: 30px;
-            width: 380px;
-            height: 500px;
+            width: 380px; /* Шире контейнер */
+            height: 500px; /* Выше контейнер */
             background-color: #1a1a1a;
-            border-radius: 15px;
+            border-radius: 15px; /* Больший радиус */
             box-shadow: 0 0 35px rgba(255, 102, 0, 0.8);
             display: flex;
             flex-direction: column;
             overflow: hidden;
-            transform: translateY(30px) scale(0.85);
+            transform: translateY(30px) scale(0.85); /* Чуть больше начальное смещение и меньше размер */
             opacity: 0;
             visibility: hidden;
-            transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55), opacity 0.3s ease, visibility 0.3s ease;
+            transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55), opacity 0.3s ease, visibility 0.3s ease; /* Добавлена более интересная кривая анимации */
             z-index: 999;
         }
 
@@ -651,9 +458,9 @@
         #chat-header {
             background-color: var(--primary-color);
             color: var(--dark-text-color);
-            padding: 18px;
+            padding: 18px; /* Увеличен паддинг */
             font-weight: bold;
-            font-size: 20px;
+            font-size: 20px; /* Больше размер шрифта */
             border-top-left-radius: 15px;
             border-top-right-radius: 15px;
             display: flex;
@@ -666,7 +473,7 @@
             background: none;
             border: none;
             color: var(--dark-text-color);
-            font-size: 28px;
+            font-size: 28px; /* Больше размер */
             cursor: pointer;
             transition: color 0.2s ease, transform 0.2s ease;
         }
@@ -682,7 +489,7 @@
             overflow-y: auto;
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 12px; /* Увеличен промежуток */
             background-color: #1f1f1f;
             scrollbar-width: thin;
             scrollbar-color: var(--primary-color) #2a2a2a;
@@ -699,11 +506,11 @@
         }
 
         .message {
-            padding: 12px 18px;
-            border-radius: 18px;
-            max-width: 85%;
+            padding: 12px 18px; /* Увеличен паддинг */
+            border-radius: 18px; /* Больший радиус */
+            max-width: 85%; /* Чуть больше ширина */
             word-wrap: break-word;
-            font-size: 15px;
+            font-size: 15px; /* Чуть больше размер шрифта */
             box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
 
@@ -711,14 +518,14 @@
             align-self: flex-end;
             background-color: var(--primary-color);
             color: var(--dark-text-color);
-            border-bottom-right-radius: 8px;
+            border-bottom-right-radius: 8px; /* Более округлый угол */
         }
 
         .message.ai {
             align-self: flex-start;
             background-color: #333;
             color: var(--light-text-color);
-            border-bottom-left-radius: 8px;
+            border-bottom-left-radius: 8px; /* Более округлый угол */
         }
 
         .message.loading {
@@ -745,12 +552,12 @@
 
         #chat-input {
             flex-grow: 1;
-            padding: 12px 18px;
-            border-radius: 25px;
+            padding: 12px 18px; /* Увеличен паддинг */
+            border-radius: 25px; /* Более округлый */
             border: 2px solid var(--primary-color);
             background-color: #2a2a2a;
             color: var(--light-text-color);
-            font-size: 16px;
+            font-size: 16px; /* Больше размер шрифта */
             outline: none;
             margin-right: 12px;
             transition: all 0.3s ease;
@@ -764,9 +571,9 @@
             background-color: var(--primary-color);
             color: var(--dark-text-color);
             border: none;
-            border-radius: 25px;
-            padding: 12px 20px;
-            font-size: 18px;
+            border-radius: 25px; /* Более округлый */
+            padding: 12px 20px; /* Увеличен паддинг */
+            font-size: 18px; /* Больше иконка */
             cursor: pointer;
             transition: background-color 0.2s ease, transform 0.2s ease;
         }
@@ -779,10 +586,10 @@
         /* New Sections Styles */
         .section-title {
             text-align: center;
-            font-size: 3em;
+            font-size: 3em; /* Крупнее заголовок */
             margin: 40px 0 20px;
-            color: #fff;
-            text-shadow: 0 0 15px var(--primary-color);
+            color: #fff; /* Белый цвет */
+            text-shadow: 0 0 15px var(--primary-color); /* Тень оранжевого цвета */
         }
         .section-description {
             text-align: center;
@@ -823,8 +630,8 @@
             border-radius: 12px;
             padding: 25px;
             box-shadow: 0 0 15px rgba(255, 102, 0, 0.2);
-            width: calc(33% - 25px);
-            min-width: 280px;
+            width: calc(33% - 25px); /* Три карточки в ряд */
+            min-width: 280px; /* Минимальная ширина */
             box-sizing: border-box;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
@@ -847,33 +654,6 @@
             color: gold;
             font-size: 1.2em;
             margin-top: 10px;
-        }
-
-        /* Scroll to Top Button */
-        #scroll-to-top-btn {
-            display: none; /* Скрыть по умолчанию */
-            position: fixed;
-            bottom: 110px; /* Над кнопкой чата */
-            right: 30px;
-            background-color: rgba(var(--primary-color-rgb, 255, 102, 0), 0.8); /* Используем RGB для прозрачности */
-            color: var(--dark-text-color);
-            border: none;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            font-size: 24px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            box-shadow: 0 0 15px rgba(255, 102, 0, 0.6);
-            transition: background-color 0.3s ease, transform 0.3s ease, opacity 0.3s ease;
-            z-index: 998; /* Чуть ниже кнопки чата */
-        }
-        #scroll-to-top-btn:hover {
-            background-color: var(--primary-color);
-            transform: scale(1.1);
-            box-shadow: 0 0 25px rgba(255, 102, 0, 0.8);
         }
 
         /* Footer */
@@ -939,38 +719,9 @@
             border-top: 1px solid #333;
             padding-top: 20px;
         }
-        .color-switcher {
-            margin-top: 20px;
-        }
-        .color-switcher button {
-            background-color: #555;
-            border: 2px solid #777;
-            border-radius: 50%;
-            width: 30px;
-            height: 30px;
-            cursor: pointer;
-            margin: 0 5px;
-            transition: transform 0.2s;
-        }
-        .color-switcher button:hover {
-            transform: scale(1.1);
-        }
-        .color-switcher button.active {
-            border-color: #fff;
-            box-shadow: 0 0 10px #fff;
-        }
-        .color-switcher button[data-color="#ff6600"] { background-color: #ff6600; }
-        .color-switcher button[data-color="#00ccff"] { background-color: #00ccff; }
-        .color-switcher button[data-color="#cc33ff"] { background-color: #cc33ff; }
-        .color-switcher button[data-color="#33ff66"] { background-color: #33ff66; }
 
 
         /* Адаптивность */
-        @media (max-width: 1200px) {
-            .creator-card {
-                width: calc(33% - 25px); /* Три карточки в ряд */
-            }
-        }
         @media (max-width: 1024px) {
             .gallery, .popular-gallery {
                 grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -980,7 +731,7 @@
                 width: 250px;
             }
             .review-card {
-                width: calc(50% - 25px);
+                width: calc(50% - 25px); /* Две карточки в ряд на средних экранах */
             }
             .footer-column {
                 flex-basis: 45%;
@@ -1005,8 +756,9 @@
                 width: 100%;
                 text-align: center;
             }
+            /* Adjust online users counter for smaller screens */
             .online-users-container {
-                order: -1;
+                order: -1; /* Move to top of header on small screens */
                 width: 100%;
                 justify-content: center;
                 margin-bottom: 15px;
@@ -1042,13 +794,6 @@
                 height: 55px;
                 font-size: 24px;
             }
-            #scroll-to-top-btn {
-                bottom: 85px; /* Корректировка для мобильных */
-                right: 20px;
-                width: 45px;
-                height: 45px;
-                font-size: 20px;
-            }
             .close {
                 top: 15px;
                 right: 25px;
@@ -1061,13 +806,9 @@
                 font-size: 1em;
                 margin-bottom: 30px;
             }
-            .review-card, .creator-card {
-                width: 90%;
+            .review-card {
+                width: 90%; /* Одна карточка в ряд на мобильных */
                 margin: 0 auto;
-            }
-            .creator-card-container {
-                flex-direction: column;
-                align-items: center;
             }
             footer {
                 flex-direction: column;
@@ -1131,6 +872,11 @@
                 bottom: 80px;
                 height: 60vh;
             }
+            #chat-toggle-btn {
+                width: 50px;
+                height: 50px;
+                font-size: 22px;
+            }
             #chat-header {
                 font-size: 16px;
                 padding: 12px;
@@ -1165,7 +911,7 @@
 <body>
 
     <div id="disclaimer">
-        <img src="https://raw.githubusercontent.com/antareti/hackhub/main/22.gif" alt="Disclaimer">
+        <img src="22.gif" alt="Disclaimer">
     </div>
 
     <video class="smoke-video" autoplay loop muted>
@@ -1190,72 +936,29 @@
     </header>
 
     <nav class="categories">
-        <ul id="categories-list">
-            <li><a href="#" class="active" data-category="main">Главная</a></li>
-            <li><a href="#" data-category="categories">Категории</a></li>
-            <li><a href="#" data-category="new">Новое</a></li>
-            <li><a href="#" data-category="popular">Популярное</a></li>
-            <li><a href="#" data-category="best">Лучшее</a></li>
-            <li><a href="#" data-category="gif">GIF</a></li>
-            <li><a href="#" data-category="vr">VR</a></li>
-            <li><a href="#" data-category="model-day">Модель дня</a></li>
-            <li><a href="video.html" data-category="video">🎥 Видео</a></li>
-            <li><a href="#" data-category="community">Сообщество</a></li>
-            <li><a href="#" data-category="support">Поддержка</a></li>
-            <li><a href="premium.html" class="premium" data-category="premium">💎 Премиум</a></li>
+        <ul>
+            <li><a href="#" class="active">Главная</a></li>
+            <li><a href="#">Категории</a></li>
+            <li><a href="#">Новое</a></li>
+            <li><a href="#">Популярное</a></li>
+            <li><a href="#">Лучшее</a></li>
+            <li><a href="#">GIF</a></li>
+            <li><a href="#">VR</a></li>
+            <li><a href="#">Модель дня</a></li>
+            <li><a href="video.html">🎥 Видео</a></li>
+            <li><a href="#">Сообщество</a></li> <li><a href="#">Поддержка</a></li> <li><a href="premium.html" class="premium">💎 Премиум</a></li>
         </ul>
     </nav>
 
     <h2 class="section-title">✨ Галерея</h2>
     <p class="section-description">Погрузитесь в нашу постоянно пополняющуюся коллекцию захватывающих изображений!</p>
-    <div class="loading-indicator" id="gallery-loading">
-        <div class="loading-spinner"></div>
-        Загрузка изображений...
-    </div>
     <section class="gallery" id="gallery"></section>
 
     ---
 
     <h2 class="section-title">🔥 Популярное</h2>
     <p class="section-description">Оцените самые просматриваемые и понравившиеся изображения за последнюю неделю.</p>
-    <div class="loading-indicator" id="popular-gallery-loading" style="display: none;">
-        <div class="loading-spinner"></div>
-        Загрузка популярных изображений...
-    </div>
     <section class="gallery popular-gallery" id="popular-gallery"></section>
-
-    ---
-
-    <section class="top-creators-section">
-        <h2 class="section-title">🏆 Топ Авторы</h2>
-        <p class="section-description">Познакомьтесь с талантливыми создателями, чьи работы вдохновляют наше сообщество.</p>
-        <div class="creator-card-container" id="creator-cards">
-            <div class="creator-card">
-                <img src="https://raw.githubusercontent.com/antareti/hackhub/main/avatars/avatar1.jpg" alt="Creator Avatar">
-                <h3>Имя Автора 1</h3>
-                <p>Художник, специализирующийся на футуристических пейзажах.</p>
-                <button class="view-profile-btn">Профиль</button>
-            </div>
-            <div class="creator-card">
-                <img src="https://raw.githubusercontent.com/antareti/hackhub/main/avatars/avatar2.jpg" alt="Creator Avatar">
-                <h3>Имя Автора 2</h3>
-                <p>Фотограф, создающий портреты с уникальной атмосферой.</p>
-                <button class="view-profile-btn">Профиль</button>
-            </div>
-            <div class="creator-card">
-                <img src="https://raw.githubusercontent.com/antareti/hackhub/main/avatars/avatar3.jpg" alt="Creator Avatar">
-                <h3>Имя Автора 3</h3>
-                <p>Дизайнер 3D-моделей, известные работы в стиле киберпанк.</p>
-                <button class="view-profile-btn">Профиль</button>
-            </div>
-            <div class="creator-card">
-                <img src="https://raw.githubusercontent.com/antareti/hackhub/main/avatars/avatar4.jpg" alt="Creator Avatar">
-                <h3>Имя Автора 4</h3>
-                <p>Цифровой художник, мастер абстрактных композиций.</p>
-                <button class="view-profile-btn">Профиль</button>
-            </div>
-        </div>
-    </section>
 
     ---
 
@@ -1296,8 +999,6 @@
     </div>
 
     <button id="chat-toggle-btn"><i class="fas fa-comment-dots"></i></button>
-    <button id="scroll-to-top-btn" title="Наверх"><i class="fas fa-arrow-up"></i></button>
-
 
     <div id="chat-container">
         <div id="chat-header">
@@ -1340,68 +1041,121 @@
                 <a href="#" target="_blank" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
             </div>
         </div>
-        <div class="footer-column">
-            <h4>Настроить тему</h4>
-            <div class="color-switcher">
-                <button data-color="#ff6600" class="active" title="Оранжевый"></button>
-                <button data-color="#00ccff" title="Голубой"></button>
-                <button data-color="#cc33ff" title="Фиолетовый"></button>
-                <button data-color="#33ff66" title="Зеленый"></button>
-            </div>
-            <p style="font-size: 0.8em; color: #888; margin-top: 10px;">(Только для демонстрации)</p>
-        </div>
         <div class="footer-bottom-text">
             &copy; 2025 HackHub. Все права защищены. <br> Создано с ❤️ для сообщества.
         </div>
     </footer>
 
     <script>
-        // DOM Elements
-        const disclaimer = document.getElementById("disclaimer");
+        window.onload = () => {
+            const disclaimer = document.getElementById("disclaimer");
+            disclaimer.classList.add("fade-out");
+            setTimeout(() => disclaimer.remove(), 1000);
+        };
+
+        const repoOwner = "antareti";
+        const repoName = "hackhub";
+        const folderPath = "images";
         const gallery = document.getElementById("gallery");
-        const popularGallery = document.getElementById("popular-gallery");
+        const popularGallery = document.getElementById("popular-gallery"); // Новая галерея для популярных
         const searchInput = document.getElementById("searchInput");
         const modal = document.getElementById("imageModal");
         const modalImg = document.getElementById("modalImg");
-        const chatToggleBtn = document.getElementById('chat-toggle-btn');
-        const chatContainer = document.getElementById('chat-container');
-        const chatCloseBtn = document.getElementById('chat-close-btn');
-        const chatMessages = document.getElementById('chat-messages');
-        const chatInput = document.getElementById('chat-input');
-        const chatSendBtn = document.getElementById('chat-send-btn');
-        const onlineUsersCountElement = document.getElementById('online-users-count');
-        const categoriesList = document.getElementById('categories-list');
-        const scrollToTopBtn = document.getElementById('scroll-to-top-btn');
-        const galleryLoading = document.getElementById('gallery-loading');
-        const popularGalleryLoading = document.getElementById('popular-gallery-loading');
+        const modalWrapper = modal.querySelector('.modal-content-wrapper');
+        let activeThumbnail;
 
-        // Global variables
-        let activeThumbnail; // Эта переменная теперь не используется для анимации, но оставлена для потенциального использования
-        let cards = []; // For main gallery
-        let popularCards = []; // For popular gallery
-        let isSendingMessage = false;
-
-        // API Key for OpenRouter (replace with your actual key in a real project, preferably server-side)
-        const OPENROUTER_API_KEY = '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';
-        const OPENROUTER_API_URL = 'https://openrouter.ai/api/v1/chat/completions';
-
-        // Chat history for AI assistant context
-        let chatHistory = [{ role: 'system', content: 'You are a helpful and friendly AI assistant for HackHub Gallery. Provide concise, encouraging, and enthusiastic answers. You can also give recommendations for categories or features. Your responses should be in Russian. Try to sound energetic and positive!' }];
+        let cards = []; // Для основной галереи
+        let popularCards = []; // Для популярной галереи
 
         const femaleNames = [
             "Анна", "Елена", "Мария", "Ольга", "Наталья", "Светлана", "Татьяна", "Ирина", "Екатерина", "Дарья",
             "Анастасия", "София", "Виктория", "Полина", "Ксения", "Александра", "Елизавета", "Валерия", "Варвара", "Вероника",
             "Юлия", "Алина", "Арина", "Маргарита", "Аделина", "Кира", "Эвелина", "Злата", "Милана", "Диана"
         ];
-        const repoOwner = "antareti";
-        const repoName = "hackhub";
-        const folderPath = "images";
-
-        // --- Utility Functions ---
 
         function getRandomFemaleName() {
             const randomIndex = Math.floor(Math.random() * femaleNames.length);
             return femaleNames[randomIndex];
+        }
+
+        function createCard(file, isPopular = false) {
+            const card = document.createElement("div");
+            card.className = "card";
+            const displayedTitle = getRandomFemaleName();
+            card.setAttribute('data-title', displayedTitle.toLowerCase());
+            const imageUrl = `https://raw.githubusercontent.com/${repoOwner}/${repoName}/main/${folderPath}/${file.name}`;
+            
+            card.innerHTML = `
+                <img src="${imageUrl}" alt="${file.name}" onclick="openModal('${imageUrl}', this)">
+                <h3>${displayedTitle}</h3>
+                <div class="actions">
+                    <button class="btn" onclick="downloadImage('${imageUrl}')">Скачать</button>
+                    <div class="like-section">
+                        <button class="btn like-btn" onclick="toggleLike('${file.name}')">
+                            <i class="fas fa-heart"></i> </button>
+                        <span id="like-count-${file.name}" class="like-count">0</span>
+                    </div>
+                    <span class="woman-emoji">🧍‍♀️</span>
+                </div>
+            `;
+            return card;
+        }
+
+        function openModal(src, thumbnail) {
+            activeThumbnail = thumbnail;
+            activeThumbnail.style.opacity = '0'; 
+            modal.classList.add('open');
+            modalImg.src = src;
+
+            const thumbRect = activeThumbnail.getBoundingClientRect();
+
+            modalImg.style.width = `${thumbRect.width}px`;
+            modalImg.style.height = `${thumbRect.height}px`;
+            modalImg.style.left = `${thumbRect.left}px`;
+            modalImg.style.top = `${thumbRect.top}px`;
+            modalImg.style.opacity = '1';
+            modalImg.style.transition = 'none';
+
+            modalImg.offsetHeight; 
+
+            const targetWidth = Math.min(window.innerWidth * 0.9, window.innerHeight * 0.8 * (modalImg.naturalWidth / modalImg.naturalHeight || 1));
+            const targetHeight = Math.min(window.innerHeight * 0.8, window.innerWidth * 0.9 * (modalImg.naturalHeight / modalImg.naturalWidth || 1));
+
+            const targetLeft = (window.innerWidth - targetWidth) / 2;
+            const targetTop = (window.innerHeight - targetHeight) / 2;
+
+            modalImg.style.transition = 'all 0.3s ease-out';
+            modalImg.style.width = `${targetWidth}px`;
+            modalImg.style.height = `${targetHeight}px`;
+            modalImg.style.left = `${targetLeft}px`;
+            modalImg.style.top = `${targetTop}px`;
+        }
+
+        function closeModal() {
+            const modalRect = modalImg.getBoundingClientRect();
+            const thumbRect = activeThumbnail.getBoundingClientRect();
+
+            modalImg.style.transition = 'all 0.3s ease-in';
+            modalImg.style.width = `${thumbRect.width}px`;
+            modalImg.style.height = `${thumbRect.height}px`;
+            modalImg.style.left = `${thumbRect.left}px`;
+            modalImg.style.top = `${thumbRect.top}px`;
+            modalImg.style.opacity = '0';
+
+            modalImg.addEventListener('transitionend', function handler() {
+                modal.classList.remove('open');
+                modalImg.style.transition = 'none';
+                modalImg.style.opacity = '0';
+                if (activeThumbnail) {
+                    activeThumbnail.style.opacity = '1';
+                }
+                modalImg.removeEventListener('transitionend', handler);
+            });
+        }
+
+        function logout() {
+            localStorage.removeItem("auth");
+            window.location.href = "login.html";
         }
 
         function debounce(func, wait) {
@@ -1412,126 +1166,20 @@
             };
         }
 
-        // Function to convert hex to RGB for CSS variables
-        function hexToRgb(hex) {
-            const r = parseInt(hex.slice(1, 3), 16);
-            const g = parseInt(hex.slice(3, 5), 16);
-            const b = parseInt(hex.slice(5, 7), 16);
-            return `${r}, ${g}, ${b}`;
-        }
-
-        // --- Gallery and Image Handling ---
-
-        function createCard(file, isPopular = false) {
-            const card = document.createElement("div");
-            card.className = "card";
-            const displayedTitle = getRandomFemaleName();
-            card.setAttribute('data-title', displayedTitle.toLowerCase());
-            const imageUrl = `https://raw.githubusercontent.com/${repoOwner}/${repoName}/main/${folderPath}/${file.name}`;
-
-            card.innerHTML = `
-                <img src="${imageUrl}" alt="${file.name}" onclick="openModal('${imageUrl}')">
-                <h3>${displayedTitle}</h3>
-                <div class="actions">
-                    <button class="btn" onclick="downloadImage('${imageUrl}')">
-                        <i class="fas fa-download"></i> Скачать
-                        <span class="tooltip">Скачать изображение</span>
-                    </button>
-                    <button class="btn share-btn" onclick="shareImage('${imageUrl}')">
-                        <i class="fas fa-share-alt"></i>
-                        <span class="tooltip">Поделиться</span>
-                    </button>
-                    <div class="like-section">
-                        <button class="btn like-btn" onclick="toggleLike('${file.name}')">
-                            <i class="fas fa-heart"></i>
-                            <span class="tooltip">Нравится</span>
-                        </button>
-                        <span id="like-count-${file.name}" class="like-count">0</span>
-                    </div>
-                    <span class="woman-emoji">🧍‍♀️</span>
-                </div>
-            `;
-            return card;
-        }
-
-        // Измененная функция openModal, возвращающаяся к центрированию
-        function openModal(src) {
-            modal.classList.add('open');
-            modalImg.src = src;
-            // Сброс любых инлайновых стилей трансформации, которые могли остаться от предыдущей попытки анимации
-            modalImg.style.cssText = '';
-        }
-
-        // Измененная функция closeModal, возвращающаяся к простому закрытию
-        function closeModal() {
-            modal.classList.remove('open');
-            modalImg.src = ''; // Очищаем src для экономии памяти
-        }
-
-        async function fetchImages() {
-            galleryLoading.style.display = 'flex';
-            // popularGalleryLoading.style.display = 'flex'; // Отображаем, если популярная галерея изначально скрыта
-
-            try {
-                const res = await fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/contents/${folderPath}`);
-                const data = await res.json();
-
-                if (!Array.isArray(data)) {
-                    throw new Error("Неверный формат данных от GitHub API. Возможно, превышен лимит запросов или папка пуста.");
-                }
-
-                const imageFiles = data.filter(file => /\.(png|jpe?g|gif)$/i.test(file.name));
-                const shuffledData = imageFiles.sort(() => 0.5 - Math.random());
-
-                // Clear previous content
-                gallery.innerHTML = '';
-                popularGallery.innerHTML = '';
-                cards = [];
-                popularCards = [];
-
-                shuffledData.forEach((file, index) => {
-                    if (index < 6) { // First 6 images for "Popular"
-                        const card = createCard(file, true);
-                        popularGallery.appendChild(card);
-                        popularCards.push(card);
-                    } else {
-                        const card = createCard(file);
-                        gallery.appendChild(card);
-                        cards.push(card);
-                    }
-                    updateLikeDisplay(file.name);
-                });
-
-            } catch (err) {
-                console.error("Ошибка загрузки изображений:", err);
-                gallery.innerHTML = `<p style="color:red;">Ошибка загрузки изображений: ${err.message}. Попробуйте позже.</p>`;
-                popularGallery.innerHTML = `<p style="color:red;">Ошибка загрузки популярных изображений: ${err.message}.</p>`;
-            } finally {
-                galleryLoading.style.display = 'none';
-                popularGalleryLoading.style.display = 'none';
-            }
-        }
-
-        // --- Search and Filter ---
-
         function filterCards() {
             const query = searchInput.value.toLowerCase().trim();
-            const allCards = [...cards, ...popularCards];
-
+            const allCards = [...cards, ...popularCards]; // Искать во всех карточках
             if (!query) {
                 allCards.forEach(card => card.style.display = "");
                 return;
             }
-
-            const terms = query.split(/\s+/).filter(term => term.length > 0);
+            const terms = query.split(/\s+/);
             allCards.forEach(card => {
                 const title = card.getAttribute("data-title");
                 const match = terms.every(term => title.includes(term));
                 card.style.display = match ? "" : "none";
             });
         }
-
-        // --- Download and Share ---
 
         function downloadImage(url) {
             const link = document.createElement("a");
@@ -1541,26 +1189,6 @@
             link.click();
             document.body.removeChild(link);
         }
-
-        function shareImage(url) {
-            if (navigator.share) {
-                navigator.share({
-                    title: 'HackHub Gallery Image',
-                    text: 'Взгляни на это крутое изображение из HackHub Gallery!',
-                    url: url,
-                }).then(() => console.log('Успешно поделились!'))
-                .catch((error) => console.error('Ошибка при попытке поделиться:', error));
-            } else {
-                navigator.clipboard.writeText(url).then(() => {
-                    alert('Ссылка на изображение скопирована в буфер обмена!');
-                }).catch(err => {
-                    console.error('Не удалось скопировать ссылку:', err);
-                    alert('Не удалось скопировать ссылку. Попробуйте вручную.');
-                });
-            }
-        }
-
-        // --- Like Functionality ---
 
         function toggleLike(name) {
             const keyLiked = `like-${name}`;
@@ -1585,14 +1213,81 @@
             if (countElement) countElement.textContent = count;
         }
 
-        // --- User Authentication (Placeholder) ---
+        document.addEventListener("keydown", (e) => {
+            if (e.key === "Escape") closeModal();
+        });
 
-        function logout() {
-            localStorage.removeItem("auth");
-            window.location.href = "login.html"; // Redirect to login page
-        }
+        fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/contents/${folderPath}`)
+            .then(res => res.json())
+            .then(data => {
+                if (!Array.isArray(data)) throw new Error("Неверный формат данных");
+                
+                // Перемешиваем изображения для разнообразия
+                const shuffledData = data.sort(() => 0.5 - Math.random());
 
-        // --- Chat Functionality ---
+                shuffledData.forEach((file, index) => {
+                    if (/\.(png|jpe?g|gif)$/i.test(file.name)) {
+                        // Распределяем по галереям: первые 6 для популярных, остальные для основной
+                        if (index < 6) { // Выбираем первые 6 изображений для "Популярное"
+                            const card = createCard(file, true);
+                            popularGallery.appendChild(card);
+                            popularCards.push(card);
+                        } else {
+                            const card = createCard(file);
+                            gallery.appendChild(card);
+                            cards.push(card);
+                        }
+                        updateLikeDisplay(file.name);
+                    }
+                });
+            })
+            .catch(err => {
+                console.error("Ошибка загрузки:", err);
+                gallery.innerHTML = "<p>Ошибка загрузки изображений.</p>";
+                popularGallery.innerHTML = "<p>Ошибка загрузки популярных изображений.</p>";
+            });
+
+        searchInput.addEventListener("input", debounce(filterCards, 300));
+
+        const cursorLight = document.getElementById('cursor-light');
+        window.addEventListener('mousemove', e => {
+            cursorLight.style.top = e.clientY + 'px';
+            cursorLight.style.left = e.clientX + 'px';
+        });
+
+        // --- Chat functionality ---
+        const chatToggleBtn = document.getElementById('chat-toggle-btn');
+        const chatContainer = document.getElementById('chat-container');
+        const chatCloseBtn = document.getElementById('chat-close-btn');
+        const chatMessages = document.getElementById('chat-messages');
+        const chatInput = document.getElementById('chat-input');
+        const chatSendBtn = document.getElementById('chat-send-btn');
+
+        const OPENROUTER_API_KEY = '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';
+        const OPENROUTER_API_URL = 'https://openrouter.ai/api/v1/chat/completions';
+
+        let chatHistory = [{ role: 'system', content: 'You are a helpful and friendly AI assistant for HackHub Gallery. Provide concise, encouraging, and enthusiastic answers. You can also give recommendations for categories or features. Your responses should be in Russian. Try to sound energetic and positive!' }];
+        let isSendingMessage = false;
+
+        chatToggleBtn.addEventListener('click', () => {
+            chatContainer.classList.toggle('open');
+            if (chatContainer.classList.contains('open')) {
+                chatInput.focus();
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+        });
+
+        chatCloseBtn.addEventListener('click', () => {
+            chatContainer.classList.remove('open');
+        });
+
+        chatSendBtn.addEventListener('click', sendMessage);
+        chatInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
 
         function appendMessage(sender, text, isLoading = false) {
             const messageDiv = document.createElement('div');
@@ -1631,8 +1326,8 @@
                     headers: {
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
-                        "HTTP-Referer": "https://antareti.github.io/hackhub/", // Important for OpenRouter
-                        "X-Title": "HackHub Gallery" // Important for OpenRouter
+                        "HTTP-Referer": "https://antareti.github.io/hackhub/",
+                        "X-Title": "HackHub Gallery"
                     },
                     body: JSON.stringify(requestBody)
                 });
@@ -1667,129 +1362,27 @@
                 console.error('Критическая ошибка при отправке сообщения в OpenRouter API:', error);
                 loadingMessage.textContent = `Произошла ошибка: ${error.message}. Пожалуйста, попробуйте еще раз.`;
                 loadingMessage.classList.remove('loading');
-                // You might want to add a class for error messages to style them differently
-                // loadingMessage.classList.add('error');
+                loadingMessage.classList.add('error');
             } finally {
                 isSendingMessage = false;
             }
         }
 
         // --- Online Users Counter Logic ---
+        const onlineUsersCountElement = document.getElementById('online-users-count');
 
         function updateOnlineUsersCount() {
+            // Генерируем случайное число пользователей от 100 до 1000
             const randomCount = Math.floor(Math.random() * (1000 - 100 + 1)) + 100;
             onlineUsersCountElement.textContent = randomCount;
         }
 
-        // --- UI Interactions and Initializations ---
+        // Вызываем функцию при загрузке страницы
+        updateOnlineUsersCount();
 
-        function initUI() {
-            // Disclaimer
-            disclaimer.classList.add("fade-out");
-            setTimeout(() => disclaimer.remove(), 1000);
+        // Обновляем счетчик каждые 10 секунд
+        setInterval(updateOnlineUsersCount, 10000); // 10000 миллисекунд = 10 секунд
 
-            // Cursor Light
-            const cursorLight = document.getElementById('cursor-light');
-            window.addEventListener('mousemove', e => {
-                cursorLight.style.top = e.clientY + 'px';
-                cursorLight.style.left = e.clientX + 'px';
-            });
-
-            // Parallax Effect
-            window.addEventListener('scroll', () => {
-                const scrolled = window.scrollY;
-                document.querySelector('.smoke-video').style.transform = `translateZ(-1px) scale(2) translateY(${scrolled * 0.2}px)`;
-                document.querySelectorAll('.spotlight').forEach(spotlight => {
-                    spotlight.style.transform = `translateZ(-0.5px) scale(1.5) translateY(${scrolled * 0.1}px)`;
-                });
-            });
-
-            // Search input debounce
-            searchInput.addEventListener("input", debounce(filterCards, 300));
-
-            // Modal close on Escape
-            document.addEventListener("keydown", (e) => {
-                if (e.key === "Escape") closeModal();
-            });
-
-            // Chat button listeners
-            chatToggleBtn.addEventListener('click', () => {
-                chatContainer.classList.toggle('open');
-                if (chatContainer.classList.contains('open')) {
-                    chatInput.focus();
-                    chatMessages.scrollTop = chatMessages.scrollHeight;
-                }
-            });
-            chatCloseBtn.addEventListener('click', () => {
-                chatContainer.classList.remove('open');
-            });
-            chatSendBtn.addEventListener('click', sendMessage);
-            chatInput.addEventListener('keydown', (e) => {
-                if (e.key === 'Enter' && !e.shiftKey) {
-                    e.preventDefault();
-                    sendMessage();
-                }
-            });
-
-            // Scroll to Top button logic
-            window.addEventListener('scroll', () => {
-                if (window.scrollY > 300) {
-                    scrollToTopBtn.style.display = 'flex';
-                    scrollToTopBtn.style.opacity = '1';
-                } else {
-                    scrollToTopBtn.style.opacity = '0';
-                    // Delay display: none to allow fade-out animation
-                    setTimeout(() => {
-                        if (window.scrollY <= 300) { // Check again in case user scrolled back quickly
-                            scrollToTopBtn.style.display = 'none';
-                        }
-                    }, 300);
-                }
-            });
-
-            scrollToTopBtn.addEventListener('click', () => {
-                window.scrollTo({
-                    top: 0,
-                    behavior: 'smooth'
-                });
-            });
-
-            // Category active state and auto-scroll
-            categoriesList.addEventListener('click', (e) => {
-                if (e.target.tagName === 'A') {
-                    categoriesList.querySelectorAll('a').forEach(link => link.classList.remove('active'));
-                    e.target.classList.add('active');
-                    e.preventDefault(); // Prevent actual navigation for demo
-                    // Optional: scroll selected category into view
-                    e.target.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
-                }
-            });
-
-            // Primary Color Switcher
-            document.querySelectorAll('.color-switcher button').forEach(button => {
-                button.addEventListener('click', () => {
-                    const newColor = button.getAttribute('data-color');
-                    document.documentElement.style.setProperty('--primary-color', newColor);
-                    document.documentElement.style.setProperty('--primary-color-rgb', hexToRgb(newColor));
-
-                    // Update active state for buttons
-                    document.querySelectorAll('.color-switcher button').forEach(btn => btn.classList.remove('active'));
-                    button.classList.add('active');
-                });
-            });
-
-            // Initial setting for primary-color-rgb for scroll-to-top-btn
-            const initialPrimaryColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color').trim();
-            document.documentElement.style.setProperty('--primary-color-rgb', hexToRgb(initialPrimaryColor));
-
-            // Initial calls
-            updateOnlineUsersCount();
-            setInterval(updateOnlineUsersCount, 10000);
-            fetchImages();
-        }
-
-        // Initialize everything when the DOM is ready
-        document.addEventListener('DOMContentLoaded', initUI);
     </script>
 </body>
 </html>
