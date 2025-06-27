@@ -532,351 +532,40 @@
             pointer-events: none;
             overflow: hidden;
             transition: opacity 0.3s ease-out;
+            /* Flexbox для центрирования содержимого модального окна */
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .modal.open {
-            display: block;
+            display: flex; /* Важно: использовать flex при открытии */
             opacity: 1;
             pointer-events: auto;
         }
 
         .modal-content-wrapper {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
+            position: relative; /* Для позиционирования close button абсолютно внутри */
+            border-radius: 18px;
+            box-shadow: 0 0 40px var(--primary-color);
+            overflow: hidden; /* Обрезает углы изображения, чтобы соответствовать border-radius */
+            max-width: 90%; /* Ограничение размера контейнера модального изображения */
+            max-height: 90%;
         }
 
         .modal-content {
-            border-radius: 18px;
-            box-shadow: 0 0 40px var(--primary-color);
-            transform-origin: top left;
-            position: absolute;
-            object-fit: contain;
-            will-change: transform, width, height, top, left;
-        }
-
-        .close {
-            position: absolute;
-            top: 25px;
-            right: 45px;
-            color: var(--primary-color);
-            font-size: 48px;
-            font-weight: 900;
-            cursor: pointer;
-            z-index: 10;
-            opacity: 0;
-            transition: opacity 0.2s ease-in 0.3s, transform 0.2s ease;
-            text-shadow: 0 0 10px var(--primary-color);
-        }
-        .close:hover {
-            color: #ff9900;
-            transform: scale(1.1);
-        }
-
-        .modal.open .close {
-            opacity: 1;
-        }
-
-        /* Chat Styles */
-        #chat-toggle-btn {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            background-color: var(--primary-color);
-            color: var(--dark-text-color);
-            border: none;
-            border-radius: 50%;
-            width: 65px;
-            height: 65px;
-            font-size: 30px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            box-shadow: 0 0 25px rgba(255, 102, 0, 0.8);
-            transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
-            z-index: 1000;
-        }
-
-        #chat-toggle-btn:hover {
-            transform: scale(1.15) rotate(5deg);
-            background-color: #e65c00;
-            box-shadow: 0 0 35px rgba(255, 102, 0, 0.9);
-        }
-
-        #chat-container {
-            position: fixed;
-            bottom: 110px;
-            right: 30px;
-            width: 380px;
-            height: 500px;
-            background-color: #1a1a1a;
-            border-radius: 15px;
-            box-shadow: 0 0 35px rgba(255, 102, 0, 0.8);
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-            transform: translateY(30px) scale(0.85);
-            opacity: 0;
-            visibility: hidden;
-            transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55), opacity 0.3s ease, visibility 0.3s ease;
-            z-index: 999;
-        }
-
-        #chat-container.open {
-            transform: translateY(0) scale(1);
-            opacity: 1;
-            visibility: visible;
-        }
-
-        #chat-header {
-            background-color: var(--primary-color);
-            color: var(--dark-text-color);
-            padding: 18px;
-            font-weight: bold;
-            font-size: 20px;
-            border-top-left-radius: 15px;
-            border-top-right-radius: 15px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
-        }
-
-        #chat-close-btn {
-            background: none;
-            border: none;
-            color: var(--dark-text-color);
-            font-size: 28px;
-            cursor: pointer;
-            transition: color 0.2s ease, transform 0.2s ease;
-        }
-
-        #chat-close-btn:hover {
-            color: #333;
-            transform: rotate(90deg);
-        }
-
-        #chat-messages {
-            flex-grow: 1;
-            padding: 15px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            background-color: #1f1f1f;
-            scrollbar-width: thin;
-            scrollbar-color: var(--primary-color) #2a2a2a;
-        }
-        #chat-messages::-webkit-scrollbar {
-            width: 8px;
-        }
-        #chat-messages::-webkit-scrollbar-thumb {
-            background-color: var(--primary-color);
-            border-radius: 10px;
-        }
-        #chat-messages::-webkit-scrollbar-track {
-            background-color: #2a2a2a;
-        }
-
-        .message {
-            padding: 12px 18px;
-            border-radius: 18px;
-            max-width: 85%;
-            word-wrap: break-word;
-            font-size: 15px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-        }
-
-        .message.user {
-            align-self: flex-end;
-            background-color: var(--primary-color);
-            color: var(--dark-text-color);
-            border-bottom-right-radius: 8px;
-        }
-
-        .message.ai {
-            align-self: flex-start;
-            background-color: #333;
-            color: var(--light-text-color);
-            border-bottom-left-radius: 8px;
-        }
-
-        .message.loading {
-            align-self: flex-start;
-            background-color: #333;
-            color: #eee;
-            border-bottom-left-radius: 8px;
-            font-style: italic;
-            opacity: 0.8;
-            animation: pulse 1.5s infinite ease-in-out;
-        }
-        @keyframes pulse {
-            0% { opacity: 0.8; }
-            50% { opacity: 0.5; }
-            100% { opacity: 0.8; }
-        }
-
-        #chat-input-container {
-            display: flex;
-            padding: 15px;
-            border-top: 1px solid #333;
-            background-color: #1a1a1a;
-        }
-
-        #chat-input {
-            flex-grow: 1;
-            padding: 12px 18px;
-            border-radius: 25px;
-            border: 2px solid var(--primary-color);
-            background-color: #2a2a2a;
-            color: var(--light-text-color);
-            font-size: 16px;
-            outline: none;
-            margin-right: 12px;
-            transition: all 0.3s ease;
-        }
-        #chat-input:focus {
-            box-shadow: 0 0 10px var(--primary-color);
-            border-color: #ff8800;
-        }
-
-        #chat-send-btn {
-            background-color: var(--primary-color);
-            color: var(--dark-text-color);
-            border: none;
-            border-radius: 25px;
-            padding: 12px 20px;
-            font-size: 18px;
-            cursor: pointer;
-            transition: background-color 0.2s ease, transform 0.2s ease;
-        }
-
-        #chat-send-btn:hover {
-            background-color: #e65c00;
-            transform: scale(1.05);
-        }
-
-        /* New Sections Styles */
-        .section-title {
-            text-align: center;
-            font-size: 3em;
-            margin: 40px 0 20px;
-            color: #fff;
-            text-shadow: 0 0 15px var(--primary-color);
-        }
-        .section-description {
-            text-align: center;
-            font-size: 1.1em;
-            color: #aaa;
-            max-width: 800px;
-            margin: 0 auto 40px;
-        }
-
-        /* Popular Section (example, could reuse .gallery) */
-        .popular-gallery {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 22px;
-            padding: 30px 35px;
-            max-width: 1300px;
-            margin: 0 auto;
-        }
-
-        /* Reviews Section */
-        .reviews-section {
-            padding: 50px 30px;
-            background-color: #1a1a1a;
-            margin-top: 50px;
-            box-shadow: inset 0 5px 15px rgba(0,0,0,0.5);
-            text-align: center;
-        }
-        .review-card-container {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 25px;
-            max-width: 1200px;
-            margin: 30px auto 0;
-        }
-        .review-card {
-            background-color: #222;
-            border-radius: 12px;
-            padding: 25px;
-            box-shadow: 0 0 15px rgba(255, 102, 0, 0.2);
-            width: calc(33% - 25px);
-            min-width: 280px;
-            box-sizing: border-box;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        .review-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 8px 25px rgba(255, 102, 0, 0.5);
-        }
-        .review-card p {
-            font-size: 1.05em;
-            color: #ccc;
-            margin-bottom: 15px;
-            font-style: italic;
-        }
-        .review-card .author {
-            font-weight: bold;
-            color: var(--primary-color);
-            font-size: 1.1em;
-        }
-        .review-card .rating {
-            color: gold;
-            font-size: 1.2em;
-            margin-top: 10px;
-        }
-
-        /* Modal */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 9999;
-            left: 0;
-            top: 0;
-            width: 100vw;
-            height: 100vh;
-            background-color: rgba(18, 18, 18, 0.98);
-            opacity: 0;
-            pointer-events: none;
-            overflow: hidden;
-            transition: opacity 0.3s ease-out;
-        }
-
-        .modal.open {
-            display: block;
-            opacity: 1;
-            pointer-events: auto;
-        }
-
-        .modal-content-wrapper {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
-        }
-
-        .modal-content {
-            border-radius: 18px;
-            box-shadow: 0 0 40px var(--primary-color);
-            transform-origin: top left;
-            position: absolute;
-            object-fit: contain;
-            will-change: transform, width, height, top, left;
+            display: block; /* Убедимся, что изображение является блочным элементом */
+            max-width: 100%; /* Изображение не будет выходить за пределы контейнера */
+            max-height: 100%;
+            object-fit: contain; /* Сохраняет пропорции изображения */
+            transform: none !important; /* Отменяем любые предыдущие трансформации для центрирования */
+            top: auto !important;
+            left: auto !important;
+            width: auto !important;
+            height: auto !important;
+            position: relative !important; /* Отменяем absolute позиционирование из JS */
+            opacity: 1 !important; /* Всегда видимое, если модальное окно открыто */
+            transition: none !important; /* Отменяем анимации из JS */
         }
 
         .close {
@@ -1686,7 +1375,7 @@
         const popularGalleryLoading = document.getElementById('popular-gallery-loading');
 
         // Global variables
-        let activeThumbnail;
+        let activeThumbnail; // Эта переменная теперь не используется для анимации, но оставлена для потенциального использования
         let cards = []; // For main gallery
         let popularCards = []; // For popular gallery
         let isSendingMessage = false;
@@ -1740,7 +1429,7 @@
             const imageUrl = `https://raw.githubusercontent.com/${repoOwner}/${repoName}/main/${folderPath}/${file.name}`;
 
             card.innerHTML = `
-                <img src="${imageUrl}" alt="${file.name}" onclick="openModal('${imageUrl}', this)">
+                <img src="${imageUrl}" alt="${file.name}" onclick="openModal('${imageUrl}')">
                 <h3>${displayedTitle}</h3>
                 <div class="actions">
                     <button class="btn" onclick="downloadImage('${imageUrl}')">
@@ -1764,74 +1453,18 @@
             return card;
         }
 
-        function openModal(src, thumbnail) {
-            activeThumbnail = thumbnail;
-            // Убрано activeThumbnail.style.opacity = '0';
+        // Измененная функция openModal, возвращающаяся к центрированию
+        function openModal(src) {
             modal.classList.add('open');
             modalImg.src = src;
-
-            const thumbRect = activeThumbnail.getBoundingClientRect();
-
-            modalImg.style.width = `${thumbRect.width}px`;
-            modalImg.style.height = `${thumbRect.height}px`;
-            modalImg.style.left = `${thumbRect.left}px`;
-            modalImg.style.top = `${thumbRect.top}px`;
-            modalImg.style.opacity = '1';
-            modalImg.style.transition = 'none';
-
-            // Ждем, пока браузер обновит стили
-            modalImg.offsetHeight; // Trigger reflow
-
-            const targetWidth = Math.min(window.innerWidth * 0.9, window.innerHeight * 0.8 * (modalImg.naturalWidth / modalImg.naturalHeight || 1));
-            const targetHeight = Math.min(window.innerHeight * 0.8, window.innerWidth * 0.9 * (modalImg.naturalHeight / modalImg.naturalWidth || 1));
-
-            const targetLeft = (window.innerWidth - targetWidth) / 2;
-            const targetTop = (window.innerHeight - targetHeight) / 2;
-
-            modalImg.style.transition = 'all 0.3s ease-out';
-            modalImg.style.width = `${targetWidth}px`;
-            modalImg.style.height = `${targetHeight}px`;
-            modalImg.style.left = `${targetLeft}px`;
-            modalImg.style.top = `${targetTop}px`;
-
-            // Устанавливаем opacity миниатюры после того, как получили её размеры
-            // и модальное изображение начало анимацию, чтобы избежать мерцания.
-            // Можете настроить задержку или убрать, если не нужно.
-            setTimeout(() => {
-                if (activeThumbnail) {
-                    activeThumbnail.style.opacity = '0';
-                }
-            }, 50); // Небольшая задержка
+            // Сброс любых инлайновых стилей трансформации, которые могли остаться от предыдущей попытки анимации
+            modalImg.style.cssText = '';
         }
 
+        // Измененная функция closeModal, возвращающаяся к простому закрытию
         function closeModal() {
-            if (!activeThumbnail) { // Handle case where modal opened without activeThumbnail
-                modal.classList.remove('open');
-                modalImg.style.opacity = '0';
-                return;
-            }
-
-            // Устанавливаем opacity миниатюры до начала анимации закрытия, чтобы она снова стала видна.
-            if (activeThumbnail) {
-                activeThumbnail.style.opacity = '1';
-            }
-
-            const modalRect = modalImg.getBoundingClientRect();
-            const thumbRect = activeThumbnail.getBoundingClientRect();
-
-            modalImg.style.transition = 'all 0.3s ease-in';
-            modalImg.style.width = `${thumbRect.width}px`;
-            modalImg.style.height = `${thumbRect.height}px`;
-            modalImg.style.left = `${thumbRect.left}px`;
-            modalImg.style.top = `${thumbRect.top}px`;
-            modalImg.style.opacity = '0';
-
-            modalImg.addEventListener('transitionend', function handler() {
-                modal.classList.remove('open');
-                modalImg.style.transition = 'none';
-                modalImg.style.opacity = '0'; // Убедимся, что модальное изображение не видно после закрытия
-                modalImg.removeEventListener('transitionend', handler);
-            });
+            modal.classList.remove('open');
+            modalImg.src = ''; // Очищаем src для экономии памяти
         }
 
         async function fetchImages() {
@@ -1943,7 +1576,7 @@
         }
 
         function updateLikeDisplay(name) {
-            const btn = document.querySelector(`.like-btn[onclick*="${name}"]`); // Исправлено: [onclick*="name"]
+            const btn = document.querySelector(`.like-btn[onclick*="${name}"]`);
             const countElement = document.getElementById(`like-count-${name}`);
             const liked = localStorage.getItem(`like-${name}`) === "true";
             const count = localStorage.getItem(`like-count-${name}`) || "0";
