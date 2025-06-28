@@ -1391,6 +1391,20 @@
             utterance.pitch = 1.0; // Standard pitch
             utterance.rate = 1.0;  // Standard rate
             synth.speak(utterance);
+
+            // Add 'talking' class when speech starts
+            utterance.onstart = () => {
+                nod32Bot.classList.add('talking');
+            };
+            // Remove 'talking' class when speech ends
+            utterance.onend = () => {
+                nod32Bot.classList.remove('talking');
+            };
+            // Handle errors (e.g., if speech is interrupted)
+            utterance.onerror = (event) => {
+                console.error('SpeechSynthesisUtterance.onerror', event);
+                nod32Bot.classList.remove('talking');
+            };
         }
 
 
@@ -1405,12 +1419,14 @@
                 }
             } else {
                 synth.cancel(); // Stop speaking if chat is closed
+                nod32Bot.classList.remove('talking'); // Ensure talking animation stops
             }
         });
 
         chatCloseBtn.addEventListener('click', () => {
             chatContainer.classList.remove('open');
             synth.cancel(); // Stop speaking if chat is closed
+            nod32Bot.classList.remove('talking'); // Ensure talking animation stops
         });
 
         // Event listener for Nod32 bot to open chat
