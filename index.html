@@ -1407,15 +1407,30 @@
             };
         }
 
+        // Ваш текст, который вы хотите, чтобы бот говорил при первом открытии чата
+        const initialGreetingText = `Привет!
+Ты на HackHub — пространстве для тех, кто взрослый не только по паспорту.
+Здесь собраны материалы, которые не для всех — только для тех, кто ищет больше, чем просто развлечение:
+— откровенный контент 18+
+— умные беседы без табу
+— свобода самовыражения и честные желания
+— всё, что выходит за рамки обычных сайтов
+Я — твой персональный AI-ассистент.
+Помогу сориентироваться, найти нужное, подсказать интересное. Просто задай вопрос.
+Здесь тебя никто не осудит.
+HackHub — это приватное, безопасное и открытое пространство для взрослых людей, которые знают, чего хотят.`;
+
+        let hasSpokenInitialGreeting = false; // Флаг для однократного воспроизведения
 
         chatToggleBtn.addEventListener('click', () => {
             chatContainer.classList.toggle('open');
             if (chatContainer.classList.contains('open')) {
                 chatInput.focus();
                 chatMessages.scrollTop = chatMessages.scrollHeight;
-                // Speak initial greeting if chat is just opened and no history yet (or only system message)
-                if (chatHistory.length === 1 && chatHistory[0].role === 'system') {
-                    speakText('Привет! Я AI ассистент. Чем могу помочь?');
+                
+                if (!hasSpokenInitialGreeting) {
+                    speakText(initialGreetingText);
+                    hasSpokenInitialGreeting = true; 
                 }
             } else {
                 synth.cancel(); // Stop speaking if chat is closed
@@ -1434,9 +1449,10 @@
             chatContainer.classList.add('open');
             chatInput.focus();
             chatMessages.scrollTop = chatMessages.scrollHeight;
-            // Speak initial greeting if chat is just opened and no history yet (or only system message)
-            if (chatHistory.length === 1 && chatHistory[0].role === 'system') {
-                speakText('Привет! Я AI ассистент. Чем могу помочь?');
+            
+            if (!hasSpokenInitialGreeting) {
+                speakText(initialGreetingText);
+                hasSpokenInitialGreeting = true; 
             }
         });
 
@@ -1456,7 +1472,8 @@
                 messageDiv.classList.add('loading');
                 nod32Bot.classList.add('talking'); // Start talking animation
             } else {
-                nod32Bot.classList.remove('talking'); // Stop talking animation
+                // Анимация останавливается функцией speakText, когда речь закончена
+                // или в finally блоке sendMessage при ошибке
             }
             chatMessages.appendChild(messageDiv);
             chatMessages.scrollTop = chatMessages.scrollHeight;
@@ -1528,7 +1545,7 @@
                 loadingMessage.classList.add('error');
             } finally {
                 isSendingMessage = false;
-                nod32Bot.classList.remove('talking'); // Stop talking animation
+                // nod32Bot.classList.remove('talking'); // Это уже управляется в speakText onend
             }
         }
 
