@@ -1,1535 +1,771 @@
 <!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>HackHub Gallery</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Roboto:wght@400;700&display=swap');
-
-        :root {
-            --primary-color: #ff6600;
-            --secondary-color: #121212;
-            --light-text-color: #eee;
-            --dark-text-color: #121212;
-            --card-bg: #1e1e1e;
-            --header-bg: linear-gradient(90deg, #000000, #1a1a1a, #000000);
-        }
-
-        body {
-            margin: 0;
-            background-color: var(--secondary-color);
-            color: var(--light-text-color);
-            font-family: 'Roboto', Arial, sans-serif; /* Изменен основной шрифт */
-            overflow-x: hidden;
-            line-height: 1.6;
-        }
-
-        h1, h2, h3, h4, h5, h6 {
-            font-family: 'Montserrat', sans-serif;
-            color: var(--primary-color);
-        }
-
-        /* Disclaimer and background effects */
-        #disclaimer {
-            position: fixed;
-            z-index: 10000;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: #000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: opacity 1s ease;
-        }
-        #disclaimer img {
-            max-width: 90%;
-            max-height: 90%;
-            border-radius: 20px;
-            box-shadow: 0 0 40px var(--primary-color);
-        }
-        #disclaimer.fade-out {
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        .smoke-video {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            opacity: 0.2; /* Уменьшена прозрачность */
-            z-index: -1;
-        }
-
-        .spotlight {
-            position: fixed;
-            top: -20%;
-            width: 60vw;
-            height: 160vh;
-            background: radial-gradient(ellipse at center, rgba(255,255,255,0.08) 0%, transparent 70%); /* Немного приглушенный эффект */
-            pointer-events: none;
-            mix-blend-mode: screen;
-            z-index: 0;
-            transform-origin: center;
-            animation: spin 25s linear infinite; /* Немного медленнее */
-        }
-        .spotlight.left {
-            left: -20vw;
-        }
-        .spotlight.right {
-            right: -20vw;
-            animation-direction: reverse;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg) translateX(0); }
-            100% { transform: rotate(360deg) translateX(0); }
-        }
-
-        #cursor-light {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 180px; /* Больше радиус */
-            height: 180px; /* Больше радиус */
-            pointer-events: none;
-            border-radius: 50%;
-            background: radial-gradient(circle, rgba(255,102,0,0.5) 0%, rgba(255,102,0,0) 60%); /* Ярче цвет */
-            filter: blur(40px); /* Сильнее размытие */
-            transform: translate(-50%, -50%);
-            z-index: 9999;
-            will-change: transform;
-        }
-
-        /* Header */
-        header {
-            background: var(--header-bg);
-            padding: 20px 30px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            box-shadow: 0 0 25px rgba(255, 102, 0, 0.7); /* Более выраженная тень */
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            flex-wrap: wrap; /* Для адаптивности */
-            gap: 15px; /* Промежуток между элементами */
-        }
-        .logo {
-            font-family: 'Montserrat', sans-serif;
-            font-size: 44px; /* Больше размер */
-            font-weight: 900;
-            color: #fff;
-            cursor: default;
-            text-shadow: 0 0 10px var(--primary-color);
-        }
-        .logo span {
-            background-color: var(--primary-color);
-            padding: 0 12px; /* Увеличен паддинг */
-            color: var(--dark-text-color);
-            border-radius: 8px; /* Больший радиус */
-            box-shadow: 0 0 12px var(--primary-color);
-        }
-        .search input {
-            padding: 12px 20px; /* Увеличен паддинг */
-            width: 350px; /* Увеличена ширина */
-            border-radius: 30px;
-            border: 2px solid var(--primary-color);
-            background-color: #222;
-            color: var(--light-text-color);
-            font-size: 18px; /* Увеличен размер шрифта */
-            transition: all 0.3s ease;
-        }
-        .search input:focus {
-            box-shadow: 0 0 15px var(--primary-color);
-            border-color: #ff8800;
-            outline: none;
-        }
-        .logout-btn {
-            background: none;
-            border: 2px solid var(--primary-color);
-            color: var(--primary-color);
-            padding: 10px 22px; /* Увеличен паддинг */
-            border-radius: 25px; /* Больший радиус */
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.3s ease;
-            font-size: 16px;
-        }
-        .logout-btn:hover {
-            background-color: var(--primary-color);
-            color: var(--dark-text-color);
-            box-shadow: 0 0 15px var(--primary-color);
-        }
-
-        /* Online Users Counter */
-        .online-users-container {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            background-color: #2a2a2a;
-            padding: 8px 15px;
-            border-radius: 20px;
-            font-size: 16px;
-            color: var(--light-text-color);
-            border: 1px solid #444;
-            box-shadow: 0 0 10px rgba(0,0,0,0.3);
-            white-space: nowrap;
-        }
-
-        .online-users-icon {
-            color: var(--primary-color);
-            font-size: 20px;
-            animation: pulse-online 2s infinite;
-        }
-
-        @keyframes pulse-online {
-            0% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.1); opacity: 0.8; }
-            100% { transform: scale(1); opacity: 1; }
-        }
-
-        /* Categories Navigation */
-        .categories {
-            background-color: #1a1a1a;
-            padding: 15px 30px; /* Увеличен паддинг */
-            box-shadow: inset 0 -2px 0 #333;
-        }
-        .categories ul {
-            list-style: none;
-            display: flex;
-            flex-wrap: nowrap;
-            overflow-x: auto;
-            gap: 20px; /* Увеличен промежуток */
-            margin: 0;
-            padding: 0;
-            -webkit-overflow-scrolling: touch;
-            scrollbar-width: thin; /* Для Firefox */
-            scrollbar-color: var(--primary-color) #333; /* Для Firefox */
-        }
-        .categories ul::-webkit-scrollbar {
-            height: 8px;
-        }
-        .categories ul::-webkit-scrollbar-thumb {
-            background-color: var(--primary-color);
-            border-radius: 10px;
-        }
-        .categories ul::-webkit-scrollbar-track {
-            background-color: #333;
-        }
-        .categories li a {
-            color: var(--primary-color);
-            font-weight: bold;
-            text-decoration: none;
-            font-size: 16px; /* Увеличен размер шрифта */
-            padding: 8px 15px; /* Увеличен паддинг */
-            border-radius: 25px; /* Больший радиус */
-            transition: background 0.2s, color 0.2s, transform 0.2s;
-            white-space: nowrap;
-        }
-        .categories li a:hover,
-        .categories li a.active {
-            background-color: var(--primary-color);
-            color: var(--dark-text-color);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 10px rgba(255, 102, 0, 0.4);
-        }
-
-        .categories li a.premium {
-            color: gold;
-            font-weight: 900;
-            animation: blink 1.4s infinite;
-            text-shadow: 0 0 8px gold;
-        }
-
-        @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.4; }
-        }
-
-        /* Gallery */
-        .gallery {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Чуть больше минимальный размер */
-            gap: 22px; /* Увеличен промежуток */
-            padding: 30px 35px; /* Увеличен паддинг */
-            max-width: 1300px; /* Увеличена максимальная ширина */
-            margin: 0 auto;
-        }
-
-        .card {
-            background-color: var(--card-bg);
-            border-radius: 15px; /* Больший радиус */
-            box-shadow: 0 0 15px rgba(255, 102, 0, 0.3); /* Более мягкая тень */
-            overflow: hidden;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex; /* Для лучшего контроля содержимым */
-            flex-direction: column;
-        }
-        .card:hover {
-            transform: translateY(-5px) scale(1.02); /* Эффект при наведении */
-            box-shadow: 0 5px 25px var(--primary-color), 0 0 40px #ff9900;
-        }
-        .card img {
-            width: 100%;
-            height: 200px; /* Фиксированная высота изображений */
-            object-fit: cover; /* Обрезать изображение, чтобы оно поместилось */
-            display: block;
-            border-bottom: 1px solid #333;
-        }
-        .card h3 {
-            font-size: 18px; /* Увеличен размер шрифта */
-            font-weight: 700;
-            margin: 15px 18px 8px; /* Увеличен паддинг */
-            color: var(--primary-color);
-            text-overflow: ellipsis; /* Добавлено многоточие для длинных названий */
-            white-space: nowrap;
-            overflow: hidden;
-        }
-        .card .actions {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 18px 15px; /* Увеличен паддинг */
-            margin-top: auto; /* Прижимает действия к низу карточки */
-        }
-        .card .btn {
-            background-color: transparent;
-            border: none;
-            color: var(--primary-color);
-            cursor: pointer;
-            font-size: 15px;
-            padding: 5px 0;
-            transition: color 0.2s, text-decoration 0.2s;
-        }
-        .card .btn:hover {
-            color: #ff9900;
-            text-decoration: underline;
-        }
-        .like-section {
-            display: flex;
-            align-items: center;
-            gap: 8px; /* Увеличен промежуток */
-        }
-        .like-btn {
-            font-size: 20px; /* Иконка лайка больше */
-            color: #ccc; /* Изначальный цвет */
-            transition: color 0.2s;
-        }
-        .like-btn.liked {
-            color: red; /* Цвет при лайке */
-            filter: drop-shadow(0 0 5px red);
-        }
-        .like-count {
-            font-size: 15px;
-            color: var(--light-text-color);
-        }
-        .woman-emoji {
-            font-size: 1.3em; /* Размер смайлика */
-            margin-left: 8px; /* Отступ от других элементов */
-            vertical-align: middle;
-            filter: drop-shadow(0 0 5px #ff6600); /* Небольшая тень */
-        }
-
-        /* Modal */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 9999;
-            left: 0;
-            top: 0;
-            width: 100vw;
-            height: 100vh;
-            background-color: rgba(18, 18, 18, 0.98); /* Более темный фон */
-            opacity: 0;
-            pointer-events: none;
-            overflow: hidden;
-            transition: opacity 0.3s ease-out;
-        }
-
-        .modal.open {
-            display: block;
-            opacity: 1;
-            pointer-events: auto;
-        }
-
-        .modal-content-wrapper {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
-        }
-
-        .modal-content {
-            border-radius: 18px; /* Больший радиус */
-            box-shadow: 0 0 40px var(--primary-color); /* Более сильная тень */
-            transform-origin: top left;
-            position: absolute;
-            object-fit: contain;
-            will-change: transform, width, height, top, left;
-        }
-
-        .close {
-            position: absolute;
-            top: 25px; /* Чуть ниже */
-            right: 45px; /* Чуть левее */
-            color: var(--primary-color);
-            font-size: 48px; /* Больше размер */
-            font-weight: 900;
-            cursor: pointer;
-            z-index: 10;
-            opacity: 0;
-            transition: opacity 0.2s ease-in 0.3s, transform 0.2s ease;
-            text-shadow: 0 0 10px var(--primary-color);
-        }
-        .close:hover {
-            color: #ff9900;
-            transform: scale(1.1);
-        }
-
-        .modal.open .close {
-            opacity: 1;
-        }
-
-        /* Chat Styles */
-        #chat-toggle-btn {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            background-color: var(--primary-color);
-            color: var(--dark-text-color);
-            border: none;
-            border-radius: 50%;
-            width: 65px; /* Больше размер */
-            height: 65px; /* Больше размер */
-            font-size: 30px; /* Больше иконка */
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            box-shadow: 0 0 25px rgba(255, 102, 0, 0.8);
-            transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
-            z-index: 1000;
-        }
-
-        #chat-toggle-btn:hover {
-            transform: scale(1.15) rotate(5deg); /* Добавлена небольшая ротация */
-            background-color: #e65c00;
-            box-shadow: 0 0 35px rgba(255, 102, 0, 0.9);
-        }
-
-        /* Nod32 Bot Styles */
-        .nod32-bot {
-            position: fixed;
-            bottom: 110px; /* Над кнопкой чата */
-            right: 40px; /* Правее от чата, чтобы не перекрывать кнопку чата когда чат закрыт */
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            cursor: pointer;
-            z-index: 998; /* Чуть ниже кнопки чата, но выше контента */
-            opacity: 0; /* Изначально скрыт */
-            transform: translateY(20px); /* Изначальное смещение для анимации */
-            transition: opacity 0.5s ease-out, transform 0.5s ease-out;
-        }
-
-        .nod32-bot.show {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .nod32-bot img {
-            width: 70px; /* Размер робота */
-            height: 70px;
-            border-radius: 50%; /* Круглая форма */
-            object-fit: cover;
-            border: 3px solid var(--primary-color);
-            box-shadow: 0 0 15px var(--primary-color), 0 0 30px rgba(255,102,0,0.6); /* Оранжевое свечение */
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            animation: pulse-online 2s infinite; /* Эффект "дыхания" */
-        }
-
-        .nod32-bot:hover img {
-            transform: scale(1.08);
-            box-shadow: 0 0 20px var(--primary-color), 0 0 40px rgba(255,102,0,0.8);
-        }
-
-        /* New animation for "talking" */
-        @keyframes talking {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
-        }
-
-        .nod32-bot.talking img {
-            animation: talking 0.6s infinite alternate, pulse-online 2s infinite; /* Combine talking and pulse */
-        }
-
-        .nod32-bot span {
-            margin-top: 5px;
-            font-size: 14px;
-            font-weight: bold;
-            color: var(--light-text-color);
-            text-shadow: 0 0 5px rgba(0,0,0,0.5);
-        }
-
-        #chat-container {
-            position: fixed;
-            bottom: 110px; /* Отступ от кнопки */
-            right: 30px;
-            width: 380px; /* Шире контейнер */
-            height: 500px; /* Выше контейнер */
-            background-color: #1a1a1a;
-            border-radius: 15px; /* Больший радиус */
-            box-shadow: 0 0 35px rgba(255, 102, 0, 0.8);
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-            transform: translateY(30px) scale(0.85); /* Чуть больше начальное смещение и меньше размер */
-            opacity: 0;
-            visibility: hidden;
-            transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55), opacity 0.3s ease, visibility 0.3s ease; /* Добавлена более интересная кривая анимации */
-            z-index: 999;
-        }
-
-        #chat-container.open {
-            transform: translateY(0) scale(1);
-            opacity: 1;
-            visibility: visible;
-        }
-
-        #chat-header {
-            background-color: var(--primary-color);
-            color: var(--dark-text-color);
-            padding: 18px; /* Увеличен паддинг */
-            font-weight: bold;
-            font-size: 20px; /* Больше размер шрифта */
-            border-top-left-radius: 15px;
-            border-top-right-radius: 15px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
-        }
-
-        #chat-close-btn {
-            background: none;
-            border: none;
-            color: var(--dark-text-color);
-            font-size: 28px; /* Больше размер */
-            cursor: pointer;
-            transition: color 0.2s ease, transform 0.2s ease;
-        }
-
-        #chat-close-btn:hover {
-            color: #333;
-            transform: rotate(90deg);
-        }
-
-        #chat-messages {
-            flex-grow: 1;
-            padding: 15px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 12px; /* Увеличен промежуток */
-            background-color: #1f1f1f;
-            scrollbar-width: thin;
-            scrollbar-color: var(--primary-color) #2a2a2a;
-        }
-        #chat-messages::-webkit-scrollbar {
-            width: 8px;
-        }
-        #chat-messages::-webkit-scrollbar-thumb {
-            background-color: var(--primary-color);
-            border-radius: 10px;
-        }
-        #chat-messages::-webkit-scrollbar-track {
-            background-color: #2a2a2a;
-        }
-
-        .message {
-            padding: 12px 18px; /* Увеличен паддинг */
-            border-radius: 18px; /* Больший радиус */
-            max-width: 85%; /* Чуть больше ширина */
-            word-wrap: break-word;
-            font-size: 15px; /* Чуть больше размер шрифта */
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-        }
-
-        .message.user {
-            align-self: flex-end;
-            background-color: var(--primary-color);
-            color: var(--dark-text-color);
-            border-bottom-right-radius: 8px; /* Более округлый угол */
-        }
-
-        .message.ai {
-            align-self: flex-start;
-            background-color: #333;
-            color: var(--light-text-color);
-            border-bottom-left-radius: 8px; /* Более округлый угол */
-        }
-
-        .message.loading {
-            align-self: flex-start;
-            background-color: #333;
-            color: #eee;
-            border-bottom-left-radius: 8px;
-            font-style: italic;
-            opacity: 0.8;
-            animation: pulse 1.5s infinite ease-in-out;
-        }
-        @keyframes pulse {
-            0% { opacity: 0.8; }
-            50% { opacity: 0.5; }
-            100% { opacity: 0.8; }
-        }
-
-        #chat-input-container {
-            display: flex;
-            padding: 15px;
-            border-top: 1px solid #333;
-            background-color: #1a1a1a;
-        }
-
-        #chat-input {
-            flex-grow: 1;
-            padding: 12px 18px; /* Увеличен паддинг */
-            border-radius: 25px; /* Более округлый */
-            border: 2px solid var(--primary-color);
-            background-color: #2a2a2a;
-            color: var(--light-text-color);
-            font-size: 16px; /* Больше размер шрифта */
-            outline: none;
-            margin-right: 12px;
-            transition: all 0.3s ease;
-        }
-        #chat-input:focus {
-            box-shadow: 0 0 10px var(--primary-color);
-            border-color: #ff8800;
-        }
-
-        #chat-send-btn {
-            background-color: var(--primary-color);
-            color: var(--dark-text-color);
-            border: none;
-            border-radius: 25px; /* Более округлый */
-            padding: 12px 20px; /* Увеличен паддинг */
-            font-size: 18px; /* Больше иконка */
-            cursor: pointer;
-            transition: background-color 0.2s ease, transform 0.2s ease;
-        }
-
-        #chat-send-btn:hover {
-            background-color: #e65c00;
-            transform: scale(1.05);
-        }
-
-        /* New Sections Styles */
-        .section-title {
-            text-align: center;
-            font-size: 3em; /* Крупнее заголовок */
-            margin: 40px 0 20px;
-            color: #fff; /* Белый цвет */
-            text-shadow: 0 0 15px var(--primary-color); /* Тень оранжевого цвета */
-        }
-        .section-description {
-            text-align: center;
-            font-size: 1.1em;
-            color: #aaa;
-            max-width: 800px;
-            margin: 0 auto 40px;
-        }
-
-        /* Popular Section (example, could reuse .gallery) */
-        .popular-gallery {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 22px;
-            padding: 30px 35px;
-            max-width: 1300px;
-            margin: 0 auto;
-        }
-
-        /* Reviews Section */
-        .reviews-section {
-            padding: 50px 30px;
-            background-color: #1a1a1a;
-            margin-top: 50px;
-            box-shadow: inset 0 5px 15px rgba(0,0,0,0.5);
-            text-align: center;
-        }
-        .review-card-container {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 25px;
-            max-width: 1200px;
-            margin: 30px auto 0;
-        }
-        .review-card {
-            background-color: #222;
-            border-radius: 12px;
-            padding: 25px;
-            box-shadow: 0 0 15px rgba(255, 102, 0, 0.2);
-            width: calc(33% - 25px); /* Три карточки в ряд */
-            min-width: 280px; /* Минимальная ширина */
-            box-sizing: border-box;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        .review-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 8px 25px rgba(255, 102, 0, 0.5);
-        }
-        .review-card p {
-            font-size: 1.05em;
-            color: #ccc;
-            margin-bottom: 15px;
-            font-style: italic;
-        }
-        .review-card .author {
-            font-weight: bold;
-            color: var(--primary-color);
-            font-size: 1.1em;
-        }
-        .review-card .rating {
-            color: gold;
-            font-size: 1.2em;
-            margin-top: 10px;
-        }
-
-        /* Footer */
-        footer {
-            background: var(--header-bg);
-            color: var(--light-text-color);
-            padding: 40px 30px;
-            text-align: center;
-            box-shadow: 0 0 25px rgba(255, 102, 0, 0.7);
-            margin-top: 50px;
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-around;
-            align-items: flex-start;
-            gap: 30px;
-        }
-        .footer-column {
-            flex: 1;
-            min-width: 200px;
-            text-align: left;
-        }
-        .footer-column h4 {
-            color: var(--primary-color);
-            font-size: 1.4em;
-            margin-bottom: 20px;
-            border-bottom: 2px solid #333;
-            padding-bottom: 10px;
-        }
-        .footer-column ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-        .footer-column ul li {
-            margin-bottom: 10px;
-        }
-        .footer-column ul li a {
-            color: #ccc;
-            text-decoration: none;
-            transition: color 0.2s ease;
-        }
-        .footer-column ul li a:hover {
-            color: var(--primary-color);
-        }
-        .social-icons {
-            margin-top: 20px;
-        }
-        .social-icons a {
-            color: var(--primary-color);
-            font-size: 2em;
-            margin: 0 15px;
-            transition: transform 0.2s ease, color 0.2s ease;
-        }
-        .social-icons a:hover {
-            color: #ff9900;
-            transform: scale(1.2);
-        }
-        .footer-bottom-text {
-            width: 100%;
-            margin-top: 40px;
-            font-size: 0.9em;
-            color: #aaa;
-            border-top: 1px solid #333;
-            padding-top: 20px;
-        }
-
-
-        /* Адаптивность */
-        @media (max-width: 1024px) {
-            .gallery, .popular-gallery {
-                grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-                padding: 20px 25px;
-            }
-            .search input {
-                width: 250px;
-            }
-            .review-card {
-                width: calc(50% - 25px); /* Две карточки в ряд на средних экранах */
-            }
-            .footer-column {
-                flex-basis: 45%;
-            }
-        }
-
-        @media (max-width: 768px) {
-            header {
-                flex-direction: column;
-                align-items: flex-start;
-                padding: 15px 20px;
-            }
-            .logo {
-                font-size: 36px;
-                margin-bottom: 15px;
-            }
-            .search input {
-                width: 100%;
-                margin-bottom: 15px;
-            }
-            .logout-btn {
-                width: 100%;
-                text-align: center;
-            }
-            /* Adjust online users counter for smaller screens */
-            .online-users-container {
-                order: -1; /* Move to top of header on small screens */
-                width: 100%;
-                justify-content: center;
-                margin-bottom: 15px;
-                padding: 10px 15px;
-            }
-            .categories {
-                padding: 10px 20px;
-            }
-            .categories li a {
-                font-size: 14px;
-                padding: 6px 10px;
-            }
-            .gallery, .popular-gallery {
-                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-                padding: 15px 20px;
-            }
-            .card h3 {
-                font-size: 16px;
-            }
-            .card img {
-                height: 180px;
-            }
-            #chat-container {
-                width: 90vw;
-                height: 70vh;
-                right: 5vw;
-                bottom: 90px;
-            }
-            #chat-toggle-btn {
-                bottom: 20px;
-                right: 20px;
-                width: 55px;
-                height: 55px;
-                font-size: 24px;
-            }
-            /* Adjust Nod32 bot for smaller screens */
-            .nod32-bot {
-                bottom: 90px; /* Над кнопкой чата на мобильных */
-                right: 90px; /* Сместить влево, чтобы не конфликтовать с кнопкой чата */
-                flex-direction: row;
-                gap: 5px;
-                background-color: rgba(30, 30, 30, 0.8);
-                padding: 8px 12px;
-                border-radius: 25px;
-                box-shadow: 0 0 10px rgba(255,102,0,0.5);
-            }
-            .nod32-bot img {
-                width: 50px;
-                height: 50px;
-                border-width: 2px;
-                box-shadow: none;
-            }
-            .nod32-bot span {
-                font-size: 12px;
-                margin-top: 0;
-            }
-            .close {
-                top: 15px;
-                right: 25px;
-                font-size: 36px;
-            }
-            .section-title {
-                font-size: 2.2em;
-            }
-            .section-description {
-                font-size: 1em;
-                margin-bottom: 30px;
-            }
-            .review-card {
-                width: 90%; /* Одна карточка в ряд на мобильных */
-                margin: 0 auto;
-            }
-            footer {
-                flex-direction: column;
-                align-items: center;
-                padding: 30px 20px;
-            }
-            .footer-column {
-                width: 100%;
-                text-align: center;
-                margin-bottom: 20px;
-            }
-            .footer-column h4 {
-                border-bottom: none;
-                padding-bottom: 0;
-                margin-bottom: 10px;
-            }
-            .social-icons a {
-                font-size: 1.8em;
-                margin: 0 10px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .logo {
-                font-size: 30px;
-            }
-            .search input {
-                font-size: 15px;
-                padding: 10px 15px;
-            }
-            .logout-btn {
-                font-size: 14px;
-                padding: 8px 15px;
-            }
-            .categories li a {
-                font-size: 13px;
-                padding: 5px 8px;
-            }
-            .gallery, .popular-gallery {
-                grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-                gap: 15px;
-            }
-            .card img {
-                height: 150px;
-            }
-            .card h3 {
-                font-size: 14px;
-            }
-            .card .btn, .like-count {
-                font-size: 13px;
-            }
-            .like-btn {
-                font-size: 18px;
-            }
-            .woman-emoji {
-                font-size: 1.1em;
-            }
-            #chat-container {
-                width: 95vw;
-                right: 2.5vw;
-                bottom: 80px;
-                height: 60vh;
-            }
-            #chat-toggle-btn {
-                width: 50px;
-                height: 50px;
-                font-size: 22px;
-            }
-            .nod32-bot {
-                bottom: 80px; /* Над кнопкой чата на самых маленьких экранах */
-                right: 80px;
-            }
-            #chat-header {
-                font-size: 16px;
-                padding: 12px;
-            }
-            #chat-close-btn {
-                font-size: 22px;
-            }
-            .message {
-                font-size: 13px;
-                padding: 10px 15px;
-            }
-            #chat-input {
-                font-size: 14px;
-                padding: 8px 12px;
-            }
-            #chat-send-btn {
-                font-size: 14px;
-                padding: 8px 15px;
-            }
-            .section-title {
-                font-size: 1.8em;
-            }
-            .review-card {
-                padding: 20px;
-            }
-            .review-card p {
-                font-size: 0.95em;
-            }
-        }
-    </style>
-</head>
-<body>
-
-    <div id="disclaimer">
-        <img src="22.gif" alt="Disclaimer">
-    </div>
-
-    <video class="smoke-video" autoplay loop muted>
-        <source src="https://raw.githubusercontent.com/antareti/hackhub/main/smoke-loop.mp4" type="video/mp4">
-    </video>
-
-    <div class="spotlight left"></div>
-    <div class="spotlight right"></div>
-
-    <div id="cursor-light"></div>
-
-    <header>
-        <div class="logo">Hack<span>Hub</span></div>
-        <div class="search">
-            <input id="searchInput" type="text" placeholder="Поиск...">
-        </div>
-        <div class="online-users-container">
-            <i class="fas fa-users online-users-icon"></i>
-            <span id="online-users-count">500</span> онлайн
-        </div>
-        <button class="logout-btn" onclick="logout()">Выйти</button>
-    </header>
-
-    <nav class="categories">
-        <ul>
-            <li><a href="#" class="active">Главная</a></li>
-            <li><a href="#">Категории</a></li>
-            <li><a href="#">Новое</a></li>
-            <li><a href="#">Популярное</a></li>
-            <li><a href="#">Лучшее</a></li>
-            <li><a href="#">GIF</a></li>
-            <li><a href="#">VR</a></li>
-            <li><a href="#">Модель дня</a></li>
-            <li><a href="video.html">🎥 Видео</a></li>
-            <li><a href="#">Сообщество</a></li> <li><a href="#">Поддержка</a></li> <li><a href="premium.html" class="premium">💎 Премиум</a></li>
-        </ul>
-    </nav>
-
-    <h2 class="section-title">✨ Галерея</h2>
-    <p class="section-description">Погрузитесь в нашу постоянно пополняющуюся коллекцию захватывающих изображений!</p>
-    <section class="gallery" id="gallery"></section>
-
-    ---
-
-    <h2 class="section-title">🔥 Популярное</h2>
-    <p class="section-description">Оцените самые просматриваемые и понравившиеся изображения за последнюю неделю.</p>
-    <section class="gallery popular-gallery" id="popular-gallery"></section>
-
-    ---
-
-    <section class="reviews-section">
-        <h2 class="section-title">💖 Отзывы наших пользователей</h2>
-        <p class="section-description">Узнайте, что говорят люди о HackHub Gallery!</p>
-        <div class="review-card-container">
-            <div class="review-card">
-                <p>"HackHub Gallery - это просто нечто! Здесь всегда можно найти вдохновение, а качество изображений просто зашкаливает. Отличная работа!"</p>
-                <div class="author">- Мария С.</div>
-                <div class="rating">
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
-                </div>
-            </div>
-            <div class="review-card">
-                <p>"Я каждый день захожу сюда. Интерфейс очень удобный, а функция поиска работает идеально. Мои наилучшие рекомендации!"</p>
-                <div class="author">- Алексей К.</div>
-                <div class="rating">
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
-                </div>
-            </div>
-            <div class="review-card">
-                <p>"Потрясающая коллекция! Изображения уникальны, а атмосфера сайта очень крутая с этими эффектами. Однозначно 5 звезд!"</p>
-                <div class="author">- Елена В.</div>
-                <div class="rating">
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
-                </div>
-            </div>
-        </div>
-    </section>
-
-
-    <div id="imageModal" class="modal">
-        <div class="modal-content-wrapper">
-            <span class="close" onclick="closeModal()">&times;</span>
-            <img class="modal-content" id="modalImg" alt="Просмотр изображения">
-        </div>
-    </div>
-
-    <div class="nod32-bot" id="nod32-bot">
-        <img src="image_0a257b.jpg" alt="AI Ассистент"> 
-        <span>Ассистент</span>
-    </div>
-
-    <button id="chat-toggle-btn"><i class="fas fa-comment-dots"></i></button>
-
-    <div id="chat-container">
-        <div id="chat-header">
-            AI Ассистент
-            <button id="chat-close-btn">&times;</button>
-        </div>
-        <div id="chat-messages">
-            <div class="message ai">Привет! Я AI ассистент. Чем могу помочь?</div>
-        </div>
-        <div id="chat-input-container">
-            <input type="text" id="chat-input" placeholder="Введите ваше сообщение...">
-            <button id="chat-send-btn"><i class="fas fa-paper-plane"></i></button>
-        </div>
-    </div>
-
-    <footer>
-        <div class="footer-column">
-            <h4>О нас</h4>
-            <ul>
-                <li><a href="#">Наша миссия</a></li>
-                <li><a href="#">Команда</a></li>
-                <li><a href="#">Карьера</a></li>
-            </ul>
-        </div>
-        <div class="footer-column">
-            <h4>Помощь</h4>
-            <ul>
-                <li><a href="#">FAQ</a></li>
-                <li><a href="#">Связаться с нами</a></li>
-                <li><a href="#">Политика конфиденциальности</a></li>
-                <li><a href="#">Условия использования</a></li>
-            </ul>
-        </div>
-        <div class="footer-column">
-            <h4>Социальные сети</h4>
-            <div class="social-icons">
-                <a href="#" target="_blank" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
-                <a href="#" target="_blank" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
-                <a href="#" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-                <a href="#" target="_blank" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
-            </div>
-        </div>
-        <div class="footer-bottom-text">
-            &copy; 2025 HackHub. Все права защищены. <br> Создано с ❤️ для сообщества.
-        </div>
-    </footer>
-
-    <script>
-        window.onload = () => {
-            const disclaimer = document.getElementById("disclaimer");
-            disclaimer.classList.add("fade-out");
-            setTimeout(() => {
-                disclaimer.remove();
-                document.getElementById('nod32-bot').classList.add('show'); // Показать "Ассистента" после исчезновения дисклеймера
-            }, 1000);
-        };
-
-        const repoOwner = "antareti";
-        const repoName = "hackhub";
-        const folderPath = "images";
-        const gallery = document.getElementById("gallery");
-        const popularGallery = document.getElementById("popular-gallery"); // Новая галерея для популярных
-        const searchInput = document.getElementById("searchInput");
-        const modal = document.getElementById("imageModal");
-        const modalImg = document.getElementById("modalImg");
-        const modalWrapper = modal.querySelector('.modal-content-wrapper');
-        let activeThumbnail;
-
-        let cards = []; // Для основной галереи
-        let popularCards = []; // Для популярной галереи
-
-        const femaleNames = [
-            "Анна", "Елена", "Мария", "Ольга", "Наталья", "Светлана", "Татьяна", "Ирина", "Екатерина", "Дарья",
-            "Анастасия", "София", "Виктория", "Полина", "Ксения", "Александра", "Елизавета", "Валерия", "Варвара", "Вероника",
-            "Юлия", "Алина", "Арина", "Маргарита", "Аделина", "Кира", "Эвелина", "Злата", "Милана", "Диана"
-        ];
-
-        function getRandomFemaleName() {
-            const randomIndex = Math.floor(Math.random() * femaleNames.length);
-            return femaleNames[randomIndex];
-        }
-
-        function createCard(file, isPopular = false) {
-            const card = document.createElement("div");
-            card.className = "card";
-            const displayedTitle = getRandomFemaleName();
-            card.setAttribute('data-title', displayedTitle.toLowerCase());
-            const imageUrl = `https://raw.githubusercontent.com/${repoOwner}/${repoName}/main/${folderPath}/${file.name}`;
-            
-            card.innerHTML = `
-                <img src="${imageUrl}" alt="${file.name}" onclick="openModal('${imageUrl}', this)">
-                <h3>${displayedTitle}</h3>
-                <div class="actions">
-                    <button class="btn" onclick="downloadImage('${imageUrl}')">Скачать</button>
-                    <div class="like-section">
-                        <button class="btn like-btn" onclick="toggleLike('${file.name}')">
-                            <i class="fas fa-heart"></i> </button>
-                        <span id="like-count-${file.name}" class="like-count">0</span>
-                    </div>
-                    <span class="woman-emoji">🧍‍♀️</span>
-                </div>
-            `;
-            return card;
-        }
-
-        function openModal(src, thumbnail) {
-            activeThumbnail = thumbnail;
-            activeThumbnail.style.opacity = '0'; 
-            modal.classList.add('open');
-            modalImg.src = src;
-
-            const thumbRect = activeThumbnail.getBoundingClientRect();
-
-            modalImg.style.width = `${thumbRect.width}px`;
-            modalImg.style.height = `${thumbRect.height}px`;
-            modalImg.style.left = `${thumbRect.left}px`;
-            modalImg.style.top = `${thumbRect.top}px`;
-            modalImg.style.opacity = '1';
-            modalImg.style.transition = 'none';
-
-            modalImg.offsetHeight; 
-
-            const targetWidth = Math.min(window.innerWidth * 0.9, window.innerHeight * 0.8 * (modalImg.naturalWidth / modalImg.naturalHeight || 1));
-            const targetHeight = Math.min(window.innerHeight * 0.8, window.innerWidth * 0.9 * (modalImg.naturalHeight / modalImg.naturalWidth || 1));
-
-            const targetLeft = (window.innerWidth - targetWidth) / 2;
-            const targetTop = (window.innerHeight - targetHeight) / 2;
-
-            modalImg.style.transition = 'all 0.3s ease-out';
-            modalImg.style.width = `${targetWidth}px`;
-            modalImg.style.height = `${targetHeight}px`;
-            modalImg.style.left = `${targetLeft}px`;
-            modalImg.style.top = `${targetTop}px`;
-        }
-
-        function closeModal() {
-            const modalRect = modalImg.getBoundingClientRect();
-            const thumbRect = activeThumbnail.getBoundingClientRect();
-
-            modalImg.style.transition = 'all 0.3s ease-in';
-            modalImg.style.width = `${thumbRect.width}px`;
-            modalImg.style.height = `${thumbRect.height}px`;
-            modalImg.style.left = `${thumbRect.left}px`;
-            modalImg.style.top = `${thumbRect.top}px`;
-            modalImg.style.opacity = '0';
-
-            modalImg.addEventListener('transitionend', function handler() {
-                modal.classList.remove('open');
-                modalImg.style.transition = 'none';
-                modalImg.style.opacity = '0';
-                if (activeThumbnail) {
-                    activeThumbnail.style.opacity = '1';
-                }
-                modalImg.removeEventListener('transitionend', handler);
-            });
-        }
-
-        function logout() {
-            localStorage.removeItem("auth");
-            window.location.href = "login.html";
-        }
-
-        function debounce(func, wait) {
-            let timeout;
-            return function(...args) {
-                clearTimeout(timeout);
-                timeout = setTimeout(() => func.apply(this, args), wait);
-            };
-        }
-
-        function filterCards() {
-            const query = searchInput.value.toLowerCase().trim();
-            const allCards = [...cards, ...popularCards]; // Искать во всех карточках
-            if (!query) {
-                allCards.forEach(card => card.style.display = "");
-                return;
-            }
-            const terms = query.split(/\s+/);
-            allCards.forEach(card => {
-                const title = card.getAttribute("data-title");
-                const match = terms.every(term => title.includes(term));
-                card.style.display = match ? "" : "none";
-            });
-        }
-
-        function downloadImage(url) {
-            const link = document.createElement("a");
-            link.href = url;
-            link.download = url.split("/").pop();
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        }
-
-        function toggleLike(name) {
-            const keyLiked = `like-${name}`;
-            const keyCount = `like-count-${name}`;
-            let liked = localStorage.getItem(keyLiked) === "true";
-            liked = !liked;
-            localStorage.setItem(keyLiked, liked);
-
-            let count = parseInt(localStorage.getItem(keyCount) || "0");
-            count = liked ? count + 1 : Math.max(0, count - 1);
-            localStorage.setItem(keyCount, count);
-
-            updateLikeDisplay(name);
-        }
-
-        function updateLikeDisplay(name) {
-            const btn = document.querySelector(`.like-btn[onclick*="${name}"]`);
-            const countElement = document.getElementById(`like-count-${name}`);
-            const liked = localStorage.getItem(`like-${name}`) === "true";
-            const count = localStorage.getItem(`like-count-${name}`) || "0";
-            if (btn) btn.classList.toggle("liked", liked);
-            if (countElement) countElement.textContent = count;
-        }
-
-        document.addEventListener("keydown", (e) => {
-            if (e.key === "Escape") closeModal();
-        });
-
-        fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/contents/${folderPath}`)
-            .then(res => res.json())
-            .then(data => {
-                if (!Array.isArray(data)) throw new Error("Неверный формат данных");
-                
-                // Перемешиваем изображения для разнообразия
-                const shuffledData = data.sort(() => 0.5 - Math.random());
-
-                shuffledData.forEach((file, index) => {
-                    if (/\.(png|jpe?g|gif)$/i.test(file.name)) {
-                        // Распределяем по галереям: первые 6 для популярных, остальные для основной
-                        if (index < 6) { // Выбираем первые 6 изображений для "Популярное"
-                            const card = createCard(file, true);
-                            popularGallery.appendChild(card);
-                            popularCards.push(card);
-                        } else {
-                            const card = createCard(file);
-                            gallery.appendChild(card);
-                            cards.push(card);
-                        }
-                        updateLikeDisplay(file.name);
-                    }
-                });
-            })
-            .catch(err => {
-                console.error("Ошибка загрузки:", err);
-                gallery.innerHTML = "<p>Ошибка загрузки изображений.</p>";
-                popularGallery.innerHTML = "<p>Ошибка загрузки популярных изображений.</p>";
-            });
-
-        searchInput.addEventListener("input", debounce(filterCards, 300));
-
-        const cursorLight = document.getElementById('cursor-light');
-        window.addEventListener('mousemove', e => {
-            cursorLight.style.top = e.clientY + 'px';
-            cursorLight.style.left = e.clientX + 'px';
-        });
-
-        // --- Chat functionality ---
-        const chatToggleBtn = document.getElementById('chat-toggle-btn');
-        const chatContainer = document.getElementById('chat-container');
-        const chatCloseBtn = document.getElementById('chat-close-btn');
-        const chatMessages = document.getElementById('chat-messages');
-        const chatInput = document.getElementById('chat-input');
-        const chatSendBtn = document.getElementById('chat-send-btn');
-        const nod32Bot = document.getElementById('nod32-bot'); // Получаем элемент "Ассистента"
-        const nod32BotImg = nod32Bot.querySelector('img');
-
-        const OPENROUTER_API_KEY = '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';
-        const OPENROUTER_API_URL = 'https://openrouter.ai/api/v1/chat/completions';
-
-        let chatHistory = [{ role: 'system', content: 'You are a helpful and friendly AI assistant for HackHub Gallery. Provide concise, encouraging, and enthusiastic answers. You can also give recommendations for categories or features. Your responses should be in Russian. Try to sound energetic and positive!' }];
-        let isSendingMessage = false;
-
-        // Speech synthesis setup
-        const synth = window.speechSynthesis;
-        let russianVoice = null;
-
-        function setRussianVoice() {
-            const voices = synth.getVoices();
-            russianVoice = voices.find(voice => voice.lang === 'ru-RU' || voice.name.includes('Russian'));
-            if (!russianVoice) {
-                console.warn('Russian voice not found. Falling back to default.');
-            }
-        }
-
-        // Load voices after they are available
-        if (synth.onvoiceschanged !== undefined) {
-            synth.onvoiceschanged = setRussianVoice;
-        } else {
-            setRussianVoice(); // Try to set immediately if event not supported (might be empty)
-        }
-        
-        function speakText(text) {
-            if (synth.speaking) {
-                synth.cancel(); // Stop current speech if any
-            }
-            const utterance = new SpeechSynthesisUtterance(text);
-            utterance.lang = 'ru-RU';
-            if (russianVoice) {
-                utterance.voice = russianVoice;
-            }
-            utterance.pitch = 1.0; // Standard pitch
-            utterance.rate = 1.0;  // Standard rate
-            synth.speak(utterance);
-        }
-
-
-        chatToggleBtn.addEventListener('click', () => {
-            chatContainer.classList.toggle('open');
-            if (chatContainer.classList.contains('open')) {
-                chatInput.focus();
-                chatMessages.scrollTop = chatMessages.scrollHeight;
-                // Speak initial greeting if chat is just opened and no history yet (or only system message)
-                if (chatHistory.length === 1 && chatHistory[0].role === 'system') {
-                    speakText('Привет! Я AI ассистент. Чем могу помочь?');
-                }
-            } else {
-                synth.cancel(); // Stop speaking if chat is closed
-            }
-        });
-
-        chatCloseBtn.addEventListener('click', () => {
-            chatContainer.classList.remove('open');
-            synth.cancel(); // Stop speaking if chat is closed
-        });
-
-        // Event listener for Nod32 bot to open chat
-        nod32Bot.addEventListener('click', () => {
-            chatContainer.classList.add('open');
-            chatInput.focus();
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-            // Speak initial greeting if chat is just opened and no history yet (or only system message)
-            if (chatHistory.length === 1 && chatHistory[0].role === 'system') {
-                speakText('Привет! Я AI ассистент. Чем могу помочь?');
-            }
-        });
-
-        chatSendBtn.addEventListener('click', sendMessage);
-        chatInput.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                sendMessage();
-            }
-        });
-
-        function appendMessage(sender, text, isLoading = false) {
-            const messageDiv = document.createElement('div');
-            messageDiv.classList.add('message', sender);
-            messageDiv.textContent = text;
-            if (isLoading) {
-                messageDiv.classList.add('loading');
-                nod32Bot.classList.add('talking'); // Start talking animation
-            } else {
-                nod32Bot.classList.remove('talking'); // Stop talking animation
-            }
-            chatMessages.appendChild(messageDiv);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-            return messageDiv;
-        }
-
-        async function sendMessage() {
-            const userMessage = chatInput.value.trim();
-            if (!userMessage || isSendingMessage) return;
-
-            appendMessage('user', userMessage);
-            chatInput.value = '';
-            isSendingMessage = true;
-
-            chatHistory.push({ role: 'user', content: userMessage });
-
-            const loadingMessage = appendMessage('ai', 'Печатает...', true);
-
-            try {
-                const requestBody = {
-                    model: 'deepseek/deepseek-chat',
-                    messages: chatHistory,
-                    stream: false
-                };
-                console.log('Отправляется запрос в OpenRouter API:', JSON.stringify(requestBody, null, 2));
-
-                const response = await fetch(OPENROUTER_API_URL, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
-                        "HTTP-Referer": "https://antareti.github.io/hackhub/",
-                        "X-Title": "HackHub Gallery"
-                    },
-                    body: JSON.stringify(requestBody)
-                });
-
-                if (!response.ok) {
-                    let errorData;
-                    try {
-                        errorData = await response.json();
-                        console.error('Ошибка OpenRouter API (JSON):', errorData);
-                    } catch (jsonError) {
-                        errorData = { message: await response.text() };
-                        console.error('Ошибка OpenRouter API (текст):', errorData.message);
-                    }
-                    const errorMessage = errorData.message || 'Неизвестная ошибка API.';
-                    throw new Error(`Ошибка OpenRouter API: ${response.status} ${response.statusText}. Детали: ${errorMessage}`);
-                }
-
-                const data = await response.json();
-                console.log('Ответ от OpenRouter API:', data);
-
-                if (data && data.choices && data.choices.length > 0 && data.choices[0].message && data.choices[0].message.content) {
-                    const aiResponseContent = data.choices[0].message.content;
-                    loadingMessage.textContent = aiResponseContent;
-                    loadingMessage.classList.remove('loading');
-                    chatHistory.push({ role: 'assistant', content: aiResponseContent });
-                    speakText(aiResponseContent); // Make the AI speak the response
-                } else {
-                    console.error('Некорректный или пустой ответ от OpenRouter API:', data);
-                    throw new Error('Некорректный или пустой ответ от OpenRouter API.');
-                }
-
-            } catch (error) {
-                console.error('Критическая ошибка при отправке сообщения в OpenRouter API:', error);
-                loadingMessage.textContent = `Произошла ошибка: ${error.message}. Пожалуйста, попробуйте еще раз.`;
-                loadingMessage.classList.remove('loading');
-                loadingMessage.classList.add('error');
-            } finally {
-                isSendingMessage = false;
-                nod32Bot.classList.remove('talking'); // Stop talking animation
-            }
-        }
-
-        // --- Online Users Counter Logic ---
-        const onlineUsersCountElement = document.getElementById('online-users-count');
-
-        function updateOnlineUsersCount() {
-            // Генерируем случайное число пользователей от 100 до 1000
-            const randomCount = Math.floor(Math.random() * (1000 - 100 + 1)) + 100;
-            onlineUsersCountElement.textContent = randomCount;
-        }
-
-        // Вызываем функцию при загрузке страницы
-        updateOnlineUsersCount();
-
-        // Обновляем счетчик каждые 10 секунд
-        setInterval(updateOnlineUsersCount, 10000); // 10000 миллисекунд = 10 секунд
-
-    </script>
-</body>
-</html>
+ <html lang="ru">
+ <head>
+     <meta charset="UTF-8" />
+     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+     <title>HackHub Gallery</title>
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+     <style>
+         @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Roboto:wght@400;700&display=swap');
+ 
+         :root {
+             --primary-color: #ff6600;
+             --secondary-color: #121212;
+             --light-text-color: #eee;
+             --dark-text-color: #121212;
+             --card-bg: #1e1e1e;
+             --header-bg: linear-gradient(90deg, #000000, #1a1a1a, #000000);
+         }
+ 
+         body {
+             margin: 0;
+             background-color: var(--secondary-color);
+             color: var(--light-text-color);
+             font-family: 'Roboto', Arial, sans-serif; /* Изменен основной шрифт */
+             overflow-x: hidden;
+             line-height: 1.6;
+         }
+ 
+         h1, h2, h3, h4, h5, h6 {
+             font-family: 'Montserrat', sans-serif;
+             color: var(--primary-color);
+         }
+ 
+         /* Disclaimer and background effects */
+         #disclaimer {
+             position: fixed;
+             z-index: 10000;
+             top: 0;
+             left: 0;
+             width: 100%;
+             height: 100%;
+             background: #000;
+             display: flex;
+             align-items: center;
+             justify-content: center;
+             transition: opacity 1s ease;
+         }
+         #disclaimer img {
+             max-width: 90%;
+             max-height: 90%;
+             border-radius: 20px;
+             box-shadow: 0 0 40px var(--primary-color);
+         }
+         #disclaimer.fade-out {
+             opacity: 0;
+             pointer-events: none;
+         }
+ 
+         .smoke-video {
+             position: fixed;
+             top: 0;
+             left: 0;
+             width: 100%;
+             height: 100%;
+             object-fit: cover;
+             opacity: 0.2; /* Уменьшена прозрачность */
+             z-index: -1;
+         }
+ 
+         .spotlight {
+             position: fixed;
+             top: -20%;
+             width: 60vw;
+             height: 160vh;
+             background: radial-gradient(ellipse at center, rgba(255,255,255,0.08) 0%, transparent 70%); /* Немного приглушенный эффект */
+             pointer-events: none;
+             mix-blend-mode: screen;
+             z-index: 0;
+             transform-origin: center;
+             animation: spin 25s linear infinite; /* Немного медленнее */
+         }
+         .spotlight.left {
+             left: -20vw;
+         }
+         .spotlight.right {
+             right: -20vw;
+             animation-direction: reverse;
+         }
+ 
+         @keyframes spin {
+             0% { transform: rotate(0deg) translateX(0); }
+             100% { transform: rotate(360deg) translateX(0); }
+         }
+ 
+         #cursor-light {
+             position: fixed;
+             top: 0;
+             left: 0;
+             width: 180px; /* Больше радиус */
+             height: 180px; /* Больше радиус */
+             pointer-events: none;
+             border-radius: 50%;
+             background: radial-gradient(circle, rgba(255,102,0,0.5) 0%, rgba(255,102,0,0) 60%); /* Ярче цвет */
+             filter: blur(40px); /* Сильнее размытие */
+             transform: translate(-50%, -50%);
+             z-index: 9999;
+             will-change: transform;
+         }
+ 
+         /* Header */
+         header {
+             background: var(--header-bg);
+             padding: 20px 30px;
+             display: flex;
+             align-items: center;
+             justify-content: space-between;
+             box-shadow: 0 0 25px rgba(255, 102, 0, 0.7); /* Более выраженная тень */
+             position: sticky;
+             top: 0;
+             z-index: 100;
+             flex-wrap: wrap; /* Для адаптивности */
+             gap: 15px; /* Промежуток между элементами */
+         }
+         .logo {
+             font-family: 'Montserrat', sans-serif;
+             font-size: 44px; /* Больше размер */
+             font-weight: 900;
+             color: #fff;
+             cursor: default;
+             text-shadow: 0 0 10px var(--primary-color);
+         }
+         .logo span {
+             background-color: var(--primary-color);
+             padding: 0 12px; /* Увеличен паддинг */
+             color: var(--dark-text-color);
+             border-radius: 8px; /* Больший радиус */
+             box-shadow: 0 0 12px var(--primary-color);
+         }
+         .search input {
+             padding: 12px 20px; /* Увеличен паддинг */
+             width: 350px; /* Увеличена ширина */
+             border-radius: 30px;
+             border: 2px solid var(--primary-color);
+             background-color: #222;
+             color: var(--light-text-color);
+             font-size: 18px; /* Увеличен размер шрифта */
+             transition: all 0.3s ease;
+         }
+         .search input:focus {
+             box-shadow: 0 0 15px var(--primary-color);
+             border-color: #ff8800;
+             outline: none;
+         }
+         .logout-btn {
+             background: none;
+             border: 2px solid var(--primary-color);
+             color: var(--primary-color);
+             padding: 10px 22px; /* Увеличен паддинг */
+             border-radius: 25px; /* Больший радиус */
+             font-weight: bold;
+             cursor: pointer;
+             transition: 0.3s ease;
+             font-size: 16px;
+         }
+         .logout-btn:hover {
+             background-color: var(--primary-color);
+             color: var(--dark-text-color);
+             box-shadow: 0 0 15px var(--primary-color);
+         }
+ 
+         /* Online Users Counter */
+         .online-users-container {
+             display: flex;
+             align-items: center;
+             gap: 10px;
+             background-color: #2a2a2a;
+             padding: 8px 15px;
+             border-radius: 20px;
+             font-size: 16px;
+             color: var(--light-text-color);
+             border: 1px solid #444;
+             box-shadow: 0 0 10px rgba(0,0,0,0.3);
+             white-space: nowrap;
+         }
+ 
+         .online-users-icon {
+             color: var(--primary-color);
+             font-size: 20px;
+             animation: pulse-online 2s infinite;
+         }
+ 
+         @keyframes pulse-online {
+             0% { transform: scale(1); opacity: 1; }
+             50% { transform: scale(1.1); opacity: 0.8; }
+             100% { transform: scale(1); opacity: 1; }
+         }
+ 
+         /* Categories Navigation */
+         .categories {
+             background-color: #1a1a1a;
+             padding: 15px 30px; /* Увеличен паддинг */
+             box-shadow: inset 0 -2px 0 #333;
+         }
+         .categories ul {
+             list-style: none;
+             display: flex;
+             flex-wrap: nowrap;
+             overflow-x: auto;
+             gap: 20px; /* Увеличен промежуток */
+             margin: 0;
+             padding: 0;
+             -webkit-overflow-scrolling: touch;
+             scrollbar-width: thin; /* Для Firefox */
+             scrollbar-color: var(--primary-color) #333; /* Для Firefox */
+         }
+         .categories ul::-webkit-scrollbar {
+             height: 8px;
+         }
+         .categories ul::-webkit-scrollbar-thumb {
+             background-color: var(--primary-color);
+             border-radius: 10px;
+         }
+         .categories ul::-webkit-scrollbar-track {
+             background-color: #333;
+         }
+         .categories li a {
+             color: var(--primary-color);
+             font-weight: bold;
+             text-decoration: none;
+             font-size: 16px; /* Увеличен размер шрифта */
+             padding: 8px 15px; /* Увеличен паддинг */
+             border-radius: 25px; /* Больший радиус */
+             transition: background 0.2s, color 0.2s, transform 0.2s;
+             white-space: nowrap;
+         }
+         .categories li a:hover,
+         .categories li a.active {
+             background-color: var(--primary-color);
+             color: var(--dark-text-color);
+             transform: translateY(-2px);
+             box-shadow: 0 4px 10px rgba(255, 102, 0, 0.4);
+         }
+ 
+         .categories li a.premium {
+             color: gold;
+             font-weight: 900;
+             animation: blink 1.4s infinite;
+             text-shadow: 0 0 8px gold;
+         }
+ 
+         @keyframes blink {
+             0%, 100% { opacity: 1; }
+             50% { opacity: 0.4; }
+         }
+ 
+         /* Gallery */
+         .gallery {
+             display: grid;
+             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Чуть больше минимальный размер */
+             gap: 22px; /* Увеличен промежуток */
+             padding: 30px 35px; /* Увеличен паддинг */
+             max-width: 1300px; /* Увеличена максимальная ширина */
+             margin: 0 auto;
+         }
+ 
+         .card {
+             background-color: var(--card-bg);
+             border-radius: 15px; /* Больший радиус */
+             box-shadow: 0 0 15px rgba(255, 102, 0, 0.3); /* Более мягкая тень */
+             overflow: hidden;
+             cursor: pointer;
+             transition: all 0.3s ease;
+             display: flex; /* Для лучшего контроля содержимым */
+             flex-direction: column;
+         }
+         .card:hover {
+             transform: translateY(-5px) scale(1.02); /* Эффект при наведении */
+             box-shadow: 0 5px 25px var(--primary-color), 0 0 40px #ff9900;
+         }
+         .card img {
+             width: 100%;
+             height: 200px; /* Фиксированная высота изображений */
+             object-fit: cover; /* Обрезать изображение, чтобы оно поместилось */
+             display: block;
+             border-bottom: 1px solid #333;
+         }
+         .card h3 {
+             font-size: 18px; /* Увеличен размер шрифта */
+             font-weight: 700;
+             margin: 15px 18px 8px; /* Увеличен паддинг */
+             color: var(--primary-color);
+             text-overflow: ellipsis; /* Добавлено многоточие для длинных названий */
+             white-space: nowrap;
+             overflow: hidden;
+         }
+         .card .actions {
+             display: flex;
+             justify-content: space-between;
+             align-items: center;
+             padding: 0 18px 15px; /* Увеличен паддинг */
+             margin-top: auto; /* Прижимает действия к низу карточки */
+         }
+         .card .btn {
+             background-color: transparent;
+             border: none;
+             color: var(--primary-color);
+             cursor: pointer;
+             font-size: 15px;
+             padding: 5px 0;
+             transition: color 0.2s, text-decoration 0.2s;
+         }
+         .card .btn:hover {
+             color: #ff9900;
+             text-decoration: underline;
+         }
+         .like-section {
+             display: flex;
+             align-items: center;
+             gap: 8px; /* Увеличен промежуток */
+         }
+         .like-btn {
+             font-size: 20px; /* Иконка лайка больше */
+             color: #ccc; /* Изначальный цвет */
+             transition: color 0.2s;
+         }
+         .like-btn.liked {
+             color: red; /* Цвет при лайке */
+             filter: drop-shadow(0 0 5px red);
+         }
+         .like-count {
+             font-size: 15px;
+             color: var(--light-text-color);
+         }
+         .woman-emoji {
+             font-size: 1.3em; /* Размер смайлика */
+             margin-left: 8px; /* Отступ от других элементов */
+             vertical-align: middle;
+             filter: drop-shadow(0 0 5px #ff6600); /* Небольшая тень */
+         }
+ 
+         /* Modal */
+         .modal {
+             display: none;
+             position: fixed;
+             z-index: 9999;
+             left: 0;
+             top: 0;
+             width: 100vw;
+             height: 100vh;
+             background-color: rgba(18, 18, 18, 0.98); /* Более темный фон */
+             opacity: 0;
+             pointer-events: none;
+             overflow: hidden;
+             transition: opacity 0.3s ease-out;
+         }
+ 
+         .modal.open {
+             display: block;
+             opacity: 1;
+             pointer-events: auto;
+         }
+ 
+         .modal-content-wrapper {
+             position: absolute;
+             top: 0;
+             left: 0;
+             width: 100%;
+             height: 100%;
+             display: flex;
+             justify-content: center;
+             align-items: center;
+             overflow: hidden;
+         }
+ 
+         .modal-content {
+             border-radius: 18px; /* Больший радиус */
+             box-shadow: 0 0 40px var(--primary-color); /* Более сильная тень */
+             transform-origin: top left;
+             position: absolute;
+             object-fit: contain;
+             will-change: transform, width, height, top, left;
+         }
+ 
+         .close {
+             position: absolute;
+             top: 25px; /* Чуть ниже */
+             right: 45px; /* Чуть левее */
+             color: var(--primary-color);
+             font-size: 48px; /* Больше размер */
+             font-weight: 900;
+             cursor: pointer;
+             z-index: 10;
+             opacity: 0;
+             transition: opacity 0.2s ease-in 0.3s, transform 0.2s ease;
+             text-shadow: 0 0 10px var(--primary-color);
+         }
+         .close:hover {
+             color: #ff9900;
+             transform: scale(1.1);
+         }
+ 
+         .modal.open .close {
+             opacity: 1;
+         }
+ 
+         /* Chat Styles */
+         #chat-toggle-btn {
+             position: fixed;
+             bottom: 30px;
+             right: 30px;
+             background-color: var(--primary-color);
+             color: var(--dark-text-color);
+             border: none;
+             border-radius: 50%;
+             width: 65px; /* Больше размер */
+             height: 65px; /* Больше размер */
+             font-size: 30px; /* Больше иконка */
+             display: flex;
+             align-items: center;
+             justify-content: center;
+             cursor: pointer;
+             box-shadow: 0 0 25px rgba(255, 102, 0, 0.8);
+             transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+             z-index: 1000;
+         }
+ 
+         #chat-toggle-btn:hover {
+             transform: scale(1.15) rotate(5deg); /* Добавлена небольшая ротация */
+             background-color: #e65c00;
+             box-shadow: 0 0 35px rgba(255, 102, 0, 0.9);
+         }
+ 
+         /* Nod32 Bot Styles */
+         .nod32-bot {
+             position: fixed;
+             bottom: 110px; /* Над кнопкой чата */
+             right: 40px; /* Правее от чата, чтобы не перекрывать кнопку чата когда чат закрыт */
+             display: flex;
+             flex-direction: column;
+             align-items: center;
+             cursor: pointer;
+             z-index: 998; /* Чуть ниже кнопки чата, но выше контента */
+             opacity: 0; /* Изначально скрыт */
+             transform: translateY(20px); /* Изначальное смещение для анимации */
+             transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+         }
+ 
+         .nod32-bot.show {
+             opacity: 1;
+             transform: translateY(0);
+         }
+ 
+         .nod32-bot img {
+             width: 70px; /* Размер "говорящего" изображения */
+             height: 70px;
+             border-radius: 50%; /* Круглая форма */
+             object-fit: cover;
+             border: 3px solid var(--primary-color);
+             box-shadow: 0 0 15px var(--primary-color), 0 0 30px rgba(255,102,0,0.6); /* Оранжевое свечение */
+             transition: transform 0.3s ease, box-shadow 0.3s ease;
+             animation: pulse-online 2s infinite; /* Эффект "дыхания" */
+         }
+ 
+         .nod32-bot:hover img {
+             transform: scale(1.08);
+             box-shadow: 0 0 20px var(--primary-color), 0 0 40px rgba(255,102,0,0.8);
+         }
+ 
+         /* New animation for "talking" */
+         @keyframes talking {
+             0% { transform: scale(1); }
+             50% { transform: scale(1.05); }
+             100% { transform: scale(1); }
+         }
+ 
+         .nod32-bot.talking img {
+             animation: talking 0.6s infinite alternate, pulse-online 2s infinite; /* Combine talking and pulse */
+         }
+ 
+         .nod32-bot span {
+             margin-top: 5px;
+             font-size: 14px;
+             font-weight: bold;
+             color: var(--light-text-color);
+             text-shadow: 0 0 5px rgba(0,0,0,0.5);
+         }
+ 
+         #chat-container {
+             position: fixed;
+             bottom: 110px; /* Отступ от кнопки */
+             right: 30px;
+             width: 380px; /* Шире контейнер */
+             height: 500px; /* Выше контейнер */
+             background-color: #1a1a1a;
+             border-radius: 15px; /* Больший радиус */
+             box-shadow: 0 0 35px rgba(255, 102, 0, 0.8);
+             display: flex;
+             flex-direction: column;
+             overflow: hidden;
+             transform: translateY(30px) scale(0.85); /* Чуть больше начальное смещение и меньше размер */
+             opacity: 0;
+             visibility: hidden;
+             transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55), opacity 0.3s ease, visibility 0.3s ease; /* Добавлена более интересная кривая анимации */
+             z-index: 999;
+         }
+ 
+         #chat-container.open {
+             transform: translateY(0) scale(1);
+             opacity: 1;
+             visibility: visible;
+         }
+ 
+         #chat-header {
+             background-color: var(--primary-color);
+             color: var(--dark-text-color);
+             padding: 18px; /* Увеличен паддинг */
+             font-weight: bold;
+             font-size: 20px; /* Больше размер шрифта */
+             border-top-left-radius: 15px;
+             border-top-right-radius: 15px;
+             display: flex;
+             justify-content: space-between;
+             align-items: center;
+             text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+         }
+ 
+         #chat-close-btn {
+             background: none;
+             border: none;
+             color: var(--dark-text-color);
+             font-size: 28px; /* Больше размер */
+             cursor: pointer;
+             transition: color 0.2s ease, transform 0.2s ease;
+         }
+ 
+         #chat-close-btn:hover {
+             color: #333;
+             transform: rotate(90deg);
+         }
+ 
+         #chat-messages {
+             flex-grow: 1;
+             padding: 15px;
+             overflow-y: auto;
+             display: flex;
+             flex-direction: column;
+             gap: 12px; /* Увеличен промежуток */
+             background-color: #1f1f1f;
+             scrollbar-width: thin;
+             scrollbar-color: var(--primary-color) #2a2a2a;
+         }
+         #chat-messages::-webkit-scrollbar {
+             width: 8px;
+         }
+         #chat-messages::-webkit-scrollbar-thumb {
+             background-color: var(--primary-color);
+             border-radius: 10px;
+         }
+         #chat-messages::-webkit-scrollbar-track {
+             background-color: #2a2a2a;
+         }
+ 
+         .message {
+             padding: 12px 18px; /* Увеличен паддинг */
+             border-radius: 18px; /* Больший радиус */
+             max-width: 85%; /* Чуть больше ширина */
+             word-wrap: break-word;
+             font-size: 15px; /* Чуть больше размер шрифта */
+             box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+         }
+ 
+         .message.user {
+             align-self: flex-end;
+             background-color: var(--primary-color);
+             color: var(--dark-text-color);
+             border-bottom-right-radius: 8px; /* Более округлый угол */
+         }
+ 
+         .message.ai {
+             align-self: flex-start;
+             background-color: #333;
+             color: var(--light-text-color);
+             border-bottom-left-radius: 8px; /* Более округлый угол */
+         }
+ 
+         .message.loading {
+             align-self: flex-start;
+             background-color: #333;
+             color: #eee;
+             border-bottom-left-radius: 8px;
+             font-style: italic;
+             opacity: 0.8;
+             animation: pulse 1.5s infinite ease-in-out;
+         }
+         @keyframes pulse {
+             0% { opacity: 0.8; }
+             50% { opacity: 0.5; }
+             100% { opacity: 0.8; }
+         }
+ 
+         #chat-input-container {
+             display: flex;
+             padding: 15px;
+             border-top: 1px solid #333;
+             background-color: #1a1a1a;
+         }
+ 
+         #chat-input {
+             flex-grow: 1;
+             padding: 12px 18px; /* Увеличен паддинг */
+             border-radius: 25px; /* Более округлый */
+             border: 2px solid var(--primary-color);
+             background-color: #2a2a2a;
+             color: var(--light-text-color);
+             font-size: 16px; /* Больше размер шрифта */
+             outline: none;
+             margin-right: 12px;
+             transition: all 0.3s ease;
+         }
+         #chat-input:focus {
+             box-shadow: 0 0 10px var(--primary-color);
+             border-color: #ff8800;
+         }
+ 
+         #chat-send-btn {
+             background-color: var(--primary-color);
+             color: var(--dark-text-color);
+             border: none;
+             border-radius: 25px; /* Более округлый */
+             padding: 12px 20px; /* Увеличен паддинг */
+             font-size: 18px; /* Больше иконка */
+             cursor: pointer;
+             transition: background-color 0.2s ease, transform 0.2s ease;
+         }
+ 
+         #chat-send-btn:hover {
+             background-color: #e65c00;
+             transform: scale(1.05);
+         }
+ 
+         /* New Sections Styles */
+         .section-title {
+             text-align: center;
+             font-size: 3em; /* Крупнее заголовок */
+             margin: 40px 0 20px;
+             color: #fff; /* Белый цвет */
+             text-shadow: 0 0 15px var(--primary-color); /* Тень оранжевого цвета */
+         }
+         .section-description {
+             text-align: center;
+             font-size: 1.1em;
+             color: #aaa;
+             max-width: 800px;
+             margin: 0 auto 40px;
+         }
+ 
+         /* Popular Section (example, could reuse .gallery) */
+         .popular-gallery {
+             display: grid;
+             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+             gap: 22px;
+             padding: 30px 35px;
+             max-width: 1300px;
+             margin: 0 auto;
+         }
+ 
+         /* Reviews Section */
+         .reviews-section {
+             padding: 50px 30px;
+             background-color: #1a1a1a;
+             margin-top: 50px;
+             box-shadow: inset 0 5px 15px rgba(0,0,0,0.5);
+             text-align: center;
+         }
+         .review-card-container {
+             display: flex;
+             flex-wrap: wrap;
+             justify-content: center;
+             gap: 25px;
+             max-width: 1200px;
+             margin: 30px auto 0;
+         }
+         .review-card {
+             background-color: #222;
+             border-radius: 12px;
+             padding: 25px;
+             box-shadow: 0 0 15px rgba(255, 102, 0, 0.2);
+             width: calc(33% - 25px); /* Три карточки в ряд */
+             min-width: 280px; /* Минимальная ширина */
+             box-sizing: border-box;
+             transition: transform 0.3s ease, box-shadow 0.3s ease;
+         }
+         .review-card:hover {
+             transform: translateY(-8px);
+             box-shadow: 0 8px 25px rgba(255, 102, 0, 0.5);
+         }
+         .review-card p {
+             font-size: 1.05em;
+             color: #ccc;
+             margin-bottom: 15px;
+             font-style: italic;
+         }
+         .review-card .author {
+             font-weight: bold;
+             color: var(--primary-color);
+             font-size: 1.1em;
+         }
+         .review-card .rating {
+             color: gold;
+             font-size: 1.2em;
+             margin-top: 10px;
+         }
+ 
+         /* Footer */
+         footer {
+             background: var(--header-bg);
+             color: var(--light-text-color);
+             padding: 40px 30px;
+             text-align: center;
+             box-shadow: 0 0 25px rgba(255, 102, 0, 0.7);
+             margin-top: 50px;
+             display: flex;
+             flex-wrap: wrap;
+             justify-content: space-around;
+             align-items: flex-start;
+             gap: 30px;
+         }
+         .footer-column {
+             flex: 1;
+             min-width: 200px;
+             text-align: left;
+         }
+         .footer-column h4 {
+             color: var(--primary-color);
+             font-size: 1.4em;
+             margin-bottom: 20px;
+             border-bottom: 2px solid #333;
+             padding-bottom: 10px;
+         }
+         .footer-column ul {
+             list-style: none;
+             padding: 0;
+             margin: 0;
+         }
+         .footer-column ul li {
+             margin-bottom: 10px;
+         }
+         .footer-column ul li a {
+             color: #ccc;
+             text-decoration: none;
+             transition: color 0.2s ease;
+         }
+         .footer-column ul li a:hover {
+             color: var(--primary-color);
+         }
+         .social-icons {
+             margin-top: 20px;
+         }
+         .social-icons a {
+             color: var(--primary-color);
+             font-size: 2em;
+             margin: 0 15px;
+             transition: transform 0.2s ease, color 0.2s ease;
+         }
+         .social-icons a:hover {
+             color: #ff9900;
+             transform: scale(1.2);
+         }
+         .footer-bottom-text {
+             width: 100%;
+             margin-top: 40px;
