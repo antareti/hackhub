@@ -705,6 +705,7 @@
             font-weight: bold;
             color: var(--primary-color);
             font-size: 1.1em;
+            margin-top: 10px;
         }
         .review-card .rating {
             color: gold;
@@ -725,6 +726,8 @@
             justify-content: space-around;
             align-items: flex-start;
             gap: 30px;
+            position: relative; /* Для позиционирования элемента автора */
+            padding-bottom: 100px; /* Дополнительный отступ для блока автора */
         }
         .footer-column {
             flex: 1;
@@ -776,6 +779,49 @@
             padding-top: 20px;
         }
 
+        /* Styles for the new author image */
+        .site-author-info {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            padding: 10px 20px;
+            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent); /* Градиентный фон */
+            border-top-left-radius: 15px;
+            border-top-right-radius: 15px;
+            box-shadow: 0 -5px 20px rgba(255, 102, 0, 0.4);
+            z-index: 50; /* Чтобы быть над другими элементами подвала, но под основным контентом */
+        }
+
+        .site-author-info img {
+            width: 80px; /* Размер изображения автора */
+            height: 80px;
+            border-radius: 50%; /* Круглое изображение */
+            border: 3px solid var(--primary-color);
+            box-shadow: 0 0 15px rgba(255, 102, 0, 0.7);
+            object-fit: cover;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .site-author-info img:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 25px var(--primary-color), 0 0 40px #ff9900;
+        }
+
+        .site-author-info p {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9em;
+            font-weight: bold;
+            color: var(--primary-color); /* Цвет текста как основной цвет */
+            margin: 0;
+            text-shadow: 0 0 8px rgba(0,0,0,0.8);
+            white-space: nowrap;
+        }
+
 
         /* Адаптивность */
         @media (max-width: 1024px) {
@@ -791,6 +837,15 @@
             }
             .footer-column {
                 flex-basis: 45%;
+            }
+            .site-author-info {
+                bottom: 0; /* Остается на дне */
+                width: auto; /* Автоматическая ширина */
+                padding: 8px 15px;
+            }
+            .site-author-info img {
+                width: 70px;
+                height: 70px;
             }
         }
 
@@ -906,6 +961,9 @@
                 font-size: 1.8em;
                 margin: 0 10px;
             }
+            .site-author-info {
+                padding-top: 10px; /* Уменьшаем отступ для маленьких экранов */
+            }
         }
 
         @media (max-width: 480px) {
@@ -985,6 +1043,13 @@
             }
             .review-card p {
                 font-size: 0.95em;
+            }
+            .site-author-info img {
+                width: 60px;
+                height: 60px;
+            }
+            .site-author-info p {
+                font-size: 0.8em;
             }
         }
     </style>
@@ -1129,6 +1194,10 @@
         </div>
         <div class="footer-bottom-text">
             &copy; 2025 HackHub. Все права защищены. <br> Создано с ❤️ для сообщества.
+        </div>
+        <div class="site-author-info">
+            <img src="6f022367-d0b5-4b17-9f28-ab5241bd277f.jpg" alt="Автор сайта">
+            <p>Автор сайта Fran.hesky De Mansera</p>
         </div>
     </footer>
 
