@@ -466,6 +466,17 @@
             box-shadow: 0 0 20px var(--primary-color), 0 0 40px rgba(255,102,0,0.8);
         }
 
+        /* New animation for "talking" */
+        @keyframes talking {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .nod32-bot.talking img {
+            animation: talking 0.6s infinite alternate, pulse-online 2s infinite; /* Combine talking and pulse */
+        }
+
         .nod32-bot span {
             margin-top: 5px;
             font-size: 14px;
@@ -1068,7 +1079,8 @@
     </div>
 
     <div class="nod32-bot" id="nod32-bot">
-        <img src="path/to/nod32_robot_image.png" alt="Nod32 Robot"> <span>Nod32</span>
+        <img src="image_0a257b.jpg" alt="AI Ассистент"> 
+        <span>Ассистент</span>
     </div>
 
     <button id="chat-toggle-btn"><i class="fas fa-comment-dots"></i></button>
@@ -1125,7 +1137,7 @@
             disclaimer.classList.add("fade-out");
             setTimeout(() => {
                 disclaimer.remove();
-                document.getElementById('nod32-bot').classList.add('show'); // Показать Nod32 после исчезновения дисклеймера
+                document.getElementById('nod32-bot').classList.add('show'); // Показать "Ассистента" после исчезновения дисклеймера
             }, 1000);
         };
 
@@ -1338,7 +1350,8 @@
         const chatMessages = document.getElementById('chat-messages');
         const chatInput = document.getElementById('chat-input');
         const chatSendBtn = document.getElementById('chat-send-btn');
-        const nod32Bot = document.getElementById('nod32-bot'); // Получаем элемент Nod32 бота
+        const nod32Bot = document.getElementById('nod32-bot'); // Получаем элемент "Ассистента"
+        const nod32BotImg = nod32Bot.querySelector('img');
 
         const OPENROUTER_API_KEY = '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';
         const OPENROUTER_API_URL = 'https://openrouter.ai/api/v1/chat/completions';
@@ -1346,16 +1359,57 @@
         let chatHistory = [{ role: 'system', content: 'You are a helpful and friendly AI assistant for HackHub Gallery. Provide concise, encouraging, and enthusiastic answers. You can also give recommendations for categories or features. Your responses should be in Russian. Try to sound energetic and positive!' }];
         let isSendingMessage = false;
 
+        // Speech synthesis setup
+        const synth = window.speechSynthesis;
+        let russianVoice = null;
+
+        function setRussianVoice() {
+            const voices = synth.getVoices();
+            russianVoice = voices.find(voice => voice.lang === 'ru-RU' || voice.name.includes('Russian'));
+            if (!russianVoice) {
+                console.warn('Russian voice not found. Falling back to default.');
+            }
+        }
+
+        // Load voices after they are available
+        if (synth.onvoiceschanged !== undefined) {
+            synth.onvoiceschanged = setRussianVoice;
+        } else {
+            setRussianVoice(); // Try to set immediately if event not supported (might be empty)
+        }
+        
+        function speakText(text) {
+            if (synth.speaking) {
+                synth.cancel(); // Stop current speech if any
+            }
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'ru-RU';
+            if (russianVoice) {
+                utterance.voice = russianVoice;
+            }
+            utterance.pitch = 1.0; // Standard pitch
+            utterance.rate = 1.0;  // Standard rate
+            synth.speak(utterance);
+        }
+
+
         chatToggleBtn.addEventListener('click', () => {
             chatContainer.classList.toggle('open');
             if (chatContainer.classList.contains('open')) {
                 chatInput.focus();
                 chatMessages.scrollTop = chatMessages.scrollHeight;
+                // Speak initial greeting if chat is just opened and no history yet (or only system message)
+                if (chatHistory.length === 1 && chatHistory[0].role === 'system') {
+                    speakText('Привет! Я AI ассистент. Чем могу помочь?');
+                }
+            } else {
+                synth.cancel(); // Stop speaking if chat is closed
             }
         });
 
         chatCloseBtn.addEventListener('click', () => {
             chatContainer.classList.remove('open');
+            synth.cancel(); // Stop speaking if chat is closed
         });
 
         // Event listener for Nod32 bot to open chat
@@ -1363,6 +1417,10 @@
             chatContainer.classList.add('open');
             chatInput.focus();
             chatMessages.scrollTop = chatMessages.scrollHeight;
+            // Speak initial greeting if chat is just opened and no history yet (or only system message)
+            if (chatHistory.length === 1 && chatHistory[0].role === 'system') {
+                speakText('Привет! Я AI ассистент. Чем могу помочь?');
+            }
         });
 
         chatSendBtn.addEventListener('click', sendMessage);
@@ -1379,6 +1437,9 @@
             messageDiv.textContent = text;
             if (isLoading) {
                 messageDiv.classList.add('loading');
+                nod32Bot.classList.add('talking'); // Start talking animation
+            } else {
+                nod32Bot.classList.remove('talking'); // Stop talking animation
             }
             chatMessages.appendChild(messageDiv);
             chatMessages.scrollTop = chatMessages.scrollHeight;
@@ -1437,6 +1498,7 @@
                     loadingMessage.textContent = aiResponseContent;
                     loadingMessage.classList.remove('loading');
                     chatHistory.push({ role: 'assistant', content: aiResponseContent });
+                    speakText(aiResponseContent); // Make the AI speak the response
                 } else {
                     console.error('Некорректный или пустой ответ от OpenRouter API:', data);
                     throw new Error('Некорректный или пустой ответ от OpenRouter API.');
@@ -1449,6 +1511,7 @@
                 loadingMessage.classList.add('error');
             } finally {
                 isSendingMessage = false;
+                nod32Bot.classList.remove('talking'); // Stop talking animation
             }
         }
 
