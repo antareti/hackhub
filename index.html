@@ -430,6 +430,50 @@
             box-shadow: 0 0 35px rgba(255, 102, 0, 0.9);
         }
 
+        /* Nod32 Bot Styles */
+        .nod32-bot {
+            position: fixed;
+            bottom: 110px; /* Над кнопкой чата */
+            right: 40px; /* Правее от чата, чтобы не перекрывать кнопку чата когда чат закрыт */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            z-index: 998; /* Чуть ниже кнопки чата, но выше контента */
+            opacity: 0; /* Изначально скрыт */
+            transform: translateY(20px); /* Изначальное смещение для анимации */
+            transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+        }
+
+        .nod32-bot.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .nod32-bot img {
+            width: 70px; /* Размер робота */
+            height: 70px;
+            border-radius: 50%; /* Круглая форма */
+            object-fit: cover;
+            border: 3px solid var(--primary-color);
+            box-shadow: 0 0 15px var(--primary-color), 0 0 30px rgba(255,102,0,0.6); /* Оранжевое свечение */
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            animation: pulse-online 2s infinite; /* Эффект "дыхания" */
+        }
+
+        .nod32-bot:hover img {
+            transform: scale(1.08);
+            box-shadow: 0 0 20px var(--primary-color), 0 0 40px rgba(255,102,0,0.8);
+        }
+
+        .nod32-bot span {
+            margin-top: 5px;
+            font-size: 14px;
+            font-weight: bold;
+            color: var(--light-text-color);
+            text-shadow: 0 0 5px rgba(0,0,0,0.5);
+        }
+
         #chat-container {
             position: fixed;
             bottom: 110px; /* Отступ от кнопки */
@@ -794,6 +838,27 @@
                 height: 55px;
                 font-size: 24px;
             }
+            /* Adjust Nod32 bot for smaller screens */
+            .nod32-bot {
+                bottom: 90px; /* Над кнопкой чата на мобильных */
+                right: 90px; /* Сместить влево, чтобы не конфликтовать с кнопкой чата */
+                flex-direction: row;
+                gap: 5px;
+                background-color: rgba(30, 30, 30, 0.8);
+                padding: 8px 12px;
+                border-radius: 25px;
+                box-shadow: 0 0 10px rgba(255,102,0,0.5);
+            }
+            .nod32-bot img {
+                width: 50px;
+                height: 50px;
+                border-width: 2px;
+                box-shadow: none;
+            }
+            .nod32-bot span {
+                font-size: 12px;
+                margin-top: 0;
+            }
             .close {
                 top: 15px;
                 right: 25px;
@@ -876,6 +941,10 @@
                 width: 50px;
                 height: 50px;
                 font-size: 22px;
+            }
+            .nod32-bot {
+                bottom: 80px; /* Над кнопкой чата на самых маленьких экранах */
+                right: 80px;
             }
             #chat-header {
                 font-size: 16px;
@@ -998,6 +1067,10 @@
         </div>
     </div>
 
+    <div class="nod32-bot" id="nod32-bot">
+        <img src="path/to/nod32_robot_image.png" alt="Nod32 Robot"> <span>Nod32</span>
+    </div>
+
     <button id="chat-toggle-btn"><i class="fas fa-comment-dots"></i></button>
 
     <div id="chat-container">
@@ -1050,7 +1123,10 @@
         window.onload = () => {
             const disclaimer = document.getElementById("disclaimer");
             disclaimer.classList.add("fade-out");
-            setTimeout(() => disclaimer.remove(), 1000);
+            setTimeout(() => {
+                disclaimer.remove();
+                document.getElementById('nod32-bot').classList.add('show'); // Показать Nod32 после исчезновения дисклеймера
+            }, 1000);
         };
 
         const repoOwner = "antareti";
@@ -1262,6 +1338,7 @@
         const chatMessages = document.getElementById('chat-messages');
         const chatInput = document.getElementById('chat-input');
         const chatSendBtn = document.getElementById('chat-send-btn');
+        const nod32Bot = document.getElementById('nod32-bot'); // Получаем элемент Nod32 бота
 
         const OPENROUTER_API_KEY = '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';
         const OPENROUTER_API_URL = 'https://openrouter.ai/api/v1/chat/completions';
@@ -1279,6 +1356,13 @@
 
         chatCloseBtn.addEventListener('click', () => {
             chatContainer.classList.remove('open');
+        });
+
+        // Event listener for Nod32 bot to open chat
+        nod32Bot.addEventListener('click', () => {
+            chatContainer.classList.add('open');
+            chatInput.focus();
+            chatMessages.scrollTop = chatMessages.scrollHeight;
         });
 
         chatSendBtn.addEventListener('click', sendMessage);
