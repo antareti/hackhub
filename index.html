@@ -665,54 +665,6 @@
             margin: 0 auto;
         }
 
-        /* Reviews Section */
-        .reviews-section {
-            padding: 50px 30px;
-            background-color: #1a1a1a;
-            margin-top: 50px;
-            box-shadow: inset 0 5px 15px rgba(0,0,0,0.5);
-            text-align: center;
-        }
-        .review-card-container {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 25px;
-            max-width: 1200px;
-            margin: 30px auto 0;
-        }
-        .review-card {
-            background-color: #222;
-            border-radius: 12px;
-            padding: 25px;
-            box-shadow: 0 0 15px rgba(255, 102, 0, 0.2);
-            width: calc(33% - 25px); /* Три карточки в ряд */
-            min-width: 280px; /* Минимальная ширина */
-            box-sizing: border-box;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        .review-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 8px 25px rgba(255, 102, 0, 0.5);
-        }
-        .review-card p {
-            font-size: 1.05em; /* ВОЗВРАЩЕНО К ИСХОДНОМУ РАЗМЕРУ */
-            color: #ccc;
-            margin-bottom: 15px;
-            font-style: italic;
-        }
-        .review-card .author {
-            font-weight: bold;
-            color: var(--primary-color);
-            font-size: 1.1em; /* ВОЗВРАЩЕНО К ИСХОДНОМУ РАЗМЕРУ */
-            margin-top: 10px;
-        }
-        .review-card .rating {
-            color: gold;
-            font-size: 1.2em; /* ВОЗВРАЩЕНО К ИСХОДНОМУ РАЗМЕРУ */
-            margin-top: 10px;
-        }
-
         /* New Reviews Submission Section */
         .submit-review-section {
             padding: 50px 30px;
@@ -924,8 +876,8 @@
             .search input {
                 width: 250px;
             }
-            .review-card {
-                width: calc(50% - 25px); /* Две карточки в ряд на средних экранах */
+            .review-card { /* This rule is now orphaned as .review-card is removed */
+                width: calc(50% - 25px);
             }
             .footer-column {
                 flex-basis: 45%;
@@ -1033,17 +985,17 @@
                 font-size: 1em;
                 margin-bottom: 30px;
             }
-            .review-card {
+            .review-card { /* This rule is now orphaned as .review-card is removed */
                 width: 90%; /* Одна карточка в ряд на мобильных */
                 margin: 0 auto;
             }
-            .review-card p {
+            .review-card p { /* This rule is now orphaned as .review-card is removed */
                 font-size: 1.05em; /* ВОЗВРАЩЕНО К ИСХОДНОМУ РАЗМЕРУ */
             }
-            .review-card .author {
+            .review-card .author { /* This rule is now orphaned as .review-card is removed */
                 font-size: 1.1em; /* ВОЗВРАЩЕНО К ИСХОДНОМУ РАЗМЕРУ */
             }
-            .review-card .rating {
+            .review-card .rating { /* This rule is now orphaned as .review-card is removed */
                 font-size: 1.2em; /* ВОЗВРАЩЕНО К ИСХОДНОМУ РАЗМЕРУ */
             }
             footer {
@@ -1149,10 +1101,10 @@
             .section-title {
                 font-size: 1.8em;
             }
-            .review-card {
+            .review-card { /* This rule is now orphaned as .review-card is removed */
                 padding: 20px;
             }
-            .review-card p {
+            .review-card p { /* This rule is now orphaned as .review-card is removed */
                 font-size: 1.05em; /* ВОЗВРАЩЕНО К ИСХОДНОМУ РАЗМЕРУ */
             }
             .site-author-info img {
@@ -1206,36 +1158,6 @@
             <li><a href="#">Сообщество</a></li> <li><a href="#">Поддержка</a></li> <li><a href="premium.html" class="premium">💎 Премиум</a></li>
         </ul>
     </nav>
-
-    ---
-
-    <section class="reviews-section">
-        <h2 class="section-title">💖 Отзывы наших пользователей</h2>
-        <p class="section-description">Узнайте, что говорят люди о HackHub Gallery!</p>
-        <div class="review-card-container">
-            <div class="review-card">
-                <p>"HackHub Gallery - это просто нечто! Здесь всегда можно найти вдохновение, а качество изображений просто зашкаливает. Отличная работа!"</p>
-                <div class="author">- Мария С.</div>
-                <div class="rating">
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
-                </div>
-            </div>
-            <div class="review-card">
-                <p>"Я каждый день захожу сюда. Интерфейс очень удобный, а функция поиска работает идеально. Мои наилучшие рекомендации!"</p>
-                <div class="author">- Алексей К.</div>
-                <div class="rating">
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
-                </div>
-            </div>
-            <div class="review-card">
-                <p>"Потрясающая коллекция! Изображения уникальны, а атмосфера сайта очень крутая с этими эффектами. Однозначно 5 звезд!"</p>
-                <div class="author">- Елена В.</div>
-                <div class="rating">
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
-                </div>
-            </div>
-        </div>
-    </section>
 
     ---
 
