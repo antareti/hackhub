@@ -713,6 +713,98 @@
             margin-top: 10px;
         }
 
+        /* New Reviews Submission Section */
+        .submit-review-section {
+            padding: 50px 30px;
+            background-color: #1a1a1a;
+            margin-top: 50px;
+            box-shadow: inset 0 5px 15px rgba(0,0,0,0.5);
+            text-align: center;
+        }
+
+        .review-form {
+            max-width: 700px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            background-color: #222;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 0 20px rgba(255, 102, 0, 0.3);
+        }
+
+        .review-form input[type="text"],
+        .review-form textarea {
+            width: calc(100% - 24px); /* Adjust for padding */
+            padding: 12px;
+            border: 2px solid var(--primary-color);
+            border-radius: 8px;
+            background-color: #333;
+            color: var(--light-text-color);
+            font-size: 1em;
+            transition: all 0.3s ease;
+            resize: vertical; /* Allow vertical resizing for textarea */
+        }
+
+        .review-form input[type="text"]:focus,
+        .review-form textarea:focus {
+            box-shadow: 0 0 10px var(--primary-color);
+            border-color: #ff8800;
+            outline: none;
+        }
+
+        .review-form textarea {
+            min-height: 120px;
+        }
+
+        .review-form .rating-input {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .review-form .rating-input input[type="radio"] {
+            display: none; /* Hide default radio buttons */
+        }
+
+        .review-form .rating-input label {
+            cursor: pointer;
+            font-size: 2.2em; /* Large star size */
+            color: #555; /* Default star color */
+            transition: color 0.2s ease, transform 0.2s ease;
+        }
+
+        .review-form .rating-input label:hover,
+        .review-form .rating-input label:hover ~ label {
+            color: gold;
+            transform: scale(1.1);
+        }
+
+        .review-form .rating-input input[type="radio"]:checked ~ label {
+            color: gold;
+        }
+
+        .review-form button {
+            background-color: var(--primary-color);
+            color: var(--dark-text-color);
+            border: none;
+            padding: 15px 25px;
+            border-radius: 30px;
+            font-size: 1.2em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .review-form button:hover {
+            background-color: #e65c00;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(255, 102, 0, 0.6);
+        }
+        
         /* Footer */
         footer {
             background: var(--header-bg);
@@ -1213,6 +1305,24 @@
                 <a href="#" target="_blank" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
             </div>
         </div>
+
+        <section class="submit-review-section">
+            <h2 class="section-title">Оставьте свой отзыв!</h2>
+            <p class="section-description">Мы ценим ваше мнение и будем рады получить ваши отзывы о HackHub Gallery.</p>
+            <form class="review-form" id="reviewForm">
+                <input type="text" id="reviewerName" placeholder="Ваше имя" required>
+                <textarea id="reviewText" placeholder="Ваш отзыв..." required></textarea>
+                <div class="rating-input">
+                    <input type="radio" id="star5" name="rating" value="5" required><label for="star5" class="fas fa-star"></label>
+                    <input type="radio" id="star4" name="rating" value="4"><label for="star4" class="fas fa-star"></label>
+                    <input type="radio" id="star3" name="rating" value="3"><label for="star3" class="fas fa-star"></label>
+                    <input type="radio" id="star2" name="rating" value="2"><label for="star2" class="fas fa-star"></label>
+                    <input type="radio" id="star1" name="rating" value="1"><label for="star1" class="fas fa-star"></label>
+                </div>
+                <button type="submit">Отправить отзыв</button>
+            </form>
+        </section>
+
         <div class="footer-bottom-text">
             &copy; 2025 HackHub. Все права защищены. <br> Создано с ❤️ для сообщества.
         </div>
@@ -1654,6 +1764,37 @@ HackHub — это приватное, безопасное и открытое 
         // Обновляем счетчик каждые 10 секунд
         setInterval(updateOnlineUsersCount, 10000); // 10000 миллисекунд = 10 секунд
 
+        // Review Form Submission (Client-side only for now, would need backend for persistence)
+        const reviewForm = document.getElementById('reviewForm');
+        reviewForm.addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent default form submission
+
+            const reviewerName = document.getElementById('reviewerName').value;
+            const reviewText = document.getElementById('reviewText').value;
+            const rating = document.querySelector('input[name="rating"]:checked');
+
+            if (!reviewerName || !reviewText || !rating) {
+                alert('Пожалуйста, заполните все поля и выберите рейтинг.');
+                return;
+            }
+
+            const ratingValue = rating.value;
+
+            // Here you would typically send this data to a server
+            console.log('Отзыв отправлен:', {
+                name: reviewerName,
+                text: reviewText,
+                rating: ratingValue
+            });
+
+            alert('Спасибо за ваш отзыв! Мы ценим ваше мнение.');
+
+            // Clear the form
+            reviewForm.reset();
+            // Deselect stars
+            const stars = document.querySelectorAll('.rating-input label');
+            stars.forEach(star => star.style.color = '#555');
+        });
     </script>
 </body>
 </html>
