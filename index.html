@@ -769,8 +769,8 @@
             justify-content: space-around;
             align-items: flex-start;
             gap: 30px;
-            position: relative; /* Для позиционирования элемента автора */
-            padding-bottom: 40px; /* Уменьшаем отступ для футера, так как автор не внизу */
+            position: relative;
+            padding-bottom: 40px; /* Уменьшаем отступ для футера */
         }
         .footer-column {
             flex: 1;
@@ -822,45 +822,40 @@
             padding-top: 20px;
         }
 
-        /* Styles for the new author image at the top */
-        .site-author-info {
-            position: relative; /* Изменено на relative, чтобы быть в потоке документа */
-            top: auto; /* Сброс top */
-            left: auto; /* Сброс left */
-            transform: none; /* Сброс transform */
-            width: 100%; /* Занимает всю ширину */
-            margin: 30px auto; /* Добавляем отступы сверху и снизу для центрирования */
-            display: flex;
+        /* Styles for the new site-author-video section */
+        .site-author-video {
+            position: relative;
+            width: 100%;
+            max-width: 600px; /* Ограничьте максимальную ширину видео */
+            margin: 30px auto; /* Отступы сверху и снизу для центрирования */
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 25px rgba(255, 102, 0, 0.4);
+            z-index: 10;
+            display: flex; /* Используем flexbox для центрирования содержимого */
             flex-direction: column;
             align-items: center;
-            gap: 15px; /* Увеличен промежуток между элементами */
-            padding: 20px 30px; /* Увеличен паддинг */
-            background: #1a1a1a; /* Однотонный фон для верхнего расположения */
-            border-radius: 15px; /* Скругление углов */
-            box-shadow: 0 5px 25px rgba(255, 102, 0, 0.4); /* Мягкая тень */
-            z-index: 10; /* Убедимся, что он выше фоновых элементов, но ниже шапки */
+            gap: 15px;
+            background: #1a1a1a; /* Фон для секции */
+            padding: 20px 0; /* Добавляем паддинг сверху и снизу */
         }
 
-        .site-author-info img {
-            width: 300px; /* Уменьшаем размер изображения автора для верхнего расположения */
-            height: 250px;
-            border-radius: 10px; /* Небольшое скругление углов для прямоугольной картинки */
+        .site-author-video video {
+            display: block;
+            width: 90%; /* Видео будет занимать 90% ширины родительского контейнера */
+            height: auto;
+            border-radius: 8px; /* Небольшое скругление углов для видео */
             border: 3px solid var(--primary-color);
             box-shadow: 0 0 15px rgba(255, 102, 0, 0.7);
-            object-fit: cover; /* Обрезает изображение, чтобы оно поместилось, сохраняя пропорции */
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
-        .site-author-info img:hover {
-            transform: scale(1.05); /* Немного увеличен эффект при наведении */
-            box-shadow: 0 0 25px var(--primary-color), 0 0 40px #ff9900;
-        }
-
-        .site-author-info p {
+        .video-caption {
             font-family: 'Montserrat', sans-serif;
-            font-size: 1.2em; /* Увеличен размер шрифта для подписи автора */
+            font-size: 1.2em;
             font-weight: bold;
-            color: var(--primary-color); /* Цвет текста как основной цвет */
+            color: var(--primary-color);
+            text-align: center;
+            padding: 0 10px; /* Горизонтальный паддинг */
             margin: 0;
             text-shadow: 0 0 8px rgba(0,0,0,0.8);
             white-space: nowrap;
@@ -879,16 +874,16 @@
             .footer-column {
                 flex-basis: 45%;
             }
-            .site-author-info {
-                padding: 15px 20px; /* Уменьшаем паддинг */
-                gap: 10px; /* Уменьшаем промежуток */
+            .site-author-video {
+                padding: 15px 0;
+                gap: 10px;
+                max-width: 500px;
             }
-            .site-author-info img {
-                width: 200px; /* Уменьшаем размер изображения автора для планшетов */
-                height: 160px;
+            .site-author-video video {
+                width: 95%;
             }
-            .site-author-info p {
-                font-size: 1em; /* Немного уменьшаем шрифт для подписи автора */
+            .video-caption {
+                font-size: 1.1em;
             }
         }
 
@@ -1000,15 +995,15 @@
                 font-size: 1.8em;
                 margin: 0 10px;
             }
-            .site-author-info {
-                padding-top: 10px; /* Уменьшаем отступ для маленьких экранов */
+            .site-author-video {
+                padding: 10px 0;
+                max-width: 90%;
             }
-            .site-author-info img {
-                width: 150px; /* Еще уменьшаем для мобильных */
-                height: 120px;
+            .site-author-video video {
+                width: 95%;
             }
-            .site-author-info p {
-                font-size: 0.95em;
+            .video-caption {
+                font-size: 1em;
             }
         }
 
@@ -1084,12 +1079,16 @@
             .section-title {
                 font-size: 1.8em;
             }
-            .site-author-info img {
-                width: 100px; /* Минимальный размер для автора */
-                height: 80px;
+            .site-author-video {
+                padding: 10px 0;
+                max-width: 95%;
             }
-            .site-author-info p {
-                font-size: 0.85em;
+            .site-author-video video {
+                width: 95%;
+                height: auto; /* Ensures video scales correctly on small screens */
+            }
+            .video-caption {
+                font-size: 0.9em;
             }
         }
     </style>
@@ -1138,9 +1137,9 @@
 
     ---
 
-    <section class="site-author-info">
-        <img src="6f022367-d0b5-4b17-9f28-ab5241bd277f.jpg" alt="Автор сайта">
-        <p>Автор сайта Fran.hesky De Mansera</p>
+    <section class="site-author-video">
+        <video src="Avatar IV Video.mp4" autoplay loop controls></video>
+        <p class="video-caption">Avatar IV Video</p>
     </section>
 
     ---
